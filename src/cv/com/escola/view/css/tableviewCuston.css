@@ -1,0 +1,161 @@
+/*******************************************************************************
+ *           
+    *I will provide this
+ * Tables                                      *
+ *                                                                             *
+ ******************************************************************************/
+.table-view, .tree-table-view {
+    /* Constants used throughout the tableview. */
+    -fx-table-header-border-color:  #000;
+    -fx--border-color: -fx-box-border; /* Horizontal Lines*/
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.30), 6.0, 0.3, 0,1);
+}
+
+/* The column header row is made up of a number of column-header, one for each
+   TableColumn, and a 'filler' area that extends from the right-most column
+   to the edge of the tableview, or up to the 'column control' button. */
+.table-view .filler, .tree-table-view .filler, .table-view .column-header,
+.tree-table-view .column-header {
+    -fx-size: 35;
+    -fx-border-style: solid;
+    /*-fx-border-color: -swatch-grey;*/
+    -fx-border-width: 0 0 2 0;
+    -fx-background-color: #444;
+}
+
+.table-view .show-hide-columns-button, .tree-table-view .show-hide-columns-button
+{
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label, .table-view .filler .label,
+.table-view .column-drag-header .label, .tree-table-view .column-header .label,
+.tree-table-view .filler .label, .tree-table-view .column-drag-header .label
+{
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: #FFF;
+}
+
+.table-view .column-header-background, .tree-table-view .column-header-background
+{
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-row-cell, .tree-table-row-cell {
+    -fx-cell-size: 30px;
+    -fx-alignment: CENTER;
+    -fx-animated: true;
+}
+
+.table-cell {
+    -fx-border-color: #777777;/*transparent; /* Vertical Lines*/
+    -fx-border-width: 1;
+}
+/*............. Corpo .............*/
+
+.table-cell:even {
+    -fx-background-color: #fff/*null/*#EEEEEE*/;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-cell-size: 2em;
+    -fx-padding: 0.5em 0.6em 0.5em 0.5em;
+    -fx-pref-height: 30px;
+    -fx-text-fill: #000000;
+}
+
+.table-row-cell:even {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: #fff, #fff;
+    -fx-background-insets: 0px, 0px 0px 1px 0px;
+    -fx-padding: 0px;
+}
+.table-row-cell:even:hover {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: rgb(224,224,224), transparent, rgb(189,189,189);
+    -fx-background-insets: 0px, 1px 0px 1px 0px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #f4f4f4;
+}
+.table-row-cell:even:selected {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: rgba(224,224,224,.9), transparent, rgba(189,189,189,.9);
+    -fx-background-insets: 0px, 1px 0px 1px 0px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #f4f4f4;
+}
+
+.table-cell:odd {
+    -fx-background-color: #fff;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-text-fill: #000000;
+    -fx-cell-size: 2em;
+    -fx-padding: 0.5em 0.6em 0.5em 0.5em;
+    -fx-pref-height: 30px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fff, #fff;
+    -fx-background: -fx-control-inner-background;
+    -fx-background-insets: 0px, 0px 0px 1px 0px;
+    -fx-padding: 0px;
+}
+
+.table-row-cell:odd:hover {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: rgb(224,224,224), transparent, rgb(189,189,189);
+    -fx-background-insets: 0px, 1px 0px 1px 0px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #f4f4f4;
+}
+.table-row-cell:odd:selected {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: rgba(224,224,224,.9), transparent, rgba(189,189,189,.9);
+    -fx-background-insets: 0px, 1px 0px 1px 0px;
+    -fx-text-fill: white;
+}
+
+.table-view > *.virtual-flow > *.corner {
+    /*-fx-background-color: #607D8B;*/
+}
+
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .check-box-table-cell:selected > .check-box > .box,
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .check-box-table-cell > .check-box > .box {
+    -fx-background-color: derive(-fx-accent, 40%), -fx-background;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar:horizontal {
+    -fx-background-color: #fff;
+    -fx-background-insets: 5 2 2 2;
+    -fx-padding: 2;
+    -fx-pref-height: 15;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar:vertical {
+    -fx-background-color: #fff;
+    -fx-background-insets: 0 5 2 2;
+    -fx-padding: 2;
+    -fx-pref-width: 15;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar > *.decrement-button > *.decrement-arrow,
+.table-view > *.virtual-flow > *.scroll-bar > *.increment-button > *.increment-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar:vertical > *.thumb,
+.table-view > *.virtual-flow > *.scroll-bar:horizontal > *.thumb {
+    -fx-background-color: #607D8B;
+    -fx-cursor: hand;
+    -fx-border-radius: 0;
+    -fx-background-radius: 2;
+    -fx-pref-height: 10;
+}
+
+/*............. Coluna Overlay .............*/
+
+.table-view *.column-overlay {
+    -fx-background-color: #444;
+    -fx-opacity: 0.3;
+}

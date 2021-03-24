@@ -1,0 +1,68 @@
+/*
+Copyright (C) 2019 Isaquiel Fernandes.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301  USA
+*/
+/* 
+    Created on : 21/fev/2019, 10:28:00
+    Author     : Isaquiel Fernandes
+*/
+
+/*.......... Cores Graficos de Barra ...........*/
+.chart-bar {
+    -fx-background-color: derive(-fx-bar-fill, 20%), derive(-fx-bar-fill, 0%);
+    -fx-background-insets: 0px;
+}
+
+.bar-legend-symbol {
+    -fx-padding: 10px;
+    -fx-background-insets: 4px;
+    -fx-border-radius: 0px;
+}
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #FF5722;
+    /*-fx-bar-fill: rgba(97, 181, 97, 0.8);*/
+}
+
+.default-color1.chart-bar {
+    -fx-bar-fill: #00BCD4;
+    /*-fx-bar-fill: rgba(97, 181, 97, 0.8);*/
+}
+
+.default-color2.chart-bar {
+    -fx-bar-fill: #4fa9c5;
+}
+
+.default-color3.chart-bar {
+    -fx-bar-fill: #2E8CD9;
+}
+
+.default-color4.chart-bar {
+    -fx-bar-fill: #58488c;
+}
+
+.default-color5.chart-bar {
+    -fx-bar-fill: #A52A73;
+}
+
+.default-color6.chart-bar {
+    -fx-bar-fill: #fd3443;
+}
+
+.default-color7.chart-bar {
+    -fx-bar-fill: #ff8f00;
+}

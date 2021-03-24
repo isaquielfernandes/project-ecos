@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Requiremento" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="28fba62a-ea51-421a-88be-effac2013b39">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="283"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SchoolDB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="351"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="649"/>
+	<parameter name="bi" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT dbescola.tb_aluno.id_aluno,
+	dbescola.tb_aluno.nome,
+	dbescola.tb_aluno.`dataNascimento`,
+	dbescola.tb_aluno.`numBI`,
+	dbescola.tb_aluno.`dataEmisao`,
+	dbescola.tb_aluno.resedencia,
+	dbescola.tb_aluno.conselho,
+	dbescola.tb_aluno.naturalidade,
+	dbescola.tb_aluno.data_cadastro,
+	dbescola.tb_aluno.`nomeDaMae`,
+	dbescola.tb_aluno.`nomeDoPai`,
+	dbescola.tb_aluno.professao,
+	dbescola.tb_aluno.`estadoCivil`,
+	dbescola.tb_aluno.`localDeEmisao`,
+	dbescola.tb_aluno.freguesia,
+	dbescola.tb_empresa.logo,
+	dbescola.tb_empresa.nif,
+	dbescola.tb_empresa.nome as escola_nome,
+	dbescola.tb_empresa.cidade,
+	dbescola.tb_empresa.email,
+	dbescola.tb_empresa.contato,
+	dbescola.tb_empresa.endereco,
+	dbescola.tb_empresa.id_empresa
+FROM dbescola.tb_aluno,
+	dbescola.tb_empresa
+WHERE 
+	 dbescola.tb_aluno.`numBI` = $P{bi} and dbescola.tb_empresa.`id_empresa` =1]]>
+	</queryString>
+	<field name="id_aluno" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_aluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dataNascimento" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="dataNascimento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numBI" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="numBI"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dataEmisao" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="dataEmisao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="resedencia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="resedencia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="conselho" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="conselho"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="naturalidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="naturalidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_cadastro" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="data_cadastro"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nomeDaMae" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeDaMae"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nomeDoPai" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nomeDoPai"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="professao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="professao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estadoCivil" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="estadoCivil"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="localDeEmisao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="localDeEmisao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="freguesia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="freguesia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_aluno"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nif" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nif"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="escola_nome" class="java.lang.String"/>
+	<field name="cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="contato" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="endereco" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_empresa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_empresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="1" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="67" splitType="Stretch">
+			<image scaleImage="RealSize" hAlign="Center" vAlign="Middle" isUsingCache="false" isLazy="true" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="0" width="539" height="67" uuid="4d8694f1-c2ae-427f-a131-4e6caab99491"/>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="616" splitType="Stretch">
+			<staticText>
+				<reportElement x="5" y="183" width="42" height="20" uuid="96666850-7e5d-412c-a797-c8e471066efa"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Nome:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="47" y="183" width="486" height="20" uuid="6bebbcec-fe4b-415e-9e8a-590a408f7066"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="39" y="199" width="494" height="1" uuid="12703d60-959c-4e03-b38d-6182ad7cd522"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="5" y="73" width="49" height="20" uuid="775c46c9-a475-4a9a-aecf-dd21a582bc6c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Assunto: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="56" y="73" width="212" height="20" uuid="241bbc8d-1bfb-427f-b83e-5debc1df95d3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Pedido de licença de apreendizagem]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="414" y="14" width="119" height="43" uuid="85bb5892-8e6b-4b25-b84d-b19a5eef1503"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Ex. mo Senhor, Delegado da DGTR em Assomada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="203" width="102" height="20" uuid="815e271c-f981-47fb-93b2-24593c8d3294"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Data Nascimento:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="107" y="203" width="69" height="20" uuid="eb50d001-3394-4a22-9081-e6cd7f1f368b"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataNascimento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="176" y="203" width="117" height="20" uuid="0a5fc7be-4817-45fd-acaa-007f1a6dfc5c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Natural da freguesia de]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="296" y="203" width="237" height="20" uuid="fbe5ff92-8285-4840-8351-33302e9f69e9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{naturalidade}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="293" y="219" width="240" height="1" uuid="0ea15dd4-9056-4280-b906-9c022a3a9192"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="5" y="223" width="42" height="20" uuid="fa5b9dea-74ca-4e00-8120-19eb2f961cea"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Filiação:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="223" width="479" height="20" uuid="06ffb274-ffea-442f-9837-a22c99ced5e2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeDaMae}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="243" width="29" height="20" uuid="3b08645f-c6c2-4234-bf68-12379fbcfb7f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[e de ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="38" y="243" width="495" height="20" uuid="584ebdf8-e5cd-40e5-811a-54ee61ee97f5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomeDoPai}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="50" y="240" width="483" height="1" uuid="68321752-1f97-4fe2-8851-58781335038b"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="35" y="260" width="498" height="1" uuid="afcd9caf-e325-4eff-9b23-6447b900b094"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="5" y="263" width="67" height="20" uuid="1805ac9c-c191-469d-9713-bd9990d1fed1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Estado Civil:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="74" y="263" width="101" height="20" uuid="73ac289b-6f95-4c34-a582-118d4e1751da"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{estadoCivil}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="176" y="263" width="61" height="20" uuid="84165375-57d0-4e73-8507-1e7569ec4314"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Professão:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="237" y="263" width="296" height="20" uuid="ce6526d1-312f-45d7-a032-910915fd4490"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{professao}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="72" y="280" width="103" height="1" uuid="f82f66ca-5f18-4f54-adf6-df5c6aba0b16"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="232" y="280" width="301" height="1" uuid="697183fa-21bd-4d15-b6e8-34c8d59705c3"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="5" y="283" width="57" height="20" uuid="b76e5f1b-4b77-483d-82cc-257e4a8fbee0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Residência:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="64" y="283" width="147" height="20" uuid="02857dbc-ac9a-402b-9b56-1a7324a2ec34"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resedencia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="303" width="56" height="20" uuid="0bf86100-341e-4fb7-889e-12a5db4a2bd0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Concelho:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="62" y="303" width="161" height="20" uuid="118a1f69-01b8-4b74-af7e-23b19696018a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{conselho}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="61" y="299" width="150" height="1" uuid="8d27e439-355a-4c4c-9477-ee93e1f58de5"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="59" y="320" width="164" height="1" uuid="124bdb2c-4473-4c24-b09a-79d349e107ca"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="226" y="303" width="66" height="20" uuid="02df4f04-6c5e-4b03-8030-dfdec1f6eb4e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[BI/CIN/Pas:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="293" y="303" width="88" height="20" uuid="4cc24627-73a7-4e9b-801a-bc896be748fd"/>
+				<box leftPadding="1" rightPadding="2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numBI}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="385" y="303" width="81" height="20" uuid="e50eb250-e8f1-47a8-ac16-95081b2335bc"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Data Emissão:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="463" y="303" width="70" height="20" uuid="844cf5fe-8fc9-4a91-a30e-f65b0358606f"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataEmisao}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="283" y="321" width="100" height="1" uuid="c7baf657-78e7-4b77-b531-15805e44d496"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="463" y="321" width="70" height="1" uuid="b188fef3-bae8-4388-b840-9c4b69b565c1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="5" y="323" width="138" height="20" uuid="32506383-7855-44c6-8844-2cc31897d9c9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Arquivo de identificação de]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="145" y="323" width="269" height="20" uuid="366504ed-f57d-4a72-94a6-cc0e87488e61"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{localDeEmisao}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="143" y="340" width="271" height="1" uuid="6e995310-8566-4e66-8c87-1001bc8b7092"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" evaluationTime="Report" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement x="246" y="439" width="180" height="20" uuid="987b5770-ccfe-4f80-bdeb-8e0c9c8a469d"/>
+				<textElement verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="484" width="120" height="20" uuid="f46204a5-6534-4a17-9a52-c2f0475c2bee"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Pede deferindo,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="571" width="528" height="20" uuid="917b9268-f026-4bef-8daf-a175cc2acf5c"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[A Director da Escola:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="134" y="610" width="271" height="1" uuid="2fa910d9-a91a-4d72-8a10-a00d49743a47"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="213" y="283" width="57" height="20" uuid="681c83a9-6bb3-4568-8d31-a3652f018b10"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Freguesia:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="268" y="283" width="265" height="20" uuid="7722423b-ce45-4b09-9605-9d13b27c46b0"/>
+				<box leftPadding="1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{freguesia}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="263" y="301" width="270" height="1" uuid="5ddaa6b3-ebfd-47a9-9f0f-f7f0383d42f5"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="414" y="323" width="24" height="20" uuid="d80c261a-b5e5-4347-9d02-51971e4ffb6a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[;]]></text>
+			</staticText>
+			<line>
+				<reportElement x="96" y="219" width="79" height="1" uuid="3e4cebee-dbfe-4791-a88b-dea46caadf6b"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="5" y="118" width="528" height="42" uuid="b366d7f7-f18f-42ee-846a-59e8c0350cca"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="12"/>
+					<paragraph lineSpacing="Single" firstLineIndent="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["A Direcção da ESCOLA DE CONDUÇÃO " + $F{escola_nome} +", na cidade de "+ $F{cidade} +", vêm por esta via requerer à vossa Excia se digne passar uma licença de aprendizagem a favor do instruendo a baixo indicado."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="5" y="399" width="528" height="20" uuid="211b8f9a-c901-45cc-bf2c-c43d2e663e42"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["As aulas práticas serão ministradas pela Escola de Condução “"+ $F{escola_nome} +"”"  ]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="439" width="91" height="20" uuid="d02782d0-8b09-432b-9351-f56a750cd48a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cidade}+ ", " ]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

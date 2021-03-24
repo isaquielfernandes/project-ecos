@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<fx:root id="AnchorPane" prefHeight="681.0" prefWidth="1221.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="60.0" prefWidth="1207.0" styleClass="box-topo" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="lbTitulo" layoutX="10.0" maxWidth="1.7976931348623157E308" styleClass="titulo" text="Título" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="445.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="4.0" />
+               </padding></Label>
+            <TextField fx:id="txtPesquisar" prefHeight="50.0" prefWidth="417.0" promptText="Pesquisar" styleClass="pesquisar" />
+            <ToggleButton mnemonicParsing="false" onAction="#telaCadastro" text="">
+               <styleClass>
+                  <String fx:value="menus-tela" />
+                  <String fx:value="menu-add" />
+               </styleClass>
+               <toggleGroup>
+                  <ToggleGroup fx:id="menu" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton layoutX="1150.0" layoutY="27.0" mnemonicParsing="false" onAction="#telaEdicao" text="" toggleGroup="$menu">
+               <styleClass>
+                  <String fx:value="menus-tela" />
+                  <String fx:value="menu-editar" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton layoutX="1150.0" layoutY="27.0" mnemonicParsing="false" onAction="#telaExcluir" text="" toggleGroup="$menu">
+               <styleClass>
+                  <String fx:value="menus-tela" />
+                  <String fx:value="menu-excluir" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton mnemonicParsing="false" onAction="#imprimirInventario" toggleGroup="$menu">
+               <styleClass>
+                  <String fx:value="menus-tela" />
+                  <String fx:value="menu-print" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton fx:id="btAtualizar" layoutX="1186.0" layoutY="28.0" mnemonicParsing="false" onAction="#telaAtualizar" toggleGroup="$menu">
+               <styleClass>
+                  <String fx:value="menus-tela" />
+                  <String fx:value="menu-movimentacao" />
+               </styleClass>
+            </ToggleButton>
+         </children>
+      </HBox>
+      <GridPane fx:id="telaCadastro" hgap="10.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="60.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="200.0" minWidth="102.0" prefWidth="134.0" />
+            <ColumnConstraints maxWidth="200.0" minWidth="120.0" prefWidth="181.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="355.0" minWidth="166.0" prefWidth="166.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="278.0" minWidth="165.0" prefWidth="197.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="138.0" minWidth="80.0" prefWidth="114.0" />
+            <ColumnConstraints maxWidth="95.0" minWidth="50.0" prefWidth="50.0" />
+            <ColumnConstraints maxWidth="273.0" minWidth="100.0" prefWidth="142.0" />
+            <ColumnConstraints minWidth="120.0" prefWidth="140.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="35.0" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="35.0" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label prefHeight="17.0" prefWidth="250.0" styleClass="lb-info-requerido" text="N° Série" />
+            <TextField fx:id="txtNumSerie" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.rowIndex="1" />
+            <Label layoutX="10.0" layoutY="17.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info" text="Categoria" GridPane.columnIndex="1" />
+            <TextField fx:id="txtItem" layoutX="10.0" layoutY="40.0" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Label layoutX="159.0" layoutY="17.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info-requerido" text="Item" GridPane.columnIndex="2" />
+            <ComboBox fx:id="cbArea" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="150.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Label layoutX="944.0" layoutY="147.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info-requerido" text="Area" GridPane.columnIndex="4" />
+            <ComboBox fx:id="cbCategoria" layoutX="956.0" layoutY="170.0" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label layoutX="806.0" layoutY="17.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info-requerido" text="Local" GridPane.columnIndex="6" />
+            <TextField fx:id="txtLocalizacao" layoutX="318.0" layoutY="105.0" prefHeight="35.0" prefWidth="182.0" styleClass="campo-texto" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+            <Label prefHeight="17.0" prefWidth="236.0" styleClass="lb-info-requerido" text="Data Compra" GridPane.columnIndex="7" />
+            <DatePicker fx:id="dtCompra" prefHeight="35.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+            <Label prefHeight="17.0" prefWidth="266.0" styleClass="lb-info" text="Meses Compra" GridPane.rowIndex="2" />
+            <Label layoutX="10.0" layoutY="147.0" styleClass="lb-info-requerido" text="Valor" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <TextField fx:id="txtMeses" editable="false" layoutX="159.0" layoutY="40.0" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.rowIndex="3" />
+            <Label layoutX="305.0" layoutY="17.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info-requerido" text="Estado de Conservação" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+            <ComboBox fx:id="cbestado_Conservacao" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Label layoutX="755.0" layoutY="17.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info" text="Valor Atual" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+            <Label layoutX="702.0" layoutY="149.0" prefHeight="17.0" prefWidth="250.0" styleClass="lb-info-requerido" text="Depreciação" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <ComboBox fx:id="cbDepreciacao" layoutX="702.0" layoutY="175.0" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="150.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+            <Label styleClass="lb-info" text="Descrição / Observações" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+            <TextArea fx:id="txtDescricao" wrapText="true" GridPane.columnSpan="8" GridPane.rowIndex="5" />
+            <TextField fx:id="txtValor" alignment="CENTER_RIGHT" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <TextField fx:id="txtValorAtual" alignment="CENTER_RIGHT" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" text="0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+            <Label styleClass="lb-info-requerido" text="Responsavel" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+            <TextField fx:id="txtAno_Vida" editable="false" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Ano De Vida" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txtResponsavel" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+      <AnchorPane fx:id="telaEdicao" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+         <children>
+            <TableView fx:id="tbInventario" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
+               <columns>
+                  <TableColumn fx:id="colId" maxWidth="100.0" minWidth="50.0" prefWidth="50.0" text="Id" visible="false" />
+                  <TableColumn fx:id="colNumSerie" maxWidth="100.0" minWidth="80.0" text="N° Série" />
+                  <TableColumn fx:id="colCategoria" maxWidth="200.0" minWidth="100.0" prefWidth="150.0" text="Categoria" />
+                  <TableColumn fx:id="colItem" maxWidth="300.0" minWidth="200.0" prefWidth="150.0" text="Item" />
+                  <TableColumn fx:id="colArea" maxWidth="150.0" minWidth="100.0" prefWidth="120.0" text="Area" />
+                  <TableColumn fx:id="colLocal" maxWidth="150.0" minWidth="100.0" prefWidth="120.0" text="Local" />
+                  <TableColumn fx:id="colDataCompra" maxWidth="150.0" minWidth="100.0" prefWidth="120.0" text="Data Compra" />
+                  <TableColumn fx:id="colMeses_de_compra" maxWidth="157.0" minWidth="100.0" prefWidth="153.0" text="Mesés desde a compra" />
+                  <TableColumn fx:id="colValor" maxWidth="150.0" minWidth="83.0" prefWidth="87.0" text="Valor" />
+                  <TableColumn fx:id="colEstado_Conservacao" maxWidth="180.0" minWidth="100.0" prefWidth="180.0" text="Estado de Conservação" />
+                  <TableColumn fx:id="colResponsavel" maxWidth="300.0" minWidth="150.0" prefWidth="200.0" text="Responsável" />
+                  <TableColumn fx:id="colVidaUtil" maxWidth="150.0" minWidth="70.0" prefWidth="120.0" text="Vida Util " />
+                  <TableColumn fx:id="colValorAtual" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Valor Atual" />
+                  <TableColumn fx:id="colDepraciacao" maxWidth="300.0" minWidth="200.0" prefWidth="200.0" text="Depreciaçao" />
+                  <TableColumn fx:id="colDataCadastro" maxWidth="200.0" minWidth="100.0" prefWidth="150.0" text="Data Cadastro" visible="false" />
+               </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="50.0" styleClass="box-menus-subtela" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+         <children>
+            <StackPane AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <Button id="" fx:id="btEditar" contentDisplay="TOP" mnemonicParsing="false" onAction="#editar" prefHeight="40.0" prefWidth="200.0" style="" text="Editar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <styleClass>
+                        <String fx:value="menus-acoes" />
+                        <String fx:value="acao-editar" />
+                        <String fx:value="menu-laranja" />
+                     </styleClass>
+                  </Button>
+                  <Button id="" fx:id="btExcluir" contentDisplay="TOP" mnemonicParsing="false" onAction="#excluir" prefHeight="40.0" prefWidth="200.0" style="" text="Excluir" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <styleClass>
+                        <String fx:value="menus-acoes" />
+                        <String fx:value="acao-excluir" />
+                        <String fx:value="menu-red" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="btSalvar" contentDisplay="TOP" mnemonicParsing="false" onAction="#salvar" prefHeight="40.0" prefWidth="200.0" style="" text="Salvar" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <styleClass>
+                        <String fx:value="menus-acoes" />
+                        <String fx:value="acao-salvar" />
+                        <String fx:value="menu-green" />
+                     </styleClass>
+                  </Button>
+               </children>
+            </StackPane>
+            <Label fx:id="legenda" layoutX="36.0" layoutY="17.0" styleClass="lb-info-requerido" text="Campos obrigatórios" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
+         </children>
+      </AnchorPane>
+   </children>
+   <stylesheets>
+      <URL value="@css/default.css" />
+      <URL value="@css/custom.css" />
+      <URL value="@css/table.css" />
+   </stylesheets>
+</fx:root>

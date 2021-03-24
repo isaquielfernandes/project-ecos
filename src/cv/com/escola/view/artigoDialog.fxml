@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane fx:id="telaCadastro" hgap="8.0" layoutX="10.0" layoutY="10.0" prefHeight="690.0" prefWidth="1245.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Label styleClass="lb-info-requerido" text="Nome" GridPane.columnIndex="1" />
+            <TextField fx:id="txtNome" prefHeight="43.0" prefWidth="852.0" promptText="Nome do artigo" styleClass="campo-texto" visible="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Label text="Código" />
+            <TextField fx:id="txtCodigo" promptText="Codigo" styleClass="campo" GridPane.rowIndex="1" />
+            <Label styleClass="lb-info-requerido" text="Valor/Preço" GridPane.columnIndex="3" />
+            <TextField fx:id="txtPreco" alignment="CENTER_RIGHT" promptText="Preço unitario" styleClass="campo" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <TextField alignment="CENTER_RIGHT" disable="true" editable="false" promptText="ECV($00)" styleClass="campo" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Label text="Descrição" GridPane.rowIndex="2" />
+            <TextArea fx:id="txtDescricao" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="3" />
+            <Button fx:id="btSalvar" contentDisplay="TOP" mnemonicParsing="false" onAction="#salvar" prefHeight="40.0" prefWidth="200.0" style="" text="Salvar" GridPane.columnSpan="3" GridPane.rowIndex="5">
+               <styleClass>
+                  <String fx:value="menus-acoes" />
+                  <String fx:value="acao-salvar" />
+                  <String fx:value="menu-green" />
+               </styleClass>
+            </Button>
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="122.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="74.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="265.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="141.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="55.0" prefWidth="55.0" />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="324.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" />
+         </rowConstraints>
+      </GridPane>
+   </children>
+   <stylesheets>
+      <URL value="@css/custom.css" />
+      <URL value="@css/default.css" />
+   </stylesheets>
+</AnchorPane>

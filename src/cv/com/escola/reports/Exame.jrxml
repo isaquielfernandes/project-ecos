@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="exame lista" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="70" rightMargin="42" topMargin="20" bottomMargin="20" uuid="0c2dd6b6-fca8-48cc-a1be-e15ea990edfd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="121"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SchoolDB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="327"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="673"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="715"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="271"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="tipoExame" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dia" class="java.sql.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT dbescola.exame_view.`Codigo`,
+	dbescola.exame_view.`Tipo de Exame`,
+	dbescola.exame_view.`Dia`,
+	dbescola.exame_view.`Hora`,
+	dbescola.exame_view.`Descrição`,
+	dbescola.exame_view.`Codigo da Categoria`,
+	dbescola.exame_view.`Categoria`,
+	dbescola.exame_view.`Codigo Do Aluno`,
+	dbescola.exame_view.`Nome Do Aluno`,
+	dbescola.exame_view.`Fotografia`,
+	dbescola.tb_empresa.nome,
+	dbescola.tb_empresa.id_empresa,
+	dbescola.tb_empresa.cidade,
+	dbescola.tb_empresa.nif,
+	dbescola.tb_empresa.email,
+	dbescola.tb_empresa.contato,
+	dbescola.tb_empresa.endereco,
+	dbescola.tb_empresa.logo,
+          dbescola.tb_empresa.assinatura
+FROM dbescola.exame_view,
+	dbescola.tb_empresa
+	WHERE 
+	dbescola.exame_view.`Dia` =  $P{dia}  and dbescola.exame_view.`Tipo de Exame` = $P{tipoExame} 
+	 and dbescola.tb_empresa.id_empresa = 1]]>
+	</queryString>
+	<field name="Codigo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Codigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Tipo de Exame" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Tipo de Exame"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Dia" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="Dia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Hora" class="java.sql.Time">
+		<property name="com.jaspersoft.studio.field.label" value="Hora"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Descrição" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Descrição"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Codigo da Categoria" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Codigo da Categoria"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Categoria" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Categoria"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Codigo Do Aluno" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Codigo Do Aluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Nome Do Aluno" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Nome Do Aluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Fotografia" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="Fotografia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="exame_view"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_empresa" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id_empresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nif" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nif"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="contato" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="endereco" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="logo" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.label" value="logo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_empresa"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="assinatura" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="62" splitType="Stretch">
+			<image scaleImage="FillFrame" isLazy="true" onErrorType="Icon">
+				<reportElement x="160" y="2" width="180" height="60" uuid="3a79d744-dd64-4439-8eff-7c3d366f7e04"/>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="205" splitType="Stretch">
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="0" y="185" width="30" height="20" forecolor="#000000" backcolor="#FCFCFC" uuid="abe7482d-dec0-40a4-a759-296b27138e75"/>
+				<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="3">
+					<pen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<topPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="2.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="210" y="185" width="90" height="20" forecolor="#000000" backcolor="#FCFCFC" uuid="42034a04-3175-4312-8301-3db375d083d3"/>
+				<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="3">
+					<pen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<topPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="2.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo de Exame]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="361" y="185" width="60" height="20" forecolor="#000000" backcolor="#FCFCFC" uuid="f207f7af-89e2-44ee-bd44-7f2b2c8449ff"/>
+				<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="3">
+					<pen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<topPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="2.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="301" y="185" width="60" height="20" forecolor="#000000" backcolor="#FCFCFC" uuid="181dbd2a-2b59-4bc4-9046-c7bb94c311c3"/>
+				<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="3">
+					<pen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<topPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="2.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Categoria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="30" y="185" width="178" height="20" forecolor="#000000" backcolor="#FCFCFC" uuid="030d5887-8c37-4558-8949-a7db1917b0a5"/>
+				<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="3">
+					<pen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<topPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="2.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome Do Aluno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="422" y="185" width="60" height="20" forecolor="#000000" backcolor="#FCFCFC" uuid="35880c9c-49c2-475b-9b63-61de490f2306"/>
+				<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="3">
+					<pen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<topPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="2.25" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="2.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Resultado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="172" y="101" width="59" height="20" uuid="975716b1-6c49-4ccb-b08f-5f3e9f2c26a8"/>
+				<box topPadding="1" leftPadding="4" bottomPadding="1" rightPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Assunto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="101" width="123" height="20" uuid="71f5b4c4-81c7-4935-aec6-b5e83d361843"/>
+				<box topPadding="1" leftPadding="4" bottomPadding="1" rightPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Pedido de exame]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement style="Detail" positionType="Float" x="0" y="132" width="481" height="39" uuid="99110909-aac2-48d9-8fca-9aef165697fd"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="html">
+					<font size="12"/>
+					<paragraph lineSpacing="1_1_2" firstLineIndent="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Juntos enviamos as listas dos candidatos selecionados para a prestação do exame  à realizar no dia "+$F{Dia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="368" y="25" width="114" height="33" uuid="7e6f9a98-b7dd-4904-8c4f-867a4374e9c9"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Exmo. Senhor, Delegado da DGTR ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="204" width="483" height="1" uuid="a6ae2b7d-ed78-4a40-888d-3d60b18ef06c"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#666666"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="368" y="58" width="114" height="20" uuid="62b5f22e-170b-464c-a883-b9e12152a370"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Em Assomada]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="2" width="483" height="18" uuid="f3197702-e9b4-4a37-995e-2319ef1d3b61"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="210" y="0" width="90" height="18" uuid="3b915be5-fbbc-4148-859c-c767bc957464"/>
+					<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Tipo de Exame}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="361" y="0" width="60" height="18" uuid="a8359b17-aa1d-4f70-882a-90755bd5e18f"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Descrição}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="301" y="0" width="60" height="18" uuid="d8093f64-62dd-4ff9-99e2-801ff74b21d9"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Categoria}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="30" y="0" width="178" height="18" uuid="30357526-555b-40b4-b243-c99f47c6f273"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Nome Do Aluno}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="28" height="18" uuid="b2665154-2d57-4992-b08d-5410b2af8172"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="422" y="0" width="60" height="18" uuid="1aede726-a6d7-43ed-bd31-fbf5406a98e8"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[]]></textFieldExpression>
+				</textField>
+			</frame>
+			<line>
+				<reportElement positionType="Float" x="0" y="19" width="482" height="1" uuid="a36c6b9a-61cf-4a45-8361-ebd18c944556"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#666666"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="117" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="483" height="1" uuid="3aac52b9-88c9-4ff7-a344-edcff5e4d048"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="221" y="8" width="196" height="20" uuid="bf6f3c16-8f62-4198-8ee9-aa3a1cbc19b6"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="155" y="8" width="64" height="20" uuid="1cbe885c-376d-40d3-84fc-d904da1a34a4"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Assomada, ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="219" y="48" width="100" height="20" uuid="ecb0f79c-4cac-4703-846d-9a586bf5eff6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<text><![CDATA[Diretor da Escola]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" hAlign="Center" isLazy="true" onErrorType="Icon">
+				<reportElement isPrintRepeatedValues="false" x="107" y="31" width="294" height="82" uuid="cfe604be-879f-4e03-8864-31429557153d"/>
+				<imageExpression><![CDATA[$F{assinatura}]]></imageExpression>
+			</image>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="482" height="25" forecolor="#D0B48E" backcolor="#F2F2F2" uuid="a2cb8052-4d87-4878-929f-30d46835ab1a"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="441" y="3" width="40" height="20" forecolor="#000000" uuid="cf0717ab-107b-46ae-9406-61f7813d35e6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="11" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="361" y="3" width="80" height="20" forecolor="#000000" uuid="8446ec1a-01cf-4fbd-9594-6546dc1fda38"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="11" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pag.: "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="0" y="3" width="199" height="20" forecolor="#000000" uuid="520f6199-0e13-45a8-b132-57e69e010fef"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

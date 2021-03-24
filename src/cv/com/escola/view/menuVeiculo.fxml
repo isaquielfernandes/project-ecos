@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<fx:root id="AnchorPane" prefHeight="681.0" prefWidth="1221.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="BOTTOM_RIGHT" prefHeight="49.0" prefWidth="1221.0" style="-fx-background-color: #FF5722;" styleClass="box-submenus" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="lbTitulo" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="287.0" styleClass="titulo" text="Planos de Contas - Cadastros" visible="false" HBox.hgrow="NEVER" />
+            <ToggleButton contentDisplay="CENTER" maxWidth="118.0" mnemonicParsing="false" onAction="#btTelaVeiculo" prefHeight="30.0" prefWidth="118.0" selected="true" styleClass="menu-vermelho" text="VEÍCULO" textFill="#030303">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <toggleGroup>
+                  <ToggleGroup fx:id="menuPlano" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <HBox.margin>
+                  <Insets right="2.0" />
+               </HBox.margin>
+            </ToggleButton>
+            <ToggleButton maxWidth="149.0" mnemonicParsing="false" onAction="#btTelaInspecaoTecnica" prefHeight="30.0" prefWidth="149.0" styleClass="menu-vermelho" text="INSPECÇÃO TECNICA" textFill="#030303" toggleGroup="$menuPlano">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <HBox.margin>
+                  <Insets left="2.0" right="2.0" />
+               </HBox.margin>
+            </ToggleButton>
+            <ToggleButton contentDisplay="CENTER" maxWidth="160.0" mnemonicParsing="false" onAction="#btTelaSeguro" prefHeight="30.0" prefWidth="125.0" styleClass="menu-vermelho" text="SEGURO" textFill="#030303" toggleGroup="$menuPlano">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <HBox.margin>
+                  <Insets left="2.0" right="6.0" />
+               </HBox.margin>
+            </ToggleButton>
+         </children>
+      </HBox>
+      <AnchorPane fx:id="boxMenuVeiculo" layoutY="48.0" prefHeight="626.0" prefWidth="1221.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="47.0" />
+   </children>
+   <stylesheets>
+      <URL value="@css/custom.css" />
+      <URL value="@css/default.css" />
+   </stylesheets>
+</fx:root>

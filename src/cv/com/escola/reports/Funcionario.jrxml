@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c5b10796-be2c-432f-a4b1-c6202af47b47">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="3"/>
+	<property name="ireport.y" value="39"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SchoolDB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="codigo" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT *
+FROM dbescola.w_funcionario where Codigo = $P{codigo}]]>
+	</queryString>
+	<field name="Codigo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Codigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Nome Completo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Nome Completo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Data Admisão" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="Data Admisão"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Data Demisão" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Data Demisão"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Departamento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Departamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Seção" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Seção"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Código do Cargo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Código do Cargo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Cargo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cargo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Nome do Pai" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Nome do Pai"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Nome da Mae" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Nome da Mae"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Habilitação Literaria" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Habilitação Literaria"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Tipo Sanguineo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Tipo Sanguineo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="E-mail" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="E-mail"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Endereço" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Endereço"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Cidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Cidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Telefone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Telefone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Celular" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Celular"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NIF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NIF"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Nacionalidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Nacionalidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Naturalidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Naturalidade"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Data Nascimento" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="Data Nascimento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Carta Condução" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Carta Condução"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Banco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Banco"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Agencia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Agencia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Conta Corente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Conta Corente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Observação" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Observação"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Foto" class="java.awt.Image">
+		<property name="com.jaspersoft.studio.field.label" value="Foto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="w_funcionario"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="8" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="43" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="4" width="555" height="30" forecolor="#FFFFFF" backcolor="#0099FF" uuid="f8ef7bf3-5219-4bdd-ba97-6165c962ef25"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Funcionário]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="435" y="9" width="52" height="20" forecolor="#FFFFFF" uuid="d9abb93b-4724-4a8b-b8c2-7f011e461e39"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="488" y="9" width="66" height="20" forecolor="#FFFFFF" uuid="abbcf9f0-164e-4a55-88b5-2796667eb4c9"/>
+				<box leftPadding="2" rightPadding="4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Codigo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="538" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="15" width="555" height="20" forecolor="#FFFFFF" backcolor="#0099FF" uuid="00964269-48a1-4d81-bcbf-790ffabb4e82"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Informação Básica do Funcionário]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="37" width="128" height="20" backcolor="#C0C0C0" uuid="0112aafe-aaaf-4a66-8fe5-9c6ab98575be"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nome Completo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="37" width="318" height="20" backcolor="#F2F2F2" uuid="cdedb642-7cdf-44c2-bc37-72e76a3294af"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nome Completo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="59" width="128" height="20" backcolor="#C0C0C0" uuid="619afc44-8201-4e69-9d8c-1cbff014f6df"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Data Admisão]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="59" width="318" height="20" backcolor="#F2F2F2" uuid="e2cda5cf-d175-4b3d-9c2b-2620c520282a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Data Admisão}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="81" width="128" height="20" backcolor="#C0C0C0" uuid="386b3faf-35ad-4a7e-aab9-c51b6308b813"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Data Demisão]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="81" width="318" height="20" backcolor="#F2F2F2" uuid="52d820e9-b9c8-42b4-90eb-f874cf293723"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Data Demisão}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="103" width="128" height="20" backcolor="#C0C0C0" uuid="33d738bf-01ff-460a-82dd-46543a55683c"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Departamento]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="130" y="103" width="318" height="20" backcolor="#F2F2F2" uuid="c6a82711-f030-451a-9c37-d8872adf9996"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Departamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="125" width="128" height="20" backcolor="#C0C0C0" uuid="f798f4f2-5b2a-4800-b848-4c0081985c6a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Seção]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="130" y="125" width="318" height="20" backcolor="#F2F2F2" uuid="4ecd2e98-793e-44f6-a861-9e68d7f80fbb"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Seção}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="147" width="128" height="20" backcolor="#C0C0C0" uuid="d741c918-822b-4031-9fe3-32497a573f53"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Cargo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="147" width="425" height="20" backcolor="#F2F2F2" uuid="5c2a0e27-d1fe-4933-b937-5699d9bd281c"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Cargo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="169" width="555" height="20" forecolor="#FFFFFF" backcolor="#0099FF" uuid="4b682f11-1bc9-43f2-b8f0-100132b1ed64"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Documentação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="215" width="108" height="20" backcolor="#C0C0C0" uuid="ac80c71a-eaf2-4a02-9c61-8c70b9a40f75"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nacionalidade]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="431" y="215" width="124" height="20" backcolor="#F2F2F2" uuid="589bf4a0-02d2-4473-ae6e-224c1ce5d2b5"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nacionalidade}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="237" width="128" height="20" backcolor="#C0C0C0" uuid="b3c3cee4-6329-4e16-aea0-46795ae75792"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Naturalidade]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="237" width="425" height="20" backcolor="#F2F2F2" uuid="0224f826-e686-4710-9b17-8eea447edf85"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Naturalidade}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="192" width="128" height="20" backcolor="#C0C0C0" uuid="9d11131f-67ea-4781-b036-b34b493381c4"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[NIF/BI/CIN]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="192" width="186" height="20" backcolor="#F2F2F2" uuid="8db49b55-8717-4a6b-ba76-e36ab048d87d"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIF}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="215" width="128" height="20" backcolor="#C0C0C0" uuid="d3908ce4-ec82-415c-8ba7-7c1720afbbf1"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Data Nascimento]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="130" y="215" width="186" height="20" backcolor="#F2F2F2" uuid="3eaa094c-55bc-4044-a00e-84ac52fd3fc7"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Data Nascimento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="192" width="108" height="20" backcolor="#C0C0C0" uuid="2013277f-7be8-4edd-8961-23266a5379fa"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Carta Condução]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="431" y="192" width="124" height="20" backcolor="#F2F2F2" uuid="d5e6e099-bfe8-4fd3-9027-9a126595592b"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Carta Condução}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" hAlign="Center" isUsingCache="true" isLazy="true" onErrorType="Icon">
+				<reportElement x="460" y="37" width="89" height="107" uuid="b3053885-6631-4608-bf4e-d264aa2fcaed"/>
+				<imageExpression><![CDATA[$F{Foto}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="260" width="555" height="20" forecolor="#FFFFFF" backcolor="#0099FF" uuid="644ee9be-5ae9-43ff-8200-a5919c198762"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Endereço e Dados de Contatos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="366" width="555" height="20" forecolor="#FFFFFF" backcolor="#0099FF" uuid="f0b61f9f-3e68-4da5-8c07-354383c901d2"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Outras Informações]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="458" width="555" height="20" forecolor="#FFFFFF" backcolor="#0099FF" uuid="ae3eb2ed-78a5-4768-bb61-7d28e77f16ef"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Dados Bancários]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="72" y="481" width="100" height="20" backcolor="#F2F2F2" uuid="18100874-ad6d-4f41-8fd9-98204977094a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Banco}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="481" width="70" height="20" backcolor="#C0C0C0" uuid="fa317d2c-ac5d-4409-86fe-a3f781c2b7f9"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Banco]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="261" y="481" width="100" height="20" backcolor="#F2F2F2" uuid="8656695a-829b-4846-8c0c-efb3593cd4f3"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Agencia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="175" y="481" width="84" height="20" backcolor="#C0C0C0" uuid="c560c8fc-6204-42d7-8d8b-5ec9cb802e84"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Agencia]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="454" y="481" width="100" height="20" backcolor="#F2F2F2" uuid="661345cd-4403-410d-ab77-b5c52e0fe77f"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Conta Corente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="364" y="481" width="88" height="20" backcolor="#C0C0C0" uuid="477cda2b-7749-481d-8483-2bca76f704a6"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Conta Corente]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="100" y="389" width="454" height="20" backcolor="#F2F2F2" uuid="5cc8f1c5-6edf-4a25-aeda-765019b74c8f"/>
+				<box leftPadding="2">
+					<pen lineColor="#F7F7F7"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nome do Pai}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="389" width="98" height="20" backcolor="#C0C0C0" uuid="436b9110-3aac-44d5-8841-f133607e6aec"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nome do Pai]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="100" y="412" width="454" height="20" backcolor="#F2F2F2" uuid="38457d77-806d-4ff0-af72-350663ea3205"/>
+				<box leftPadding="2">
+					<pen lineColor="#F7F7F7"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nome da Mae}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="412" width="98" height="20" backcolor="#C0C0C0" uuid="f36f7f39-0741-4f08-ae26-90c46c6fbadd"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nome da Mãe]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="454" y="435" width="100" height="20" backcolor="#F2F2F2" uuid="4cf1df05-d246-4716-81c3-606e72f21bfe"/>
+				<box leftPadding="2">
+					<pen lineColor="#F7F7F7"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Tipo Sanguineo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="320" y="435" width="132" height="20" backcolor="#C0C0C0" uuid="f529f18c-ab2d-49ef-be98-b2d40a16bb90"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Tipo Sanguineo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="100" y="435" width="217" height="20" backcolor="#F2F2F2" uuid="a1ad7fef-02c4-4bf2-82ff-6239b8e66f61"/>
+				<box leftPadding="2">
+					<pen lineColor="#F7F7F7"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Habilitação Literaria}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="435" width="98" height="20" backcolor="#C0C0C0" uuid="6f5fb3f4-8806-4f61-8dce-2e3fa1ff3cc7"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Habilitação Literaria]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="100" y="284" width="198" height="20" backcolor="#F2F2F2" uuid="dddd117d-f465-4b40-9bb9-2f6cd2a59ec7"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Endereço}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="284" width="98" height="20" backcolor="#C0C0C0" uuid="a8aa85c7-2693-430f-8ea8-d0118bf3621a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Endereço]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="100" y="332" width="454" height="20" backcolor="#F2F2F2" uuid="7e864c0d-f3a2-461e-8429-98a54160c22f"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{E-mail}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="332" width="98" height="20" backcolor="#C0C0C0" uuid="a0d2e110-d11a-46d0-a462-2a77cf5fbf3a"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[E-mail]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="100" y="308" width="198" height="20" backcolor="#F2F2F2" uuid="28beb410-266b-4c19-8471-52c931dfd2c7"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Cidade}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="308" width="98" height="20" backcolor="#C0C0C0" uuid="72a4c16c-b15a-4223-a532-f33310ebb4cb"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Cidade]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="383" y="284" width="171" height="20" backcolor="#F2F2F2" uuid="ff49ed75-cc5a-4451-a568-ecfd4f5ad63e"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Telefone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="300" y="284" width="80" height="20" backcolor="#C0C0C0" uuid="d967e493-2a7a-4e99-add2-7664b138dde4"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Telefone]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="383" y="308" width="171" height="20" backcolor="#F2F2F2" uuid="3cf0240e-9814-4d60-89ae-ed19e2245a6e"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Celular}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="300" y="308" width="81" height="20" backcolor="#C0C0C0" uuid="a5b26a09-545b-4e3c-b28d-0b78612a5d58"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Celular]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="26" splitType="Stretch">
+			<textField pattern="MMM d, yyyy h:mm:ss a z">
+				<reportElement mode="Opaque" x="0" y="6" width="555" height="20" forecolor="#FFFFFF" backcolor="#0099FF" uuid="7aed69c4-20ca-4508-9de9-16ceb011fe92"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

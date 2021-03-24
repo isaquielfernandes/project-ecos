@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.StackedAreaChart?>
+<?import javafx.scene.chart.StackedBarChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import jfxtras.scene.control.ListView?>
+
+<fx:root id="AnchorPane" prefHeight="680.0" prefWidth="1220.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane layoutX="48.0" layoutY="26.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <HBox prefHeight="50.0" prefWidth="1221.0" styleClass="box-topo" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="lbTitulo" layoutX="10.0" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="575.0" style="-fx-background-color: #448AFF;" text="Título" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="445.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                     <padding>
+                        <Insets left="2.0" />
+                     </padding></Label>
+                  <Button fx:id="btRecibo" maxWidth="90.0" minHeight="30.0" minWidth="90.0" mnemonicParsing="false" onMouseClicked="#reciboPrint" prefHeight="30.0" prefWidth="90.0" style="-fx-border-color: #E0E0E0; -fx-background-color: #fff; -fx-background-radius: 6; -fx-border-radius: 6;" text="RECIBO">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@img/icon/baseline_print_black_18dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <DatePicker fx:id="dataPickerAnoMes" minWidth="110.0" prefHeight="30.0" prefWidth="110.0" showWeekNumbers="true" />
+                  <TextField fx:id="txtPesquisar" prefHeight="30.0" prefWidth="417.0" promptText="Pesquisar" styleClass="pesquisar" />
+                  <ToggleButton mnemonicParsing="false" onAction="#telaCadastro" text="">
+                     <styleClass>
+                        <String fx:value="menus-tela" />
+                        <String fx:value="menu-add" />
+                     </styleClass>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="menu" />
+                     </toggleGroup>
+                     <tooltip>
+                        <Tooltip text="Tela Realizar Vendas" />
+                     </tooltip>
+                  </ToggleButton>
+                  <ToggleButton layoutX="1150.0" layoutY="27.0" mnemonicParsing="false" onAction="#telaEdicao" text="" toggleGroup="$menu">
+                     <styleClass>
+                        <String fx:value="menus-tela" />
+                        <String fx:value="menu-editar" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Tela Editar Venda" />
+                     </tooltip>
+                  </ToggleButton>
+                  <ToggleButton layoutX="1150.0" layoutY="27.0" mnemonicParsing="false" onAction="#telaExcluir" text="" toggleGroup="$menu">
+                     <styleClass>
+                        <String fx:value="menus-tela" />
+                        <String fx:value="menu-excluir" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text="Tela Apagar Venda" />
+                     </tooltip>
+                  </ToggleButton>
+                  <ToggleButton layoutX="1186.0" layoutY="28.0" mnemonicParsing="false" onAction="#telaRelatorio" text="" toggleGroup="$menu">
+                     <styleClass>
+                        <String fx:value="menus-tela" />
+                        <String fx:value="menu-localizacao" />
+                     </styleClass>
+                     <tooltip>
+                        <Tooltip text=" Tela Relátorios de Venda" />
+                     </tooltip>
+                  </ToggleButton>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <GridPane fx:id="telaCadastro" hgap="4.0" prefHeight="620.0" prefWidth="1220.0" vgap="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="110.0" prefWidth="110.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="227.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="140.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="80.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="10.0" prefWidth="89.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="8.0" minHeight="8.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="8.0" minHeight="8.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="BOTTOM_LEFT" prefHeight="32.0" prefWidth="116.0" styleClass="lb-info-requerido" text="Data" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets left="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label alignment="BOTTOM_LEFT" prefHeight="34.0" prefWidth="176.0" styleClass="lb-info-requerido" text="Cliente" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="150.0" styleClass="lb-info-requerido" text="Forma de Pag" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="dataVenda" prefHeight="35.0" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets left="4.0" />
+                           </GridPane.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </DatePicker>
+                        <ComboBox fx:id="cbFormaPag" prefHeight="35.0" prefWidth="172.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
+                        <ComboBox fx:id="cbArtigo" prefHeight="35.0" prefWidth="329.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
+                        <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="179.0" styleClass="lb-info-requerido" text="Artigo/Produto/Servico" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtQuantia" alignment="CENTER_RIGHT" onKeyReleased="#onKeyReleasedQuantia" prefHeight="35.0" text="0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <Label alignment="BOTTOM_LEFT" prefHeight="34.0" prefWidth="91.0" styleClass="lb-info-requerido" text="Quantidade" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                        <Separator prefHeight="6.0" prefWidth="200.0" style="-fx-background-color: #000;" GridPane.columnSpan="8">
+                           <GridPane.margin>
+                              <Insets left="4.0" right="4.0" />
+                           </GridPane.margin>
+                        </Separator>
+                        <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="9">
+                           <children>
+                              <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: #FFEE58;" text="Preço de Venda">
+                                 <HBox.margin>
+                                    <Insets left="4.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                              </Label>
+                              <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: #00C853;" text="Custo de Item">
+                                 <HBox.margin>
+                                    <Insets left="35.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                              </Label>
+                              <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: #EC407A;" text="Total de Itens">
+                                 <HBox.margin>
+                                    <Insets left="35.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                              </Label>
+                              <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #00BCD4; -fx-border-color: #00BCD4;" text="Sub Total ">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="60.0" />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                              </Label>
+                              <Label alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #FFC107; -fx-border-color: #FFC107;" text="Total ">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="30.0" />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                              </Label>
+                              <Label alignment="BOTTOM_LEFT" maxWidth="100.0" minWidth="98.0" prefHeight="25.0" prefWidth="98.0" style="-fx-background-color: #FF5722; -fx-border-color: #FF5722;" text="Descontos (%)">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="140.0" right="4.0" />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="10">
+                           <children>
+                              <TextField fx:id="txtPrecoDeVenda" alignment="CENTER_RIGHT" editable="false" prefHeight="35.0" prefWidth="120.0" promptText="00.00" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 3; -fx-border-color: #FFEE58;">
+                                 <HBox.margin>
+                                    <Insets left="4.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                              </TextField>
+                              <TextField fx:id="txtCustoItem" alignment="CENTER_RIGHT" editable="false" prefHeight="35.0" prefWidth="120.0" promptText="00.00" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 3; -fx-border-color: #00C853;">
+                                 <HBox.margin>
+                                    <Insets left="35.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                              </TextField>
+                              <TextField fx:id="txtTotalDeItens" alignment="CENTER_RIGHT" editable="false" prefHeight="35.0" prefWidth="120.0" promptText="00" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 3; -fx-border-color: #EC407A;">
+                                 <HBox.margin>
+                                    <Insets left="35.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                              </TextField>
+                              <TextField fx:id="txtValorSubTotal" alignment="CENTER_RIGHT" editable="false" prefHeight="35.0" prefWidth="150.0" promptText="00.00" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-color: #00BCD4; -fx-border-width: 3;">
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="60.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField fx:id="txtValorTotal" alignment="CENTER_RIGHT" editable="false" prefHeight="35.0" prefWidth="150.0" promptText="00.00" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-color: #FFC107; -fx-border-width: 3;">
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="30.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField fx:id="txtDesconto" alignment="CENTER_RIGHT" maxWidth="100.0" minWidth="98.0" onKeyReleased="#onKeyReleasedDescontos" prefHeight="35.0" prefWidth="98.0" style="-fx-border-color: #FF5722; -fx-border-width: 3;" text="0">
+                                 <HBox.margin>
+                                    <Insets left="140.0" right="4.0" />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="2.0" right="2.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <Separator prefHeight="8.0" prefWidth="200.0" style="-fx-background-color: #000;" GridPane.columnSpan="8" GridPane.rowIndex="8">
+                           <GridPane.margin>
+                              <Insets left="4.0" right="4.0" />
+                           </GridPane.margin>
+                        </Separator>
+                        <Label prefHeight="30.0" prefWidth="134.0" styleClass="lb-info-requerido" text="Pago(Sim/Não)" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                        <RadioButton fx:id="rbSituacao" mnemonicParsing="false" prefHeight="35.0" prefWidth="140.0" selected="true" text="Pago" GridPane.columnIndex="7" GridPane.rowIndex="3">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></RadioButton>
+                        <Separator prefHeight="8.0" prefWidth="200.0" style="-fx-background-color: #000;" GridPane.columnSpan="8" GridPane.rowIndex="11">
+                           <GridPane.margin>
+                              <Insets left="4.0" right="4.0" />
+                           </GridPane.margin>
+                        </Separator>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="3">
+                           <children>
+                              <Button fx:id="btnAdcionar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#onMouseClickedAdcionarItem" prefHeight="35.0" prefWidth="167.0" style="-fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6; -fx-background-color: #fff;" text="Adcionar">
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" />
+                                 </HBox.margin>
+                                 <tooltip>
+                                    <Tooltip text="ADICIONAR AO CARINHO" />
+                                 </tooltip>
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/icon/add_carinho.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="2" GridPane.rowSpan="2">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@img/coins17.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="4.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Separator orientation="VERTICAL" prefHeight="200.0" style="-fx-background-color: #ECECEC;" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #EEEEEE;" GridPane.columnSpan="8" GridPane.rowIndex="1">
+                           <children>
+                              <Label maxWidth="106.0" minWidth="96.0" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color: #E0E0E0; -fx-border-color: #CCC;" text="Recibo/Fatura N°:" textFill="#1a1b19">
+                                 <HBox.margin>
+                                    <Insets right="2.0" />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="SansSerif Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="labelNumRecibo" alignment="CENTER_RIGHT" prefHeight="35.0" prefWidth="126.0" style="-fx-background-color: #E0E0E0; -fx-border-color: #CCC;" text="000000">
+                                 <padding>
+                                    <Insets right="4.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="SansSerif Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="10.0" maxWidth="106.0" minWidth="62.0" prefHeight="35.0" prefWidth="62.0" style="-fx-background-color: #E0E0E0; -fx-border-color: #CCC;" text="Usuário:" textFill="#1a1b19">
+                                 <padding>
+                                    <Insets left="2.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="SansSerif Bold" size="12.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="2.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="txtUser" editable="false" prefHeight="27.0" prefWidth="329.0" style="-fx-border-color: #CCC; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="blue-text">
+                                 <HBox.margin>
+                                    <Insets left="2.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <GridPane.margin>
+                              <Insets left="4.0" right="4.0" />
+                           </GridPane.margin>
+                        </HBox>
+                        <HBox prefHeight="35.0" prefWidth="494.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <ComboBox fx:id="cbCliente" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="332.0" styleClass="combo-box" visibleRowCount="20">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></ComboBox>
+                              <Button minWidth="30.0" mnemonicParsing="false" onAction="#adcionarClientes" prefHeight="35.0" prefWidth="24.0" style="-fx-background-color: #ddd;">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/icon/add.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <HBox.margin>
+                                    <Insets left="1.0" right="1.0" />
+                                 </HBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button minWidth="30.0" mnemonicParsing="false" onAction="#pesquisarCliente" prefHeight="35.0" prefWidth="24.0" style="-fx-background-color: #ddd;">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/icon/pesquisar-b.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="4" GridPane.rowSpan="4">
+                           <children>
+                              <TableView fx:id="tbItens" cache="true" editable="true" layoutX="254.0" prefHeight="347.0" prefWidth="932.0" style="-fx-border-color: gray; -fx-border-radius: 4;" stylesheets="@css/table.css" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="258.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="10.0">
+                                 <columns>
+                                    <TableColumn fx:id="colCodigo" maxWidth="80.0" minWidth="80.0" text="CODIGO" visible="false" />
+                                    <TableColumn fx:id="colNomeArtigo" maxWidth="1.7976931348623157E308" minWidth="200.0" prefWidth="200.0" text=" NOME DO ARTIGO" />
+                                    <TableColumn fx:id="colDescricao" maxWidth="-1.0" minWidth="180.0" prefWidth="180.0" text="DESCRICÃO" />
+                                    <TableColumn fx:id="colQuantidade" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" text="QTD" />
+                                    <TableColumn fx:id="colPrecoUnitario" maxWidth="130.0" minWidth="120.0" prefWidth="120.0" text="PREÇO UNITARIO" />
+                                    <TableColumn fx:id="colSubTotal" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="SUB TOTAL" />
+                                    <TableColumn fx:id="colActions" maxWidth="240.0" minWidth="180.0" prefWidth="180.0" />
+                                 </columns>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                              <VBox prefHeight="359.0" prefWidth="254.0" style="-fx-border-color: gray; -fx-border-radius: 4;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                 <children>
+                                    <TextField fx:id="pesquisarProduto" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0" promptText="Pesquisar...." style="-fx-background-radius: 0; -fx-border-radius: 0;">
+                                       <VBox.margin>
+                                          <Insets left="4.0" right="4.0" top="2.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <ListView fx:id="listViewProduto" prefHeight="347.0" prefWidth="245.0" VBox.vgrow="ALWAYS">
+                                       <VBox.margin>
+                                          <Insets bottom="2.0" left="4.0" right="4.0" top="2.0" />
+                                       </VBox.margin>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ListView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+                  <AnchorPane fx:id="telaEdicao" prefHeight="302.0" prefWidth="1220.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0">
+                     <children>
+                        <SplitPane dividerPositions="7.0" layoutY="-6.0" orientation="VERTICAL" prefHeight="561.0" prefWidth="1190.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="-6.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <Pagination fx:id="pagination" minHeight="30.0" pageCount="200" prefHeight="349.0" prefWidth="1188.0" style="-fx-border-style: solid; -fx-border-color: #CCC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor></Pagination>
+                                    <TableView fx:id="tbVendas" editable="true" layoutX="2.0" layoutY="2.0" prefHeight="341.0" prefWidth="1186.0" style="-fx-border-color: #CCC; -fx-border-style: solid;" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="2.0">
+                                      <columns>
+                                        <TableColumn fx:id="colIdVenda" maxWidth="2000.0" prefWidth="75.0" text="#" visible="false" />
+                                        <TableColumn fx:id="colNumFatura" maxWidth="3600.0" prefWidth="75.0" text="N° DE FATURA/RECIBO" />
+                                          <TableColumn fx:id="colDataVenda" maxWidth="2500.0" prefWidth="75.0" text="DATA" />
+                                          <TableColumn fx:id="colCliente" prefWidth="75.0" text="CLIENTE" />
+                                          <TableColumn fx:id="colSubTotalV" maxWidth="1200.0" minWidth="80.0" prefWidth="1200.0" text="SUB-TOTAL" />
+                                          <TableColumn fx:id="colDesconto" maxWidth="1200.0" minWidth="80.0" prefWidth="1200.0" text="DESCONTOS (%)" />
+                                          <TableColumn fx:id="colValorTotal" maxWidth="1220.0" minWidth="80.0" prefWidth="1200.0" text="VALOR TOTAL" />
+                                          <TableColumn fx:id="colFormaPag" maxWidth="4000.0" prefWidth="75.0" text="FORMA DE PAG..." />
+                                          <TableColumn fx:id="colSituacao" maxWidth="2000.0" prefWidth="75.0" text="PAGO" />
+                                          <TableColumn fx:id="colUser" prefWidth="75.0" text="USUARIO" visible="false" />
+                                      </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                 </padding>
+                              </AnchorPane>
+                            <AnchorPane maxHeight="168.0" minHeight="168.0" prefHeight="168.0">
+                                 <children>
+                                    <TableView fx:id="tbItems" editable="true" prefHeight="208.0" prefWidth="1188.0" stylesheets="@css/table.css" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <columns>
+                                        <TableColumn fx:id="colItemsID" maxWidth="2000.0" minWidth="48.0" prefWidth="150.0" text="CODIGO DO ARTIGO" />
+                                        <TableColumn fx:id="colItemsNomeArtigo" prefWidth="75.0" text="NOME DO ARTIGO" />
+                                          <TableColumn fx:id="colItemsDescricao" prefWidth="75.0" text="DESCRIÇÃO DO ARTIGO" />
+                                          <TableColumn fx:id="colItemsQuantidade" maxWidth="3000.0" prefWidth="75.0" text="QUANTIDADE" />
+                                          <TableColumn fx:id="colItemsPrecoUnitario" maxWidth="3500.0" prefWidth="75.0" text="PREÇO UNITARIO" />
+                                          <TableColumn fx:id="colItemsSubTotal" maxWidth="3500.0" prefWidth="75.0" text="SUB TOTAL" />
+                                      </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="1.0" left="1.0" right="1.0" top="3.0" />
+                                 </padding>
+                              </AnchorPane>
+                          </items>
+                           <padding>
+                              <Insets top="2.0" />
+                           </padding>
+                        </SplitPane>
+                        <Button layoutX="1137.0" layoutY="498.0" mnemonicParsing="false" onMouseClicked="#telaAddVenda" prefHeight="67.0" prefWidth="83.0" visible="false" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="19.0">
+                           <styleClass>
+                              <String fx:value="menus-tela" />
+                              <String fx:value="menu-add" />
+                           </styleClass>
+                        </Button>
+                        <Button layoutX="1188.0" layoutY="533.0" mnemonicParsing="false" onMouseClicked="#telaDetalheVenda" prefHeight="67.0" prefWidth="83.0" visible="false" AnchorPane.bottomAnchor="44.0" AnchorPane.rightAnchor="19.0">
+                           <styleClass>
+                              <String fx:value="menus-tela" />
+                              <String fx:value="menu-info" />
+                           </styleClass>
+                        </Button>
+                        <Button layoutX="1188.0" layoutY="501.0" mnemonicParsing="false" onMouseClicked="#telaImpresao" prefHeight="67.0" prefWidth="83.0" visible="false" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="19.0">
+                           <styleClass>
+                              <String fx:value="menus-tela" />
+                              <String fx:value="menu-print" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="telaRelatorio" prefHeight="565.0" prefWidth="1220.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="8.0">
+                     <children>
+                        <BorderPane prefHeight="565.0" prefWidth="1212.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="30.0" tabMaxWidth="200.0" tabMinHeight="30.0" tabMinWidth="200.0" BorderPane.alignment="CENTER">
+                                <tabs>
+                                  <Tab text=" Grafico de Vendas Por Mês  ">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <AnchorPane prefHeight="536.0" prefWidth="1212.0" style="-fx-background-color: #ccc;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <GridPane prefHeight="528.0" prefWidth="1190.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <AreaChart fx:id="areaChart" prefHeight="266.0" prefWidth="1208.0" style="-fx-border-color: #fff;" title="Grafico I" GridPane.columnSpan="2">
+                                                         <xAxis>
+                                                            <CategoryAxis fx:id="categoryAxisArea" endMargin="0.0" side="BOTTOM" startMargin="0.0" tickLabelRotation="45.0" />
+                                                         </xAxis>
+                                                         <yAxis>
+                                                            <NumberAxis fx:id="numberAxisArea" side="LEFT" />
+                                                         </yAxis>
+                                                         <GridPane.margin>
+                                                            <Insets left="4.0" right="4.0" />
+                                                         </GridPane.margin>
+                                                      </AreaChart>
+                                                      <BarChart fx:id="barChart" prefHeight="259.0" prefWidth="1208.0" style="-fx-border-color: #fff;" stylesheets="@css/barChart.css" title="Grafico II" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                         <xAxis>
+                                                            <CategoryAxis fx:id="categoryAxis" side="BOTTOM" />
+                                                         </xAxis>
+                                                         <yAxis>
+                                                            <NumberAxis fx:id="numberAxis" side="LEFT" />
+                                                         </yAxis>
+                                                         <GridPane.margin>
+                                                            <Insets bottom="4.0" left="4.0" right="4.0" />
+                                                         </GridPane.margin>
+                                                      </BarChart>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                    </content>
+                                  </Tab>
+                                  <Tab text="Grafico II">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #ccc;">
+                                             <children>
+                                                <GridPane prefHeight="528.0" prefWidth="1212.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                                  <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="2.0" minWidth="2.0" prefWidth="2.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <StackedAreaChart fx:id="stackedAreaChart" prefHeight="177.0" prefWidth="673.0" style="-fx-border-color: #fff;">
+                                                        <xAxis>
+                                                          <NumberAxis fx:id="numberAxisStackArea" autoRanging="false" lowerBound="1.0" minorTickCount="1" minorTickLength="1.0" prefHeight="29.0" prefWidth="648.0" side="BOTTOM" tickUnit="1.0" upperBound="12.0">
+                                                               <padding>
+                                                                  <Insets right="4.0" />
+                                                               </padding>
+                                                            </NumberAxis>
+                                                        </xAxis>
+                                                        <yAxis>
+                                                          <NumberAxis side="LEFT" />
+                                                        </yAxis>
+                                                         <GridPane.margin>
+                                                            <Insets left="4.0" right="4.0" />
+                                                         </GridPane.margin>
+                                                      </StackedAreaChart>
+                                                      <HBox fx:id="hBox" prefHeight="336.0" prefWidth="587.0" style="-fx-border-color: #ccc;" GridPane.rowIndex="2">
+                                                         <padding>
+                                                            <Insets bottom="4.0" left="4.0" right="4.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <PieChart fx:id="pieChart" prefHeight="326.0" prefWidth="656.0" style="-fx-border-color: #fff;" />
+                                                         </children>
+                                                      </HBox>
+                                                      <StackedBarChart fx:id="stackedBarChart" prefHeight="298.0" prefWidth="631.0" style="-fx-border-color: #fff;" stylesheets="@css/stackedBarChart.css" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                        <xAxis>
+                                                          <CategoryAxis fx:id="categoryAxisStacked" side="BOTTOM" />
+                                                        </xAxis>
+                                                        <yAxis>
+                                                          <NumberAxis fx:id="numberAxisStacked" side="LEFT" />
+                                                        </yAxis>
+                                                         <GridPane.margin>
+                                                            <Insets bottom="4.0" left="4.0" right="4.0" top="1.0" />
+                                                         </GridPane.margin>
+                                                      </StackedBarChart>
+                                                      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                                                         <children>
+                                                            <LineChart fx:id="lineChartDia" prefHeight="200.0" prefWidth="594.0" style="-fx-border-color: #fff;" title="Grafico I" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <xAxis>
+                                                                  <CategoryAxis fx:id="categoryAxisDia" side="BOTTOM" />
+                                                               </xAxis>
+                                                               <yAxis>
+                                                                  <NumberAxis side="LEFT" />
+                                                               </yAxis>
+                                                            </LineChart>
+                                                            <DatePicker fx:id="dateTextFieldMes" layoutX="37.0" layoutY="3.0" minWidth="30.0" prefHeight="30.0" prefWidth="154.0" AnchorPane.leftAnchor="37.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                </GridPane>
+                                                <DatePicker fx:id="dtRelatorio" layoutX="11.0" layoutY="230.0" prefHeight="30.0" prefWidth="120.0" />
+                                             </children>
+                                          </AnchorPane>
+                                    </content>
+                                  </Tab>
+                                </tabs>
+                              </TabPane>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </center>
+         <bottom>
+            <AnchorPane prefHeight="50.0" styleClass="box-menus-subtela" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <Button id="" fx:id="btEditar" contentDisplay="TOP" mnemonicParsing="false" onAction="#editar" prefHeight="40.0" prefWidth="200.0" style="" text="Editar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <styleClass>
+                              <String fx:value="menus-acoes" />
+                              <String fx:value="acao-editar" />
+                              <String fx:value="menu-laranja" />
+                           </styleClass>
+                        </Button>
+                        <Button id="" fx:id="btExcluir" contentDisplay="TOP" mnemonicParsing="false" onAction="#excluir" prefHeight="40.0" prefWidth="200.0" style="" text="Excluir" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <styleClass>
+                              <String fx:value="menus-acoes" />
+                              <String fx:value="acao-excluir" />
+                              <String fx:value="menu-red" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="btSalvar" contentDisplay="TOP" mnemonicParsing="false" onAction="#salvar" prefHeight="40.0" prefWidth="200.0" style="" text="Salvar" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <styleClass>
+                              <String fx:value="menus-acoes" />
+                              <String fx:value="acao-salvar" />
+                              <String fx:value="menu-green" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                  </StackPane>
+                  <Label fx:id="legenda" layoutX="36.0" layoutY="17.0" styleClass="lb-info-requerido" text="Campos obrigatórios" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="4.0" right="15.0" />
+               </BorderPane.margin>
+            </AnchorPane>
+         </bottom>
+      </BorderPane>
+   </children>
+   <stylesheets>
+      <URL value="@css/default.css" />
+      <URL value="@css/custom.css" />
+      <URL value="@css/tableview.css" />
+   </stylesheets>
+</fx:root>

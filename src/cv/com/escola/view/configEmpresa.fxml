@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root prefHeight="525.0" prefWidth="773.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="BOTTOM_RIGHT" layoutX="49.0" layoutY="14.0" prefHeight="47.0" prefWidth="1221.0" styleClass="box" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ToggleButton mnemonicParsing="false" onAction="#menuConfigEmpresa" selected="true" styleClass="menu-vermelho" text="Dados da Escola">
+               <toggleGroup>
+                  <ToggleGroup fx:id="grupoEmpresa" />
+               </toggleGroup>
+               <HBox.margin>
+                  <Insets right="4.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ToggleButton>
+            <ToggleButton mnemonicParsing="false" onAction="#menuRegistroCargoSalario" prefHeight="27.0" prefWidth="118.0" styleClass="menu-vermelho" text="Cargo &amp; Salario" toggleGroup="$grupoEmpresa">
+               <HBox.margin>
+                  <Insets right="4.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></ToggleButton>
+            <ToggleButton mnemonicParsing="false" onAction="#menuRegistroBenificio" prefHeight="27.0" prefWidth="113.0" styleClass="menu-vermelho" text="Benificio" toggleGroup="$grupoEmpresa">
+               <HBox.margin>
+                  <Insets right="6.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ToggleButton>
+         </children>
+      </HBox>
+      <AnchorPane fx:id="anchorPaneEmpresa" layoutX="98.0" layoutY="44.0" prefHeight="637.0" prefWidth="1221.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.0" />
+   </children>
+   <stylesheets>
+      <URL value="@css/default.css" />
+      <URL value="@css/custom.css" />
+   </stylesheets>
+</fx:root>

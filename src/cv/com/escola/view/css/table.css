@@ -1,0 +1,217 @@
+/*
+Copyright (C) 2019 Isaquiel Fernandes.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301  USA
+*/
+/* 
+    Created on : 24/fev/2019, 10:03:23
+    Author     : Isaquiel Fernandes
+*/
+
+/*............. Tabelas .............*/
+
+.table-view {
+    -fx-background-color: #e8e8e8, -fx-control-inner-background;
+    -fx-background-insets: 0px, 1px;
+    -fx-padding: 1px;
+}
+
+/*............. Cabeçalho .............*/
+
+.table-view *.column-header-background {
+    -fx-background-color: #f4f4f4;
+    -fx-background-insets: 0px, 1px;
+    -fx-border-color: #ddd;
+    -fx-border-width: 0 1 2 1;
+}
+
+.table-view *.column-header {
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #ccc;
+    -fx-border-width: 0 1 0 0;
+    -fx-background-insets: 0 1 0 0;
+    -fx-border-insets: 8 0;
+    -fx-padding: 1em 0em 1em 1em;
+    -fx-pref-height: 35;
+    -fx-cursor: hand;
+}
+
+.table-view *.column-header *.label {
+    -fx-alignment: center-left;
+    -fx-font-size: 12px;
+    -fx-font-family: 'Open Sans', sans-serif;
+    -fx-text-fill: #555;
+    -fx-font-weight: 700;
+}
+
+.table-view *.filler {
+    -fx-background-color: #ddd, #f4f4f4, #f4f4f4;
+    -fx-padding: 0.166667em;
+    -fx-background-insets: 0px, 0px 0px 0px 0px, 0px 1px 0px 1px;
+}
+
+.table-view > *.column-header-background > *.show-hide-columns-button {
+    -fx-background-color: transparent, #f4f4f4, #f4f4f4;
+    -fx-padding: 0.166667em;
+    -fx-background-insets: 0px, 0px 0px 0px 1px, 1px 33px 0px 0px;
+}
+
+.table-view *.show-hide-column-image {
+    -fx-background-color: #555;
+    -fx-padding: 0.25em;
+}
+
+.table-view *.column-drag-header {
+    -fx-background-color: #96c440;
+    -fx-border-color: #96c440;
+    -fx-opacity: 0.6px;
+}
+
+/*............. Corpo .............*/
+
+.table-cell:even {
+    -fx-background-color: null;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-cell-size: 2em;
+    -fx-padding: 0.5em 0.6em;
+    -fx-pref-height: 30px;
+    -fx-text-fill: #6a6a6a;
+}
+
+.table-row-cell:even {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: #f7f7f7, #fff;
+    -fx-background-insets: 0px, 0px 0px 1px 0px;
+    -fx-padding: 0px;
+}
+
+.table-row-cell:even:selected {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: #d7e3a8 transparent, #ebf4c7;
+    -fx-background-insets: 0px, 1px 0px 1px 0px;
+}
+
+.table-cell:odd {
+    -fx-background-color: null;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-text-fill: #6a6a6a;
+    -fx-cell-size: 2em;
+    -fx-padding: 0.5em 0.6em;
+    -fx-pref-height: 30px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f7f7f7, #fff;
+    -fx-background: -fx-control-inner-background;
+    -fx-background-insets: 0px, 0px 0px 1px 0px;
+    -fx-padding: 0px;
+}
+
+.table-row-cell:odd:selected {
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: #d7e3a8 transparent, #ebf4c7;
+    -fx-background-insets: 0px, 1px 0px 1px 0px;
+    -fx-text-fill: black;
+}
+
+.table-view > *.virtual-flow > *.corner {
+    -fx-background-color: #fff;
+}
+
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .check-box-table-cell:selected > .check-box > .box,
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .check-box-table-cell > .check-box > .box {
+    -fx-background-color: derive(-fx-accent, 40%), -fx-background;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar:horizontal {
+    -fx-background-color: #fff;
+    -fx-background-insets: 5 0;
+    -fx-padding: 2;
+    -fx-pref-height: 15;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar:vertical {
+    -fx-background-color: #fff;
+    -fx-background-insets: 0 5;
+    -fx-padding: 2;
+    -fx-pref-width: 15;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar > *.decrement-button > *.decrement-arrow,
+.table-view > *.virtual-flow > *.scroll-bar > *.increment-button > *.increment-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.table-view > *.virtual-flow > *.scroll-bar:vertical > *.thumb,
+.table-view > *.virtual-flow > *.scroll-bar:horizontal > *.thumb {
+    -fx-background-color: #cecece;
+    -fx-cursor: hand;
+    -fx-border-radius: 0;
+    -fx-background-radius: 2;
+    -fx-pref-height: 10;
+}
+
+/*............. Coluna Overlay .............*/
+
+.table-view *.column-overlay {
+    -fx-background-color: darkgray;
+    -fx-opacity: 0.3px;
+}
+
+/*............. Scroll Pane .............*/
+
+.scroll-pane {
+    -fx-background-insets: 0px, 1px;
+    -fx-padding: 1px;
+    -fx-background-color: #fff, #fff;
+}
+
+.scroll-pane > *.viewport {
+    -fx-background-color: #fff;
+}
+
+.scroll-pane > *.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 5;
+    -fx-padding: 2;
+    -fx-pref-width: 15;
+}
+
+.scroll-pane > *.scroll-bar > *.decrement-button,
+.scroll-pane > *.scroll-bar > *.increment-button {
+    -fx-background-color: #fff;
+}
+
+.scroll-pane > *.scroll-bar > *.decrement-button:hover,
+.scroll-pane > *.scroll-bar > *.increment-button:hover {
+    -fx-background-color: #fff;
+    -fx-cursor: hand;
+}
+
+.scroll-pane > *.scroll-bar > *.decrement-button > *.decrement-arrow,
+.scroll-pane > *.scroll-bar > *.increment-button > *.increment-arrow {
+    -fx-background-color: #434343;
+}
+
+.scroll-pane > *.scroll-bar:vertical > *.thumb,
+.scroll-pane > *.scroll-bar:horizontal > *.thumb {
+    -fx-background-color: #cecece;
+    -fx-cursor: hand;
+    -fx-border-radius: 0;
+    -fx-background-radius: 2;
+    -fx-pref-height: 10;
+}
