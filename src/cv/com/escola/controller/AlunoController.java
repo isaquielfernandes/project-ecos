@@ -470,22 +470,15 @@ public class AlunoController extends AnchorPane implements Initializable {
             Mensagem.alerta("Selecione aluno na tabela para exclusão!");
         }
     }
-
-    /**
-     * Sincronizar dados com banco de dados
-     */
+    
     private void sincronizarDataBase() {
         listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
     }
 
-    /**
-     * Configurações de tela, titulos e exibição de telas e menus
-     */
     private void configTela(String tituloTela, String msg, int grupoMenu) {
         lbTitulo.setText(tituloTela);
         Modulo.visualizacao(false, btExcluir, btSalvar, btEditar, btImprimir, 
                 telaCadastro, telaEdicao, telaView, telaPrint, txtPesquisar);
-
         legenda.setText(msg);
         tbAluno.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
@@ -493,9 +486,6 @@ public class AlunoController extends AnchorPane implements Initializable {
         idAluno = 0;
     }
 
-    /**
-     * Limpar campos textfield cadastro de coleções
-     */
     private void limparCampos() {
         Campo.limpar(txtEmail, txtNumBI, txtResidencia, txtNome, txtNacionalidade, 
                 txtContacto, txtConselho, txtNatural, txtNomeDaMae, txtNomeDoPai, 
@@ -564,14 +554,11 @@ public class AlunoController extends AnchorPane implements Initializable {
                 @Override
                 protected void updateItem(LocalDate item, boolean empty) {
                     super.updateItem(item, empty);
-
                     if (item == null || empty) {
                         setText(null);
                         setStyle("");
                     } else {
-                        // Format date.
                         setText(myDateFormatter.format(item));
-                        // Style all dates in Month with a different color.
                         if (item.getMonthValue() == LocalDate.now().getMonthValue()) {
                             setTextFill(Color.CHOCOLATE);
                             setStyle("-fx-background-color: yellow;");
