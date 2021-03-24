@@ -59,7 +59,6 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             stm.setString(9, aluno.getContato());
             stm.setString(10, aluno.getHabilitacaoLit());
             stm.setString(11, aluno.getNacionalidade());
-            //String name = (file != null ? file.getPath() : "/cv/com/escola/img/avater.jpg");
             if (aluno.getFile() != null) {
                 aluno.setFileInputStream(new FileInputStream(aluno.getFile()));
                 stm.setBinaryStream(12, aluno.getFileInputStream(), aluno.getFile().length());
@@ -309,8 +308,8 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
                 }
                 aluno.setFotocopiaBI(rs.getBlob("fotocopiaBI"));
                 if (aluno.getFotocopiaBI() != null) {
-                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(aluno.getFotocopiaBI().getBytes(1, (int) aluno.getFotocopiaBI().length()));
-                    //aluno.file = new File(byteArrayInputStream);
+                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+                            aluno.getFotocopiaBI().getBytes(1, (int) aluno.getFotocopiaBI().length()));
                 } else {
 
                 }
@@ -523,7 +522,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             jasperViewer.viewReport("Requiremento", jasperPrint);
         } catch (JRException ex) {
             Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir requirimento! \n" + ex.getLocalizedMessage());
+            Mensagem.erro("Erro ao imprimir requirimento! \n" + ex.getMessage());
         }
     }
 }

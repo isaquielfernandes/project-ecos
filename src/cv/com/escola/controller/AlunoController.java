@@ -396,7 +396,6 @@ public class AlunoController extends AnchorPane implements Initializable {
         String pai = txtNomeDoPai.getText();
         String estadoCivil = cbEstadoCivil.getValue();
         String localEmissao = txtLocalDeEmisao.getText();
-        File foto;
 
         if (emptyFields) {
             Aluno aluno = new Aluno(idAluno, nome, dataNascimento, numBI, dataEmisao, 

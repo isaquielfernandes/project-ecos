@@ -41,15 +41,10 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
-/**
- * An simple approach to JasperViewer in JavaFX.
- *
- * @author Gustavo Fragoso
- * @version 3.3
- */
 public class Print extends AnchorPane {
 
     private Button print, save, backPage, firstPage, nextPage, lastPage, zoomIn, zoomOut;
+    private static final String PATH = "/cv/com/escola/view/img/";
     private ImageView report;
     private Label lblReportPages;
     private Stage dialog;
@@ -58,20 +53,10 @@ public class Print extends AnchorPane {
 
     private final SimpleIntegerProperty currentPage;
     private int imageHeight = 0, imageWidth = 0, reportPages = 0;
-    //private final DialogPane dialogPane;
-
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
 
     public Print() {
-        /*initStyle(StageStyle.DECORATED);
-        initModality(Modality.WINDOW_MODAL);
-        setResizable(true);
-
-        dialogPane = getDialogPane();
-        dialogPane.setContent(createContentPane());
-        dialogPane.getButtonTypes().add(ButtonType.CLOSE);
-        dialogPane.lookupButton(ButtonType.CLOSE).setVisible(false);*/
         currentPage = new SimpleIntegerProperty(this, "currentPage", 1);
     }
 
@@ -79,24 +64,8 @@ public class Print extends AnchorPane {
     // Scene and button actions
     // ***********************************************
     public BorderPane createContentPane() {
-        print = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/printer.png").toExternalForm()));
-        save = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/save.png").toExternalForm()));
-        backPage = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/backimg.png").toExternalForm()));
-        firstPage = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/firstimg.png").toExternalForm()));
-        nextPage = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/nextimg.png").toExternalForm()));
-        lastPage = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/lastimg.png").toExternalForm()));
-        zoomIn = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/zoomin.png").toExternalForm()));
-        zoomOut = new Button(null, new ImageView(getClass().getResource("/cv/com/escola/img/zoomout.png").toExternalForm()));
-
-        // Pref sizes
-        print.setPrefSize(30, 30);
-        save.setPrefSize(30, 30);
-        backPage.setPrefSize(30, 30);
-        firstPage.setPrefSize(30, 30);
-        nextPage.setPrefSize(30, 30);
-        lastPage.setPrefSize(30, 30);
-        zoomIn.setPrefSize(30, 30);
-        zoomOut.setPrefSize(30, 30);
+        buttonAcction();
+        prefSizes();
 
         backAction();
         nextAction();
@@ -118,7 +87,7 @@ public class Print extends AnchorPane {
             }
         });
 
-        lblReportPages = new Label("/ 1");
+        lblReportPages = new Label("/1");
 
         HBox menu = new HBox(4);
         menu.setAlignment(Pos.CENTER);
@@ -149,6 +118,28 @@ public class Print extends AnchorPane {
         root.setPrefSize(1220, 640);
 
         return root;
+    }
+
+    private void prefSizes() {
+        print.setPrefSize(30, 30);
+        save.setPrefSize(30, 30);
+        backPage.setPrefSize(30, 30);
+        firstPage.setPrefSize(30, 30);
+        nextPage.setPrefSize(30, 30);
+        lastPage.setPrefSize(30, 30);
+        zoomIn.setPrefSize(30, 30);
+        zoomOut.setPrefSize(30, 30);
+    }
+
+    private void buttonAcction() {
+        print = new Button(null, new ImageView(getClass().getResource(PATH + "printer.png").toExternalForm()));
+        save = new Button(null, new ImageView(getClass().getResource(PATH + "save.png").toExternalForm()));
+        backPage = new Button(null, new ImageView(getClass().getResource(PATH + "backimg.png").toExternalForm()));
+        firstPage = new Button(null, new ImageView(getClass().getResource(PATH + "firstimg.png").toExternalForm()));
+        nextPage = new Button(null, new ImageView(getClass().getResource(PATH + "nextimg.png").toExternalForm()));
+        lastPage = new Button(null, new ImageView(getClass().getResource(PATH + "lastimg.png").toExternalForm()));
+        zoomIn = new Button(null, new ImageView(getClass().getResource(PATH + "zoomin.png").toExternalForm()));
+        zoomOut = new Button(null, new ImageView(getClass().getResource(PATH + "zoomout.png").toExternalForm()));
     }
 
     private void backAction() {
@@ -206,7 +197,6 @@ public class Print extends AnchorPane {
             try {
                 JasperPrintManager.printReport(jasperPrint, true);
             } catch (JRException ex) {
-                //ex.printStackTrace();
                 Nota.erro("Error: " + ex);
             }
         });
@@ -214,61 +204,51 @@ public class Print extends AnchorPane {
 
     private void saveAction() {
         save.setOnAction((ActionEvent event) -> {
-
-            FileChooser chooser = new FileChooser();
-            FileChooser.ExtensionFilter pdf = new FileChooser.ExtensionFilter("Portable Document Format (*.pdf)", "*.pdf");
-            FileChooser.ExtensionFilter html = new FileChooser.ExtensionFilter("HyperText Markup Language", "*.html");
-            FileChooser.ExtensionFilter xml = new FileChooser.ExtensionFilter("eXtensible Markup Language", "*.xml");
-            FileChooser.ExtensionFilter xls = new FileChooser.ExtensionFilter("Microsoft Excel 2007", "*.xls");
-            FileChooser.ExtensionFilter xlsx = new FileChooser.ExtensionFilter("Microsoft Excel 2016", "*.xlsx");
-            chooser.getExtensionFilters().addAll(pdf, html, xml, xls, xlsx);
-
-            chooser.setTitle("Salvar");
-            chooser.setSelectedExtensionFilter(pdf);
-            File file = chooser.showSaveDialog(dialog);
-
+            File file = fileChooser().showSaveDialog(dialog);
             if (file != null) {
-                List<String> box = chooser.getSelectedExtensionFilter().getExtensions();
-                switch (box.get(0)) {
-                    case "*.pdf":
-                        try {
+                try {
+                    List<String> box = fileChooser().getSelectedExtensionFilter().getExtensions();
+                    switch (box.get(0)) {
+                        case "*.pdf":
                             JasperExportManager.exportReportToPdfFile(jasperPrint, file.getPath());
-                        } catch (JRException ex) {
-                        }
-                        break;
-                    case "*.html":
-                        try {
+                            break;
+                        case "*.html":
                             JasperExportManager.exportReportToHtmlFile(jasperPrint, file.getPath());
-                        } catch (JRException ex) {
-                        }
-                        break;
-                    case "*.xml":
-                        try {
+                            break;
+                        case "*.xml":
                             JasperExportManager.exportReportToXmlFile(jasperPrint, file.getPath(), false);
-                        } catch (JRException ex) {
-                        }
-                        break;
-                    case "*.xls":
-                        try {
+                            break;
+                        case "*.xls":
                             JRXlsExporter exporter = new JRXlsExporter();
                             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
                             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
                             exporter.exportReport();
-                        } catch (JRException ex) {
-                        }
-                        break;
-                    case "*.xlsx":
-                        try {
-                            JRXlsxExporter exporter = new JRXlsxExporter();
-                            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-                            exporter.exportReport();
-                        } catch (JRException ex) {
-                        }
-                        break;
+                            break;
+                        case "*.xlsx":
+                            JRXlsxExporter xlsxExporterx = new JRXlsxExporter();
+                            xlsxExporterx.setExporterInput(new SimpleExporterInput(jasperPrint));
+                            xlsxExporterx.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                            xlsxExporterx.exportReport();
+                            break;
+                    }
+                } catch (JRException ex) {
+                    Logger.getLogger(Print.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
+    }
+
+    private FileChooser fileChooser() {
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter pdf = new FileChooser.ExtensionFilter("Portable Document Format (*.pdf)", "*.pdf");
+        FileChooser.ExtensionFilter html = new FileChooser.ExtensionFilter("HyperText Markup Language", "*.html");
+        FileChooser.ExtensionFilter xml = new FileChooser.ExtensionFilter("eXtensible Markup Language", "*.xml");
+        FileChooser.ExtensionFilter xls = new FileChooser.ExtensionFilter("Microsoft Excel 2007", "*.xls");
+        FileChooser.ExtensionFilter xlsx = new FileChooser.ExtensionFilter("Microsoft Excel 2016", "*.xlsx");
+        chooser.getExtensionFilters().addAll(pdf, html, xml, xls, xlsx);
+        chooser.setTitle("Salvar");
+        chooser.setSelectedExtensionFilter(pdf);
+        return chooser;
     }
 
     private void zoomInAction() {
@@ -283,11 +263,6 @@ public class Print extends AnchorPane {
         });
     }
 
-    /**
-     * Set the currentPage property and render report page
-     *
-     * @param page Page number
-     */
     @SuppressWarnings("CallToPrintStackTrace")
     public void setCurrentPage(int page) {
         try {
@@ -316,31 +291,14 @@ public class Print extends AnchorPane {
         }
     }
 
-    /**
-     * Get the current page
-     *
-     * @return Current page value
-     */
     public int getCurrentPage() {
         return currentPage.get();
     }
 
-    /**
-     * Get the currentPage property
-     *
-     *
-     * @return
-     */
     public SimpleIntegerProperty currentPageProperty() {
         return currentPage;
     }
 
-    /**
-     * Load report from JasperPrint
-     *
-     * @param title Dialog title
-     * @param jasperPrint JasperPrint object
-     */
     public void viewReport(String title, JasperPrint jasperPrint) {
         abrir(AppController.getInstance().boxImprisao(), title);
         Platform.runLater(() -> {
@@ -382,11 +340,6 @@ public class Print extends AnchorPane {
 
     }
 
-    /**
-     * Scale image from ImageView
-     *
-     * @param factor Zoom factor
-     */
     public void zoom(double factor) {
         report.setScaleX(report.getScaleX() + factor);
         report.setScaleY(report.getScaleY() + factor);
