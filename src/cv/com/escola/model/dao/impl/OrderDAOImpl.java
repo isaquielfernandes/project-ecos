@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.util.Duration;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -33,10 +34,7 @@ import tray.animations.AnimationType;
 import tray.notification.NotificationType;
 import tray.notification.TrayNotification;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class OrderDAOImpl extends DAO implements OrderDAO {
 
     private List<Item> itemDeVenda;
@@ -49,7 +47,9 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public void create(Venda venda) {
         try {
-            String sql = "INSERT INTO " + db + ".`tb_vendas`(`data`, `valor_total`, `pago`, `cliente_fk`, `id_user`, `meioDePag`, `desconto`, `num_fatura`, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);";
+            String sql = "INSERT INTO " + db + ".`tb_vendas`(`data`, `valor_total`, "
+                    + "`pago`, `cliente_fk`, `id_user`, `meioDePag`, `desconto`, "
+                    + "`num_fatura`, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);";
 
             stm = conector.prepareStatement(sql);
 
@@ -65,13 +65,6 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
             stm.execute();
             stm.close();
-            //Nota.info("Venda realizada com sucesso!");
-            TrayNotification notif = new TrayNotification();
-            notif.setTitle("Sucesso");
-            notif.setMessage("Venda realizada com sucesso!");
-            notif.setNotificationType(NotificationType.SUCCESS);
-            notif.setAnimationType(AnimationType.POPUP);
-            notif.showAndDismiss(Duration.seconds(10));
         } catch (SQLException ex) {
             Logger.getLogger(OrderDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao inserir venda na base de dados! \n" + ex);
@@ -145,8 +138,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                         rs.getBigDecimal(6), rs.getString(7), cliente, user, rs.getBigDecimal(19));
                 
                 itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(vendas);
-                itens = FXCollections.observableArrayList(itemDeVenda);
-                vendas.setItens(itens);
+                vendas.setItens(FXCollections.observableArrayList(itemDeVenda));
                 retorno.add(vendas);
             }
         } catch (SQLException ex) {
@@ -174,8 +166,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                         rs.getBigDecimal(6), rs.getString(7), cliente, user, rs.getBigDecimal(19));
                 
                 itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(vendas);
-                itens = FXCollections.observableArrayList(itemDeVenda);
-                vendas.setItens(itens);
+                vendas.setItens(FXCollections.observableArrayList(itemDeVenda));
                 retorno.add(vendas);
             }
         } catch (SQLException ex) {

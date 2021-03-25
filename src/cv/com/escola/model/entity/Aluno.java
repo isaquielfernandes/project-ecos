@@ -14,10 +14,6 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
 public class Aluno {
     
     private IntegerProperty idAluno;
@@ -244,7 +240,12 @@ public class Aluno {
         this.nome = new SimpleStringProperty(nome);
     }
 
-    public Aluno(int idAluno, String nome, LocalDate dataNascimento, String numBI, LocalDate dataEmisao, String residencia, String conselho, String natural, String email, String contato, String habilitacaoLit, String nacionalidade,File file , String descricao, String nomeDaMae, String nomeDoPai, String professao, String estadoCivil, String localDeEmisao, String freguesia) {
+    public Aluno(int idAluno, String nome, LocalDate dataNascimento, String numBI, 
+            LocalDate dataEmisao, String residencia, String conselho, String natural, 
+            String email, String contato, String habilitacaoLit, 
+            String nacionalidade,File file , String descricao, String nomeDaMae, 
+            String nomeDoPai, String professao, String estadoCivil, 
+            String localDeEmisao, String freguesia) {
         this.idAluno = new SimpleIntegerProperty(idAluno);
         this.nome = new SimpleStringProperty(nome);
         this.dataNascimento = new SimpleObjectProperty(dataNascimento);

@@ -1,7 +1,5 @@
 package cv.com.escola.model.util;
 
-import cv.com.escola.model.util.Nota;
-import cv.com.escola.model.util.ParalleTasks;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;

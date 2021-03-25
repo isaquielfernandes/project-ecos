@@ -9,10 +9,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Artigo {
     
     private LongProperty idArtigo;

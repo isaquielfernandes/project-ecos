@@ -1,23 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.model.entity;
 
-import cv.com.escola.model.entity.Item;
-import cv.com.escola.model.entity.Cliente;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Venda {
 
     private Integer idVenda;
@@ -27,13 +16,13 @@ public class Venda {
     private BigDecimal desconto;
     private BigDecimal valorTotal;
     private boolean pago;
-    private ObservableList<Item> itens;
+    private ObservableList<Item> itens = FXCollections.observableArrayList();
     private Cliente cliente;
     private Usuario usuario;
     private String meioDePagamento;
 
     public Venda() {
-        this.itens = FXCollections.observableArrayList();
+        
     }
 
     public Venda(Integer idVenda, LocalDate data, BigDecimal valor, BigDecimal desconto, boolean pago, Cliente cliente, Usuario usuario, String meioDePagamento, String numFatura, BigDecimal valorTotal) {

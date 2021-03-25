@@ -8,9 +8,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.text.DecimalFormat;
 
-/**
- * Criar grafico de pizza
- */
+
 public class GraficoPie {
 
     static PieChart grafico = new PieChart();
@@ -25,7 +23,8 @@ public class GraficoPie {
      */
     public static void info(PieChart grafico, double total) {
         grafico.getData().forEach((data) -> {
-            final Tooltip tip = new Tooltip(data.getName()+ " - Valor: "+ data.getPieValue() + " : " + new DecimalFormat("#.##").format((data.getPieValue() / total) * 100) + " %");
+            final Tooltip tip = new Tooltip(data.getName()+ " - Valor: "+ data.getPieValue()
+                    + " : " + new DecimalFormat("#.##").format((data.getPieValue() / total) * 100) + " %");
 
             data.getNode().setOnMouseEntered((MouseEvent me) -> {
                 if (me.getSource() instanceof Node) {

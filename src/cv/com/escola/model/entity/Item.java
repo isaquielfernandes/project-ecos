@@ -1,6 +1,5 @@
 package cv.com.escola.model.entity;
 
-import cv.com.escola.model.entity.Artigo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;

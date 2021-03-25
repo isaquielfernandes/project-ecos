@@ -8,10 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class ParallelTasksReturnResults {
 
     private static final ExecutorService THREADLAUNCHER = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());

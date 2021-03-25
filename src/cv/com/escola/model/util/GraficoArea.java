@@ -10,9 +10,7 @@ import javafx.scene.chart.XYChart;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Criar gr�ficos de area
- */
+
 public class GraficoArea {
 
     private static CategoryAxis eixoX;
@@ -26,7 +24,6 @@ public class GraficoArea {
      * @return 
      */
     public static AreaChart criar(Map<String, List<Relatorio>> map, String titulo) {
-
         config(titulo);
 
         eixoX = new CategoryAxis();

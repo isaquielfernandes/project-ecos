@@ -1,14 +1,9 @@
 package cv.com.escola.model.entity;
 
-import cv.com.escola.model.entity.Categoria;
-import cv.com.escola.model.entity.Aluno;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Exame {
 
     private long idExame;

@@ -4,11 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
 public class Criptografia {
+    
     /**
      * Converter string em hash MD5 para criptografia da senha do usuario na base de dados
      * @param original

@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.model.entity;
 
-import cv.com.escola.model.entity.Curso;
 import java.time.LocalDate;
 import java.util.Objects;
 import javafx.beans.property.LongProperty;
@@ -15,10 +9,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Turma {
     
     private LongProperty idTurma;

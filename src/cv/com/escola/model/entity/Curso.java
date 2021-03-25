@@ -1,17 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.model.entity;
 
-import cv.com.escola.model.entity.Categoria;
 import java.util.Objects;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Curso {
     private Long codigo;
     private String curso;

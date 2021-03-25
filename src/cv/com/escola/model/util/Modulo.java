@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 import cv.com.escola.controller.AlunoController;
-import cv.com.escola.controller.AnaliseController;
 import cv.com.escola.controller.ArtigoController;
 import cv.com.escola.controller.CargoSalarioController;
 import cv.com.escola.controller.CategoriaController;
@@ -48,7 +47,6 @@ public class Modulo {
     private static HomeController home;
     private static VeiculoController veiculoController;
     private static CursoController cursoController;
-    private static AnaliseController analiseController;
     private static ExameResultadoController exameResultadoController;
     private static InspeccaoTecnicaController inspeccaoTecnicaController;
     private static MenuVeiculoController menuVeiculoController;
@@ -68,12 +66,6 @@ public class Modulo {
 
     public static void getJasperViewerFX(AnchorPane box) {
         jasperViewerFX = jasperViewerFX == null ? new JasperViewerFX() : jasperViewerFX;
-        //config(box, jasperViewerFX);
-    }
-
-    public static void AnaliseController(AnchorPane box) {
-        analiseController = analiseController == null ? new AnaliseController() : analiseController;
-        config(box, analiseController);
     }
 
     public static void getCurso(AnchorPane box) {

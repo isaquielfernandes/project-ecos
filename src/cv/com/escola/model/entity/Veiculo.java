@@ -1,6 +1,5 @@
 package cv.com.escola.model.entity;
 
-import cv.com.escola.model.entity.Proprietario;
 import java.time.LocalDate;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
@@ -10,10 +9,7 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Veiculo {
 
     private LongProperty codigo;

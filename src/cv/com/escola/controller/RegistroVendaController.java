@@ -99,11 +99,6 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.controlsfx.control.table.TableRowExpanderColumn;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
 public class RegistroVendaController extends AnchorPane implements Initializable, Itens {
 
     private List<Venda> listVendas;
@@ -734,14 +729,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         Combo.popular(cbFormaPag, "Dinheiro", "Debito", "Credito", "Parcelado", "Cheque", "Outro");
     }
 
-    // setando items na tabela Items de acordo com o id de venda
     public void selecionarItemTableViewVendas(Venda venda) {
         if (venda != null) {
-            tbItems.setItems(venda.getItens());
+            tbItems.setItems((ObservableList<Item>) venda.getItens());
         }
     }
 
-    // setando items na em seus respetivos campos
     public void selecionarItemTableViewItens(Item iten) {
         if (item != null) {
             txtQuantia.setText(iten.getQuantidade().toString());
@@ -826,12 +819,18 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     // setando dados de item na tableView
     public void viewAll() {
-        colCodigo.setCellValueFactory((CellDataFeatures<Item, Long> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
-        colNomeArtigo.setCellValueFactory((CellDataFeatures<Item, Artigo> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
-        colDescricao.setCellValueFactory((CellDataFeatures<Item, String> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
-        colQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p) -> new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
-        colPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
-        colSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
+        colCodigo.setCellValueFactory((CellDataFeatures<Item, Long> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
+        colNomeArtigo.setCellValueFactory((CellDataFeatures<Item, Artigo> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
+        colDescricao.setCellValueFactory((CellDataFeatures<Item, String> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
+        colQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
+        colPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
+        colSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
         colActions.setCellFactory(actions);
     }
 
@@ -878,12 +877,18 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabelaItemsVenda() {
-        colItemsID.setCellValueFactory((CellDataFeatures<Item, Long> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
-        colItemsNomeArtigo.setCellValueFactory((CellDataFeatures<Item, String> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
-        colItemsDescricao.setCellValueFactory((CellDataFeatures<Item, String> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
-        colItemsPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
-        colItemsQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p) -> new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
-        colItemsSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
+        colItemsID.setCellValueFactory((CellDataFeatures<Item, Long> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
+        colItemsNomeArtigo.setCellValueFactory((CellDataFeatures<Item, String> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
+        colItemsDescricao.setCellValueFactory((CellDataFeatures<Item, String> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
+        colItemsPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
+        colItemsQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
+        colItemsSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
+                new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
     }
 
     /**
@@ -1043,7 +1048,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 rbSituacao.setText("SIM");
             }
 
-            tbItens.setItems(dadosVenda.getItens());
+            tbItens.setItems((ObservableList<Item>) dadosVenda.getItens());
 
             lbTitulo.setText("Vendas Realizadas");
             menu.selectToggle(menu.getToggles().get(1));
@@ -1571,12 +1576,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     @Override
     public void addItens() throws ParseException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void removeItens(int idItem) throws ParseException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
     
     private static void esperar(long milesegundos) {
