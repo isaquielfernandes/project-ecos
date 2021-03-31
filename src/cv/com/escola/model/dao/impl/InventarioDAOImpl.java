@@ -17,7 +17,6 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.view.JasperViewer;
 
 public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
@@ -32,24 +31,24 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
                     + "fk_area, local, data_compra, meses_desde_compra, valor, estado_consrvacao, "
                     + "vida_util_ano, valor_atual, depreciacao ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, inventario.getNumSerie());
-            stm.setString(2, inventario.getCategoria());
-            stm.setString(3, inventario.getItem());
-            stm.setString(4, inventario.getResponsavel());
-            stm.setString(5, inventario.getArea());
-            stm.setString(6, inventario.getLocal());
-            stm.setTimestamp(7, Tempo.toTimestamp(inventario.getDataCompra()));
-            stm.setInt(8, inventario.getMesesDesdeCompra());
-            stm.setDouble(9, inventario.getValor());
-            stm.setString(10, inventario.getEstadoConservacao());
-            stm.setInt(11, inventario.getVidaUtilAno());
-            stm.setDouble(12, inventario.getValorAtual());
-            stm.setString(13, inventario.getDepreciacao());
+            preparedStatement.setString(1, inventario.getNumSerie());
+            preparedStatement.setString(2, inventario.getCategoria());
+            preparedStatement.setString(3, inventario.getItem());
+            preparedStatement.setString(4, inventario.getResponsavel());
+            preparedStatement.setString(5, inventario.getArea());
+            preparedStatement.setString(6, inventario.getLocal());
+            preparedStatement.setTimestamp(7, Tempo.toTimestamp(inventario.getDataCompra()));
+            preparedStatement.setInt(8, inventario.getMesesDesdeCompra());
+            preparedStatement.setDouble(9, inventario.getValor());
+            preparedStatement.setString(10, inventario.getEstadoConservacao());
+            preparedStatement.setInt(11, inventario.getVidaUtilAno());
+            preparedStatement.setDouble(12, inventario.getValorAtual());
+            preparedStatement.setString(13, inventario.getDepreciacao());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao lançar inventario na base de dados! \n" + ex);
@@ -63,24 +62,25 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
                     + "fk_area =?, local =?, data_compra =?, meses_desde_compra =?, valor =?, estado_consrvacao =?, "
                     + "vida_util_ano =?, valor_atual =?, depreciacao =? WHERE id_inventario =?";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, inventario.getNumSerie());
-            stm.setString(2, inventario.getCategoria());
-            stm.setString(3, inventario.getItem());
-            stm.setString(4, inventario.getResponsavel());
-            stm.setString(5, inventario.getArea());
-            stm.setString(6, inventario.getLocal());
-            stm.setTimestamp(7, Tempo.toTimestamp(inventario.getDataCompra()));
-            stm.setInt(8, inventario.getMesesDesdeCompra());
-            stm.setDouble(9, inventario.getValor());
-            stm.setString(10, inventario.getEstadoConservacao());
-            stm.setInt(11, inventario.getVidaUtilAno());
-            stm.setDouble(12, inventario.getValorAtual());
-            stm.setString(13, inventario.getDepreciacao());
-            stm.setInt(14, inventario.getIdInventario());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setString(1, inventario.getNumSerie());
+            preparedStatement.setString(2, inventario.getCategoria());
+            preparedStatement.setString(3, inventario.getItem());
+            preparedStatement.setString(4, inventario.getResponsavel());
+            preparedStatement.setString(5, inventario.getArea());
+            preparedStatement.setString(6, inventario.getLocal());
+            preparedStatement.setTimestamp(7, Tempo.toTimestamp(inventario.getDataCompra()));
+            preparedStatement.setInt(8, inventario.getMesesDesdeCompra());
+            preparedStatement.setDouble(9, inventario.getValor());
+            preparedStatement.setString(10, inventario.getEstadoConservacao());
+            preparedStatement.setInt(11, inventario.getVidaUtilAno());
+            preparedStatement.setDouble(12, inventario.getValorAtual());
+            preparedStatement.setString(13, inventario.getDepreciacao());
+            preparedStatement.setInt(14, inventario.getIdInventario());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao editar item do inventario na base de dados! \n" + ex);
@@ -91,10 +91,10 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
     public void delete(Integer idInventario) {
         try {
             String sql = "DELETE FROM " + db + ".tb_inventario WHERE id_inventario=?";
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, idInventario);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, idInventario);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir item do inventario na base de dados! \n" + ex);
         }
@@ -107,8 +107,8 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
             String sql = "SELECT * from " + db + ".tb_inventario";
 
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
                 Inventario item = new Inventario(rs.getInt(1), rs.getString(2),
@@ -120,7 +120,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
                 inventario.add(item);
             }
 
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -134,16 +134,16 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
         try {
             String sql = "SELECT num_serie FROM " + db + ".tb_inventario WHERE num_serie =? AND id_inventario !=? ";
 
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, nome);
-            stm.setInt(2, id);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, nome);
+            preparedStatement.setInt(2, id);
+            rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
                 return rs.getString(1).toLowerCase().trim().equals(nome.toLowerCase().trim().toLowerCase());
             }
 
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
@@ -157,8 +157,8 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
     public int total() {
         try {
             String sql = "SELECT COUNT(*) FROM " + db + ".tb_inventario";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
             }

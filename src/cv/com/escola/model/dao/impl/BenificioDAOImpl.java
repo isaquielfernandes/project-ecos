@@ -20,11 +20,12 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     public void create(Benificio benificio){
         try {
             String sql = "insert into "+ db +".tb_benificio (nome_benificio, descricao) VALUES (?, ?)";
-            stm = conector.prepareStatement(sql);           
-            stm.setString(1, benificio.getNomeBenificio());
-            stm.setString(2, benificio.getDescricao());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);           
+            preparedStatement.setString(1, benificio.getNomeBenificio());
+            preparedStatement.setString(2, benificio.getDescricao());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(BenificioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DaoException("Erro ao savar benificio na base de dados!");
@@ -35,14 +36,15 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     public void update(Benificio benificio){
         try {
             String sql = "UPDATE "+ db +".tb_benificio SET nome_benificio=?, descricao=? WHERE id_benificio =?";
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, benificio.getNomeBenificio());
-            stm.setString(2, benificio.getDescricao());
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, benificio.getNomeBenificio());
+            preparedStatement.setString(2, benificio.getDescricao());
             
-            stm.setInt(3, benificio.getIdBenificio());
+            preparedStatement.setInt(3, benificio.getIdBenificio());
             
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(BenificioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DaoException("Erro ao editar benificio na base de dados!");
@@ -54,11 +56,11 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
         try {
             String sql = "DELETE FROM "+ db +".tb_benificio WHERE id_benificio=?";
 
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, idBenificio);
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, idBenificio);
 
-            stm.execute();
-            stm.close();
+            preparedStatement.execute();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             throw new DaoException("Erro ao excluir benificio na base de dados!");
@@ -70,13 +72,13 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
         List<Benificio> dadosBenificio = new ArrayList<>();
         try {
             String sql = "SELECT * FROM "+ db +".tb_benificio ORDER BY nome_benificio";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Benificio benificio = new Benificio(rs.getInt(1), rs.getString(2), rs.getString(3));
                 dadosBenificio.add(benificio);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
@@ -90,13 +92,13 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
         List<Benificio> dadosBenificio = new ArrayList<>();
         try {
             String sql = "SELECT id_benificio, nome_benificio FROM "+ db +".tb_benificio ORDER BY nome_benificio";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Benificio benificio = new Benificio(rs.getInt(1), rs.getString(2));
                 dadosBenificio.add(benificio);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao consultar benificio na base de dados!");
@@ -108,14 +110,14 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     public boolean isBanificio(String nome, int id) {
         try {
             String sql = "SELECT nome_benificio FROM "+ db +".tb_benificio WHERE nome_benificio =? AND id_benificio !=? ";
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, nome);
-            stm.setInt(2, id);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, nome);
+            preparedStatement.setInt(2, id);
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getString(1).toLowerCase().trim().equals(nome.toLowerCase().trim().toLowerCase());
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao validar benificio na base de dados!");

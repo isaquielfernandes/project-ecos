@@ -16,10 +16,6 @@ import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
 public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
     
     private final String sep = File.separator;
@@ -34,32 +30,33 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
         try {
             String sql = "INSERT INTO "+ db +".`tb_instrutor` (`nome`, `admissao`, `email`, `telefone`, `movel`, `foto`, `pai`, `mae`, `grauAcademico`, `tipoSanguineo`, `morada`, `cidadeIlha`, `numeroDeIndentificacao`, `naturalidade`, `nacionalidade`, `nascimento`, `cartaConducao`, `banco`, `agencia`,`numDeConta`, `obsercacao`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, instrutor.getNome());
-            stm.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
-            stm.setString(3, instrutor.getEmail());
-            stm.setString(4, instrutor.getContactoTelefonico());
-            stm.setString(5, instrutor.getContactoMovel());
-            stm.setString(6, instrutor.getFoto());
-            stm.setString(7, instrutor.getNomeDoPai());
-            stm.setString(8, instrutor.getNomeDaMae());
-            stm.setString(9, instrutor.getGrauAcademico());
-            stm.setString(10, instrutor.getTipoSanguineo());
-            stm.setString(11, instrutor.getMorada());
-            stm.setString(12, instrutor.getCidadeIlha());
-            stm.setString(13, instrutor.getNumeroDeIndentificacao());
-            stm.setString(14, instrutor.getNaturalidade());
-            stm.setString(15, instrutor.getNacionalidade());
-            stm.setTimestamp(16, Tempo.toTimestamp(instrutor.getNascimento()));
-            stm.setString(17, instrutor.getCartaConducao());
-            stm.setString(18, instrutor.getBanco());
-            stm.setString(19, instrutor.getAgencia());
-            stm.setString(20, instrutor.getNumDeConta());
-            stm.setString(21, instrutor.getObservacao());
+            preparedStatement.setString(1, instrutor.getNome());
+            preparedStatement.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
+            preparedStatement.setString(3, instrutor.getEmail());
+            preparedStatement.setString(4, instrutor.getContactoTelefonico());
+            preparedStatement.setString(5, instrutor.getContactoMovel());
+            preparedStatement.setString(6, instrutor.getFoto());
+            preparedStatement.setString(7, instrutor.getNomeDoPai());
+            preparedStatement.setString(8, instrutor.getNomeDaMae());
+            preparedStatement.setString(9, instrutor.getGrauAcademico());
+            preparedStatement.setString(10, instrutor.getTipoSanguineo());
+            preparedStatement.setString(11, instrutor.getMorada());
+            preparedStatement.setString(12, instrutor.getCidadeIlha());
+            preparedStatement.setString(13, instrutor.getNumeroDeIndentificacao());
+            preparedStatement.setString(14, instrutor.getNaturalidade());
+            preparedStatement.setString(15, instrutor.getNacionalidade());
+            preparedStatement.setTimestamp(16, Tempo.toTimestamp(instrutor.getNascimento()));
+            preparedStatement.setString(17, instrutor.getCartaConducao());
+            preparedStatement.setString(18, instrutor.getBanco());
+            preparedStatement.setString(19, instrutor.getAgencia());
+            preparedStatement.setString(20, instrutor.getNumDeConta());
+            preparedStatement.setString(21, instrutor.getObservacao());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Instrutor cadastrada com sucesso!");
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao cadastrar Instrutor na base de dados! \n" + ex);
@@ -71,33 +68,34 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
         try {
             String sql = "UPDATE "+ db +".`tb_instrutor` SET `nome` = ?, `admissao` = ?, `email` = ?, `telefone` = ?, `movel` = ?, `foto` = ?, `pai` = ?, `mae` = ?, `grauAcademico` = ?, `tipoSanguineo` = ?, `morada` = ?, `cidadeIlha` = ?, `numeroDeIndentificacao` = ?, `naturalidade` = ?, `nacionalidade` = ?, `nascimento` = ?, `cartaConducao` = ?, `banco` = ?, `agencia` = ?, `numDeConta` = ?, `obsercacao` = ? WHERE `id` = ?;";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, instrutor.getNome());
-            stm.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
-            stm.setString(3, instrutor.getEmail());
-            stm.setString(4, instrutor.getContactoTelefonico());
-            stm.setString(5, instrutor.getContactoMovel());
-            stm.setString(6, instrutor.getFoto());
-            stm.setString(7, instrutor.getNomeDoPai());
-            stm.setString(8, instrutor.getNomeDaMae());
-            stm.setString(9, instrutor.getGrauAcademico());
-            stm.setString(10, instrutor.getTipoSanguineo());
-            stm.setString(11, instrutor.getMorada());
-            stm.setString(12, instrutor.getCidadeIlha());
-            stm.setString(13, instrutor.getNumeroDeIndentificacao());
-            stm.setString(14, instrutor.getNaturalidade());
-            stm.setString(15, instrutor.getNacionalidade());
-            stm.setTimestamp(16, Tempo.toTimestamp(instrutor.getNascimento()));
-            stm.setString(17, instrutor.getCartaConducao());
-            stm.setString(18, instrutor.getBanco());
-            stm.setString(19, instrutor.getAgencia());
-            stm.setString(20, instrutor.getNumDeConta());
-            stm.setString(21, instrutor.getObservacao());
+            preparedStatement.setString(1, instrutor.getNome());
+            preparedStatement.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
+            preparedStatement.setString(3, instrutor.getEmail());
+            preparedStatement.setString(4, instrutor.getContactoTelefonico());
+            preparedStatement.setString(5, instrutor.getContactoMovel());
+            preparedStatement.setString(6, instrutor.getFoto());
+            preparedStatement.setString(7, instrutor.getNomeDoPai());
+            preparedStatement.setString(8, instrutor.getNomeDaMae());
+            preparedStatement.setString(9, instrutor.getGrauAcademico());
+            preparedStatement.setString(10, instrutor.getTipoSanguineo());
+            preparedStatement.setString(11, instrutor.getMorada());
+            preparedStatement.setString(12, instrutor.getCidadeIlha());
+            preparedStatement.setString(13, instrutor.getNumeroDeIndentificacao());
+            preparedStatement.setString(14, instrutor.getNaturalidade());
+            preparedStatement.setString(15, instrutor.getNacionalidade());
+            preparedStatement.setTimestamp(16, Tempo.toTimestamp(instrutor.getNascimento()));
+            preparedStatement.setString(17, instrutor.getCartaConducao());
+            preparedStatement.setString(18, instrutor.getBanco());
+            preparedStatement.setString(19, instrutor.getAgencia());
+            preparedStatement.setString(20, instrutor.getNumDeConta());
+            preparedStatement.setString(21, instrutor.getObservacao());
             
-            stm.setLong(22, instrutor.getId());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setLong(22, instrutor.getId());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Instrutor atualizada com sucesso!");
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao atualizar dados instrutor na base de dados! \n" + ex);
@@ -109,12 +107,12 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
         try {
             String sql = "DELETE FROM "+ db +".tb_instrutor WHERE id=?";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setLong(1, idInstrutor);
-            stm.execute();
+            preparedStatement.setLong(1, idInstrutor);
+            preparedStatement.execute();
 
-            stm.close();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir instrutor na base de dados! \n" + ex);
         }
@@ -126,8 +124,8 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
         ImageView img;
         try {
             String sql = "SELECT * from "+ db +".tb_instrutor";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
 
                 Instrutor instrutor = new Instrutor(
@@ -155,7 +153,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
                 instrutores.add(instrutor);
             }
 
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
@@ -171,9 +169,9 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
         String sql = "SELECT * FROM "+ db +".tb_instrutor WHERE id=?";
         Instrutor retorno = new Instrutor();
         try {
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, instrutor.getId());
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, instrutor.getId());
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 instrutor.setNome(rs.getString("nome"));
                 instrutor.setNumeroDeIndentificacao(rs.getString("numeroDeIndentificacao"));

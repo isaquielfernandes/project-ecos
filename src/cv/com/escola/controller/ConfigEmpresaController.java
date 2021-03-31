@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.util.Animacao;
@@ -23,11 +18,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
+
 public class ConfigEmpresaController extends AnchorPane implements Initializable {
 
     private static ConfigEmpresaController instance;
@@ -57,11 +48,7 @@ public class ConfigEmpresaController extends AnchorPane implements Initializable
             Mensagem.erro("Erro ao carregar tela config empresa! \n" + ex);
         }
     }
-    /**
-     * Obter instancia do controler
-     *
-     * @return
-     */
+
     public static ConfigEmpresaController getInstance() {
         return instance;
     }
@@ -81,11 +68,6 @@ public class ConfigEmpresaController extends AnchorPane implements Initializable
         Modulo.getListaBenificio(anchorPaneEmpresa);
     }
     
-    /**
-     * Obter componente para exibição dos modulos da aplicação
-     *
-     * @return
-     */
     public AnchorPane getBoxConteudo() {
         return anchorPaneEmpresa;
     }

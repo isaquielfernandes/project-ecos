@@ -66,26 +66,30 @@
             <TextField fx:id="txtNif" styleClass="campo" visible="true" GridPane.rowIndex="3" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #ccc;" GridPane.columnSpan="3" GridPane.rowIndex="5">
                <children>
-                  <ImageView fx:id="imageViewBarnner" fitHeight="150.0" fitWidth="310.0" pickOnBounds="true" preserveRatio="true">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ImageView>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fx:id="logo" fitHeight="150.0" fitWidth="310.0" pickOnBounds="true" preserveRatio="true">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
                </children>
             </HBox>
             <Label text="Logo" GridPane.rowIndex="4" />
             <Label prefHeight="30.0" prefWidth="98.0" styleClass="lb-info-requerido" text="ID" visible="false" GridPane.columnIndex="2" />
             <TextField fx:id="txtID" prefWidth="245.0" styleClass="campo" text="" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Assinatura" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #ccc;" GridPane.columnIndex="3" GridPane.columnSpan="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.vgrow="ALWAYS">
+            <AnchorPane prefHeight="150.0" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
                <children>
-                  <ImageView fx:id="imageViewAssinatura" fitHeight="150.0" fitWidth="304.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                  <ImageView fx:id="assinatura" fitHeight="150.0" fitWidth="387.0" pickOnBounds="true" preserveRatio="true">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
                </children>
-            </HBox>
+            </AnchorPane>
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" maxWidth="151.0" minWidth="80.0" prefWidth="151.0" />

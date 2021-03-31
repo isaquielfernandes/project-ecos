@@ -16,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 
-public abstract class AlunoCard extends AnchorPane {
+public class AlunoCard extends AnchorPane {
 
     protected final AnchorPane anchorPane;
     protected final AnchorPane anchorPaneImag;
@@ -201,7 +201,7 @@ public abstract class AlunoCard extends AnchorPane {
         labelNomePai.setText("Pai: " + aluno.getNomeDoPai());
         labelNumDoc.setText("N Doc: " + aluno.getNumBI());
         labelContato.setText("Contato: " + aluno.getContato());
-        imageView.setImage(aluno.image);
+        imageView.setImage(aluno.readFoto());
         labelIdade.setText("Idade: " + idade(aluno) + " anos. Nascido em " + aluno.getDataNascimento());
         labelEndereco.setText("Morada: " + aluno.getResidencia());
         labelDataNascimento.setText(aluno.getDataNascimento().toString());

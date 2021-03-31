@@ -24,6 +24,7 @@ public final class ConnectionManager extends LoadProperties {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             connection = DriverManager.getConnection(url + unicode, user, pass);
+            connection.setAutoCommit(false);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }

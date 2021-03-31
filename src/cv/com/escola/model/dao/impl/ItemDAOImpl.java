@@ -15,10 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class ItemDAOImpl extends DAO implements ItemDAO{
 
     public ItemDAOImpl() {
@@ -30,16 +27,15 @@ public class ItemDAOImpl extends DAO implements ItemDAO{
     public void create(Item item){
         try {
             String sql = "INSERT INTO "+ db +".tb_item_venda(quantidade, valor, id_artigo, id_venda)VALUES(?,?,?,?)";
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
             
-            stm.setInt(1, item.getQuantidade());
-            stm.setBigDecimal(2, item.getValorUnitario());
-            stm.setLong(3, item.getArtigo().getIdArtigo());
-            stm.setInt(4, item.getVenda().getIdVenda());
+            preparedStatement.setInt(1, item.getQuantidade());
+            preparedStatement.setBigDecimal(2, item.getValorUnitario());
+            preparedStatement.setLong(3, item.getArtigo().getIdArtigo());
+            preparedStatement.setInt(4, item.getVenda().getIdVenda());
             
-            stm.executeUpdate();
-            stm.close();
-            //Mensagem.info("Item de venda cadastrada com sucesso.", "Sucesso");
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ItemDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao inserir item na base de dados! \n" + ex);
@@ -50,16 +46,17 @@ public class ItemDAOImpl extends DAO implements ItemDAO{
     public void update(Item item){
         try {
             String sql = "UPDATE "+ db +".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?";
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
             
-            stm.setInt(1, item.getQuantidade());
-            stm.setBigDecimal(2, item.getValorUnitario());
-            stm.setLong(3, item.getArtigo().getIdArtigo());
-            stm.setInt(4, item.getVenda().getIdVenda());
+            preparedStatement.setInt(1, item.getQuantidade());
+            preparedStatement.setBigDecimal(2, item.getValorUnitario());
+            preparedStatement.setLong(3, item.getArtigo().getIdArtigo());
+            preparedStatement.setInt(4, item.getVenda().getIdVenda());
             
-            stm.setLong(5, item.getIdItem());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setLong(5, item.getIdItem());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ItemDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao atualizar item na base de dados! \n" + ex);
@@ -70,12 +67,12 @@ public class ItemDAOImpl extends DAO implements ItemDAO{
     public void delete(Integer idVenda) {
         try {
             String sql = "DELETE FROM "+ db +".tb_item_venda WHERE id_venda=?";
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
             
-            stm.setInt(1, idVenda);
-            stm.execute();
+            preparedStatement.setInt(1, idVenda);
+            preparedStatement.execute();
 
-            stm.close();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir item na base de dados! \n" + ex);
         }
@@ -86,8 +83,8 @@ public class ItemDAOImpl extends DAO implements ItemDAO{
         String sql = "SELECT * FROM "+ db +".item_de_venda_view;";
         List<Item> retorno = new ArrayList<>();
         try {
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Item itemDeVenda = new Item();
                 Artigo artigos = new Artigo(rs.getLong(2), rs.getString(3), rs.getBigDecimal(5), 
@@ -122,9 +119,9 @@ public class ItemDAOImpl extends DAO implements ItemDAO{
         String sql = "SELECT * FROM "+ db +".item_de_venda_view where item_de_venda_view.id_vendas = ?;";
         List<Item> retorno = new ArrayList<>();
         try {
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, venda.getIdVenda());
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, venda.getIdVenda());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Item itemDeVenda = new Item();
                 Artigo artigos = new Artigo(rs.getLong(2), rs.getString(3), rs.getBigDecimal(5), 

@@ -20,22 +20,23 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
         try {
             String sql = "INSERT INTO "+ db +".tb_organizacao(nome, sigla, email, fax, telefone, logradouro, bairro, cidade, estado, pais, descricao, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, organizacao.getNome());
-            stm.setString(2, organizacao.getSigla());
-            stm.setString(3, organizacao.getEmail());
-            stm.setString(4, organizacao.getFax());
-            stm.setString(5, organizacao.getTelefone());
-            stm.setString(6, organizacao.getLogradouro());
-            stm.setString(7, organizacao.getBairro());
-            stm.setString(8, organizacao.getCidade());
-            stm.setString(9, organizacao.getEstado());
-            stm.setString(10, organizacao.getPais());
-            stm.setString(11, organizacao.getDescricao());
+            preparedStatement.setString(1, organizacao.getNome());
+            preparedStatement.setString(2, organizacao.getSigla());
+            preparedStatement.setString(3, organizacao.getEmail());
+            preparedStatement.setString(4, organizacao.getFax());
+            preparedStatement.setString(5, organizacao.getTelefone());
+            preparedStatement.setString(6, organizacao.getLogradouro());
+            preparedStatement.setString(7, organizacao.getBairro());
+            preparedStatement.setString(8, organizacao.getCidade());
+            preparedStatement.setString(9, organizacao.getEstado());
+            preparedStatement.setString(10, organizacao.getPais());
+            preparedStatement.setString(11, organizacao.getDescricao());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao inserir organização na base de dados! \n" + ex);
@@ -47,24 +48,25 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
         try {
             String sql = "UPDATE "+ db +".tb_organizacao SET nome=?, sigla=?, email=?, fax=?, telefone=?, logradouro=?, bairro=?, cidade=?, estado=?, pais=?, descricao=? WHERE id_orgao=? ";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, organizacao.getNome());
-            stm.setString(2, organizacao.getSigla());
-            stm.setString(3, organizacao.getEmail());
-            stm.setString(4, organizacao.getFax());
-            stm.setString(5, organizacao.getTelefone());
-            stm.setString(6, organizacao.getLogradouro());
-            stm.setString(7, organizacao.getBairro());
-            stm.setString(8, organizacao.getCidade());
-            stm.setString(9, organizacao.getEstado());
-            stm.setString(10, organizacao.getPais());
-            stm.setString(11, organizacao.getDescricao());
+            preparedStatement.setString(1, organizacao.getNome());
+            preparedStatement.setString(2, organizacao.getSigla());
+            preparedStatement.setString(3, organizacao.getEmail());
+            preparedStatement.setString(4, organizacao.getFax());
+            preparedStatement.setString(5, organizacao.getTelefone());
+            preparedStatement.setString(6, organizacao.getLogradouro());
+            preparedStatement.setString(7, organizacao.getBairro());
+            preparedStatement.setString(8, organizacao.getCidade());
+            preparedStatement.setString(9, organizacao.getEstado());
+            preparedStatement.setString(10, organizacao.getPais());
+            preparedStatement.setString(11, organizacao.getDescricao());
 
-            stm.setInt(12, organizacao.getId());
+            preparedStatement.setInt(12, organizacao.getId());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao atualizar organização na base de dados! \n" + ex);
@@ -76,11 +78,11 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
         try {
             String sql = "DELETE FROM "+ db +".tb_organizacao WHERE id_orgao =?";
 
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, idOrganizacao);
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, idOrganizacao);
 
-            stm.execute();
-            stm.close();
+            preparedStatement.execute();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir organização na base de dados! \n" + ex);
@@ -92,13 +94,13 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
         List<Organizacao> dados = new ArrayList<>();
         try {
             String sql = "SELECT * FROM "+ db +".tb_organizacao";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Organizacao organizacao = new Organizacao(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), Tempo.toDate(rs.getTimestamp(13)));
                 dados.add(organizacao);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
@@ -113,12 +115,12 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
         List<Organizacao> dados = new ArrayList<>();
         try {
             String sql = "SELECT id_orgao, nome FROM "+ db +".tb_organizacao ORDER BY nome ";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 dados.add(new Organizacao(rs.getInt(1), rs.getString(2)));
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {

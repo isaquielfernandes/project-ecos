@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
-import cv.com.escola.model.entity.Empresa;
+import cv.com.escola.model.entity.EscolaConducao;
 import cv.com.escola.model.util.Campo;
 import cv.com.escola.model.util.Filtro;
 import cv.com.escola.model.util.Grupo;
@@ -14,11 +9,13 @@ import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
 import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -28,14 +25,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -45,23 +46,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import javafx.stage.StageStyle;
+import javax.imageio.ImageIO;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
-public class DadosIniciaisController extends AnchorPane implements Initializable {
+public class EscolaConducaoController extends AnchorPane implements Initializable {
 
-    private List<Empresa> listaEmpresa;
+    private List<EscolaConducao> listaEmpresa;
     private int idEmpresa = 0;
-    private Image image;
-    private File fileLogo;
-    private File fileAssinatura;
-    private FileOutputStream fileOutput;
-    private FileInputStream fileInput;
-    private byte[] userImage;
-    private String imgPath;
+    private Image imagelogo;
+    private Image imageAssinatura;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -87,7 +80,7 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
     @FXML
     private AnchorPane telaEdicao;
     @FXML
-    private TableView<Empresa> tbEmpresa;
+    private TableView<EscolaConducao> tbEmpresa;
     @FXML
     private TableColumn<?, ?> colId;
     @FXML
@@ -113,40 +106,26 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
     @FXML
     private Label legenda;
     @FXML
-    private ImageView imageViewBarnner;
+    private ImageView imageViewLogo;
     @FXML
     private ImageView imageViewAssinatura;
     @FXML
     private TextField txtID;
 
-    /**
-     * Initializes the controller class.
-     *
-     * @param url
-     * @param rb
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         telaCadastro(null);
 
         Grupo.notEmpty(menu);
-        sincronizarBase();
+        sincronizarDataBase();
         txtID.setText(String.valueOf(idEmpresa));
 
-        imageViewBarnner.setOnMouseClicked((event) -> {
-            try {
-                uploadLogo();
-            } catch (IOException ex) {
-                Logger.getLogger(DadosIniciaisController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        imageViewLogo.setOnMouseClicked((event) -> {
+            uploadLogo();
         });
 
         imageViewAssinatura.setOnMouseClicked((event) -> {
-            try {
-                uploadFileAssinatura();
-            } catch (IOException ex) {
-                Logger.getLogger(DadosIniciaisController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            uploadFileAssinatura();
         });
 
         txtPesquisar.textProperty().addListener((obs, old, novo) -> {
@@ -154,52 +133,8 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
         });
     }
 
-    public void uploadLogo() throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fotografia", "*.png", "*.jpg"));
-
-        fileLogo = fileChooser.showOpenDialog(null);
-
-        if (fileLogo != null) {
-            if (fileLogo.length() < 6000000) {
-                try {
-                    fileInput = new FileInputStream(fileLogo);
-                    image = new Image(fileLogo.getAbsoluteFile().toURI().toString(), imageViewBarnner.getFitWidth(), imageViewBarnner.getFitHeight(), true, true);
-                    imageViewBarnner.setImage(image);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                Mensagem.info("Permissão", "Sua imagem file é muito grande para upload \n Por favor escolha outra image");
-            }
-
-        }
-    }
-
-    public void uploadFileAssinatura() throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fotografia", "*.png", "*.jpg"));
-
-        fileAssinatura = fileChooser.showOpenDialog(null);
-
-        if (fileAssinatura != null) {
-            if (fileAssinatura.length() < 6000000) {
-                try {
-                    fileInput = new FileInputStream(fileAssinatura);
-                    image = new Image(fileAssinatura.getAbsoluteFile().toURI().toString(), imageViewAssinatura.getFitWidth(), imageViewAssinatura.getFitHeight(), true, true);
-                    imageViewAssinatura.setImage(image);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(DadosIniciaisController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                Mensagem.info("Permissão", "Sua imagem file é muito grande para upload \n Por favor escolha outra image");
-            }
-
-        }
-    }
-
     @SuppressWarnings("LeakingThisInConstructor")
-    public DadosIniciaisController() {
+    public EscolaConducaoController() {
 
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/dadosIniciais.fxml"));
@@ -207,15 +142,12 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
             fxml.setController(this);
             fxml.load();
         } catch (IOException ex) {
-            Logger.getLogger(DadosIniciaisController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EscolaConducaoController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela dados inicial da empresa! \n" + ex);
         }
     }
 
-    /**
-     * Sincronizar dados com banco de dados
-     */
-    private void sincronizarBase() {
+    private void sincronizarDataBase() {
         listaEmpresa = DAOFactory.daoFactury().empresaDAO().findAll();
     }
 
@@ -233,20 +165,16 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
         idEmpresa = 0;
     }
 
-    /**
-     * Limpar campos textfield cadastro de coleções
-     */
     private void limparCampos() {
         Campo.limpar(txtCidade, txtNomeEscola, txtContato, txtEmail, txtNif, txtEndereco);
         Campo.limpar(txtDescricao);
-        imageViewBarnner.setImage(null);
+        imageViewLogo.setImage(null);
     }
 
     @FXML
     private void telaCadastro(ActionEvent event) {
         configTela("Cadastrar Empresa", "Campos obrigatórios", 0);
         Modulo.visualizacao(true, telaCadastro, btSalvar);
-        //limparCampos();
     }
 
     @FXML
@@ -275,63 +203,58 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
         String email = txtEmail.getText();
         String descricao = txtDescricao.getText();
         idEmpresa = Integer.valueOf(txtID.getText().trim().isEmpty() ? "0" : txtID.getText());
+        
+        InputStream inputStreamLogo = converterImageFileToInputStream(imageViewLogo);
+        InputStream inputStreamAssinatura = converterImageFileToInputStream(imageViewAssinatura);
 
         if (vazio) {
-            Empresa empresa = new Empresa(idEmpresa, nomeEscola, cidade, endereco, nif, contato, email, descricao, fileLogo);
-            empresa.setFileCarimboAssinatura(fileAssinatura);
+            EscolaConducao escolaConducao = new EscolaConducao(idEmpresa, nomeEscola, cidade, endereco, nif, contato, email, descricao);
+            escolaConducao.setLogo(inputStreamLogo);
+            escolaConducao.setAssinatura(inputStreamAssinatura);
 
             if (idEmpresa == 0) {
-                DAOFactory.daoFactury().empresaDAO().create(empresa);
+                DAOFactory.daoFactury().empresaDAO().create(escolaConducao);
+                Mensagem.info("Configuracao da empresa cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().empresaDAO().update(empresa);
+                DAOFactory.daoFactury().empresaDAO().update(escolaConducao);
+                Mensagem.info("Empresa atualizada com sucesso!");
             }
             telaCadastro(null);
-            sincronizarBase();
+            sincronizarDataBase();
         }
     }
 
     @FXML
     private void editar(ActionEvent event) {
-        try {
-            Empresa empresa = tbEmpresa.getSelectionModel().getSelectedItem();
-            empresa.getClass();
+        TableViewSelectionModel<EscolaConducao> selectionModel = tableViewSelectionModel();
+        if (!selectionModel.isEmpty()) {
+            EscolaConducao escolaConducao = empresaSelected(selectionModel);
+             final File fileLogo = writeFile(escolaConducao.getLogo(), "logo");
+             final File fileAssinatura = writeFile(escolaConducao.getAssinatura(), "assinatura");
+            telaCadastro(null);
+            imagelogo = new Image(fileLogo.getAbsoluteFile().toURI().toString());
+            imageViewLogo.setImage(imagelogo);
+            imageAssinatura = new Image(fileAssinatura.getAbsoluteFile().toURI().toString());
+            imageViewAssinatura.setImage(imageAssinatura);
             telaCadastro(null);
 
-            txtID.setText(String.valueOf(empresa.getIdEmpresa()));
-            txtCidade.setText(empresa.getCidade());
-            txtNomeEscola.setText(empresa.getNome());
-            txtNif.setText(empresa.getNif());
-            txtEndereco.setText(empresa.getEndereco());
-            txtEmail.setText(empresa.getEmail());
-            txtContato.setText(empresa.getContato());
-            txtDescricao.setText(empresa.getDescricao());
-            imageViewBarnner.setImage(empresa.getImageLogo());
-            imageViewAssinatura.setImage(empresa.getImageAssinatura());
+            txtID.setText(String.valueOf(escolaConducao.getIdEmpresa()));
+            txtCidade.setText(escolaConducao.getCidade());
+            txtNomeEscola.setText(escolaConducao.getNome());
+            txtNif.setText(escolaConducao.getNif());
+            txtEndereco.setText(escolaConducao.getEndereco());
+            txtEmail.setText(escolaConducao.getEmail());
+            txtContato.setText(escolaConducao.getContato());
+            txtDescricao.setText(escolaConducao.getDescricao());
+            
 
             lbTitulo.setText("Editar Empresa");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idEmpresa = empresa.getIdEmpresa();
+            idEmpresa = escolaConducao.getIdEmpresa();
 
-        } catch (NullPointerException ex) {
+        } else {
             Nota.alerta("Selecione uma despesa na tabela para edição!");
-        }
-    }
-
-    private void selectFristOnTableView(Empresa empresa) {
-
-        empresa = tbEmpresa.getSelectionModel().getSelectedItem();
-
-        if (empresa != null) {
-            txtID.setText(String.valueOf(empresa.getIdEmpresa()));
-            txtCidade.setText(empresa.getCidade());
-            txtNomeEscola.setText(empresa.getNome());
-            txtNif.setText(empresa.getNif());
-            txtEndereco.setText(empresa.getEndereco());
-            txtEmail.setText(empresa.getEmail());
-            txtContato.setText(empresa.getContato());
-            txtDescricao.setText(empresa.getDescricao());
-            imageViewBarnner.setImage(empresa.getImageLogo());
         }
     }
 
@@ -361,9 +284,9 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
     /**
      * Campo de pesquisar para filtrar dados na tabela
      */
-    private void filtro(String valor, ObservableList<Empresa> listaEmpresa) {
+    private void filtro(String valor, ObservableList<EscolaConducao> listaEmpresa) {
 
-        FilteredList<Empresa> dadosFiltrados = new FilteredList<>(listaEmpresa, empresa -> true);
+        FilteredList<EscolaConducao> dadosFiltrados = new FilteredList<>(listaEmpresa, empresa -> true);
         dadosFiltrados.setPredicate(empresa -> {
 
             if (valor == null || valor.isEmpty()) {
@@ -376,10 +299,101 @@ public class DadosIniciaisController extends AnchorPane implements Initializable
             return false;
         });
 
-        SortedList<Empresa> dadosOrdenados = new SortedList<>(dadosFiltrados);
+        SortedList<EscolaConducao> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbEmpresa.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de empresa encontradas");
 
         tbEmpresa.setItems(dadosOrdenados);
+    }
+
+    public void uploadLogo() {
+        File selectedFile = filechooser();
+        final int maxImageSize = 6000000;
+        if (selectedFile.length() < maxImageSize) {
+            imagelogo = new Image(selectedFile.getAbsoluteFile().toURI().toString(),
+                    imageViewLogo.getFitWidth(), imageViewLogo.getFitHeight(), true, true);
+            imageViewLogo.setImage(imagelogo);
+        } else {
+            alearta();
+        }
+    }
+
+    public void uploadFileAssinatura() {
+        File selectedFile = filechooser();
+        final int maxImageSize = 6000000;
+        if (selectedFile.length() < maxImageSize) {
+            imageAssinatura = new Image(selectedFile.getAbsoluteFile().toURI().toString(),
+                    imageViewAssinatura.getFitWidth(), imageViewAssinatura.getFitHeight(), true, true);
+            imageViewAssinatura.setImage(imageAssinatura);
+        } else {
+            alearta();
+        }
+    }
+
+    private void alearta() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Permissao");
+        alert.setHeaderText("Permisao negada");
+        alert.setContentText("Your Image file is too big to upload \n please choise another image");
+        alert.initStyle(StageStyle.UNDECORATED);
+    }
+
+    private File writeFile(InputStream inputStream, String fileName) {
+        String fileSeparator = File.separator;
+        final String pathDiretorio = System.getProperty("user.home")
+                + fileSeparator + "Documents/ecos/config/";
+        File directory = new File(pathDiretorio);
+        String filePath = pathDiretorio + fileSeparator + fileName + ".jpg";
+        File newFile = new File(filePath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(newFile);) {
+            byte[] buffer = new byte[1024];
+            if (inputStream != null) {
+                while (inputStream.read(buffer) > 0) {
+                    fileOutputStream.write(buffer);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return newFile;
+    }
+
+    private InputStream converterImageFileToInputStream(ImageView imageView) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();) {
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
+            ImageIO.write(bufferedImage, "jpg", outputStream);
+            byte[] stream = outputStream.toByteArray();
+            return new ByteArrayInputStream(stream);
+        } catch (IOException ex) {
+            Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    private File filechooser() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image File", "*.png", "*.jpg")
+        );
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            return selectedFile;
+        }
+        return null;
+    }
+
+    private TableViewSelectionModel<EscolaConducao> tableViewSelectionModel() {
+        final TableViewSelectionModel<EscolaConducao> selectionModel = tbEmpresa.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        return selectionModel;
+    }
+
+    private EscolaConducao empresaSelected(TableViewSelectionModel<EscolaConducao> selectionModel) {
+        EscolaConducao escolaSelected = selectionModel.getSelectedItem();
+        escolaSelected.getClass();
+        return escolaSelected;
     }
 }

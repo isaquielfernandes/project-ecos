@@ -23,10 +23,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     public ExameResultadoDAOImpl() {
@@ -38,11 +35,12 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     public void create(ExameResultado resultado) {
         try {
             String sql = "INSERT INTO "+ db +".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);";
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, resultado.getExame().getIdExame());
-            stm.setString(2, resultado.getResultado());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, resultado.getExame().getIdExame());
+            preparedStatement.setString(2, resultado.getResultado());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao cadastrar exame no base de dados" + ex);
@@ -55,15 +53,16 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
             String sql = "UPDATE "+ db +".`tb_exame_resultado` SET "
                     + "`fk_exame` = ?, `resultado` = ?"
                     + " WHERE `id_exame_resultado` = ? AND `fk_exame` = ?";
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setLong(1, resultado.getExame().getIdExame());
-            stm.setString(2, resultado.getResultado());
+            preparedStatement.setLong(1, resultado.getExame().getIdExame());
+            preparedStatement.setString(2, resultado.getResultado());
 
-            stm.setLong(3, resultado.getIdExameResultado());
-            stm.setLong(4, resultado.getExame().getIdExame());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setLong(3, resultado.getIdExameResultado());
+            preparedStatement.setLong(4, resultado.getExame().getIdExame());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao atualizar dados no base de dados" + ex);
@@ -74,10 +73,10 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     public void delete(Long idExameResultado) {
         try {
             String sql = "DELETE FROM "+ db +".`tb_exame_resultado` WHERE id_exame_resultado =?";
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, idExameResultado);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, idExameResultado);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir resuldado de exame na base de dados! \n" + ex);
         }
@@ -88,8 +87,8 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
         List<ExameResultado> dadosExame = new ArrayList<>();
         try {
             String sql = "SELECT * FROM "+ db +".resultado_de_exame_view order by Dia desc ";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Exame marcado = new Exame(rs.getInt(2), rs.getString(3), 
                         Tempo.toDate(rs.getTimestamp(4)), rs.getTime(5).toLocalTime(), 
@@ -98,7 +97,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
                 ExameResultado resultado = new ExameResultado(rs.getLong(1), marcado, rs.getString(11));
                 dadosExame.add(resultado);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {

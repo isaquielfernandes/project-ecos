@@ -10,7 +10,7 @@ import cv.com.escola.controller.CategoriaController;
 import cv.com.escola.controller.ClienteController;
 import cv.com.escola.controller.ConfigEmpresaController;
 import cv.com.escola.controller.CursoController;
-import cv.com.escola.controller.DadosIniciaisController;
+import cv.com.escola.controller.EscolaConducaoController;
 import cv.com.escola.controller.ExameController;
 import cv.com.escola.controller.ExameResultadoController;
 import cv.com.escola.controller.HomeController;
@@ -40,7 +40,7 @@ public class Modulo {
     private static UsuarioController usuario;
     private static OrganizacaoController organizacao;
     private static ExameController exame;
-    private static DadosIniciaisController empresa;
+    private static EscolaConducaoController empresa;
     private static ListaBenificiosController benificio;
     private static CargoSalarioController cargoSalario;
     private static ConfigEmpresaController configEmpresa;
@@ -110,7 +110,7 @@ public class Modulo {
     }
 
     public static void getEmpresa(AnchorPane box) {
-        empresa = empresa == null ? new DadosIniciaisController() : empresa;
+        empresa = empresa == null ? new EscolaConducaoController() : empresa;
         config(box, empresa);
     }
 

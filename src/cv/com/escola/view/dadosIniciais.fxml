@@ -70,7 +70,7 @@
             <TextField fx:id="txtNif" styleClass="campo" visible="true" GridPane.rowIndex="3" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #ccc;" GridPane.columnSpan="3" GridPane.rowIndex="5">
                <children>
-                  <ImageView fx:id="imageViewBarnner" fitHeight="150.0" fitWidth="310.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imageViewLogo" fitHeight="150.0" fitWidth="310.0" pickOnBounds="true" preserveRatio="true">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></ImageView>
@@ -111,7 +111,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <AnchorPane fx:id="telaEdicao" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+      <AnchorPane fx:id="telaEdicao" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <children>
             <TableView fx:id="tbEmpresa" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
                <columns>

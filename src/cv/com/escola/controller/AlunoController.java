@@ -1,7 +1,9 @@
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
+import cv.com.escola.model.dao.exception.DaoException;
 import cv.com.escola.model.entity.Aluno;
+import cv.com.escola.model.entity.AlunoBuilder;
 import cv.com.escola.model.entity.Pagina;
 import cv.com.escola.model.util.Campo;
 import cv.com.escola.model.util.Combo;
@@ -11,20 +13,18 @@ import cv.com.escola.model.util.Grupo;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
-import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
-import java.awt.Desktop;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -36,6 +36,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,12 +49,14 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -67,25 +70,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import net.sf.jasperreports.engine.JRException;
+import javax.imageio.ImageIO;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
 public class AlunoController extends AnchorPane implements Initializable {
 
     private List<Aluno> listaAluno;
     private int idAluno = 0;
 
     private Image image;
-    private File file;
-    private FileOutputStream fileOutput;
-    private FileInputStream fileInput;
-    private byte[] userImage;
-    private String imgPath;
+    final String defualtImage = "/cv/com/escola/view/img/avater.jpg";
+    private InputStream fileInput;
 
     @FXML
     private AnchorPane anchorPane;
@@ -154,7 +151,7 @@ public class AlunoController extends AnchorPane implements Initializable {
     @FXML
     private TableView<Aluno> tbAluno;
     @FXML
-    private TableColumn<Aluno, ImageView> colFoto;
+    private TableColumn colFoto;
     @FXML
     private TableColumn<Aluno, Integer> colId;
     @FXML
@@ -224,72 +221,12 @@ public class AlunoController extends AnchorPane implements Initializable {
     @FXML
     private Label lblShowingAluno;
     @FXML
-    private TabPane telaPrint;
-    @FXML
     private Pagination pagination;
-    private final int QUANTIDADE_PAGINA = 50;
-    private AlunoCard card;
-    private ObservableList alunos;
-    private Desktop desktop;
+    //@FXML
+    private VBox vBox;
 
-    String[] ilha = {"SANTO ANTÃO", "SÃO VICENTE", "SÃO NICOLAU", "SAL", "BOA VISTA", "MAIO", "SANTIAGO", "FOGO", "BRAVA"};
-    List list = Arrays.asList(ilha);
-    Iterator itr = list.iterator();
-    private String[] municipio;
-    private String[] freguesia;
-
-    public void escolha(String opcao) {
-        // Check for null
-        if (opcao == null) {
-            System.out.println("opcao cannot be null.");
-            return;
-        }
-        // Convert to lowercase
-        opcao = opcao.toLowerCase();
-
-        switch (opcao) {
-            case "SANTO ANTÃO":
-                municipio = new String[]{"Ribeira Grande", "Paúl", "Porto Novo"};
-                freguesia = new String[]{"Nossa Senhora do Rosário", "Nossa Senhora do Livramento", "Santo Crucifixo", "São Pedro Apóstolo", "Santo António das Pombas", "São João Baptista", "Santo André"};
-                break;
-            case "SÃO VICENTE":
-                municipio = new String[]{"São Vicente"};
-                freguesia = new String[]{"Nossa Senhora da Luz"};
-                break;
-            case "SÃO NICOLAU":
-                municipio = new String[]{"Ribeira Brava", "Tarrafal de São Nicolau"};
-                freguesia = new String[]{"Nossa Senhora da Lapa", "Nossa Senhora do Rosário", "São Francisco de Assis"};
-                break;
-            case "SAL":
-                municipio = new String[]{"Sal"};
-                freguesia = new String[]{"Nossa Senhora das Dores"};
-                break;
-            case "BOA VISTA":
-                municipio = new String[]{"Boa Vista"};
-                freguesia = new String[]{"Santa Isabel", "São João Baptista"};
-                break;
-            case "MAIO":
-                municipio = new String[]{"Maio"};
-                freguesia = new String[]{"Nossa Senhora da Luz"};
-                break;
-            case "SANTIAGO":
-                municipio = new String[]{"Praia", "São Domingos", "Santa Catarina", "São Salvador do Mundo", "Santa Cruz", "São Lourenço dos Órgãos", "Ribeira Grande de Santiago", "São Miguel", "Tarrafal"};
-                freguesia = new String[]{"Nossa Senhora da Graça", "Nossa Senhora da Luz", "São Nicolau Tolentino", "Santa Catarina", "São Salvador do Mundo", "Santiago Maior", "São Lourenço dos Órgãos", "Santíssimo Nome de Jesus", "São João Baptista", "São Miguel Arcanjo", "Santo Amaro Abade"};
-                break;
-            case "FOGO":
-                municipio = new String[]{"São Filipe", "Santa Catarina do Fogo", "Mosteiros"};
-                freguesia = new String[]{"São Lourenço", "Nossa Senhora da Conceição", "Santa Catarina do Fogo", "Nossa Senhora da Ajuda"};
-                break;
-            case "BRAVA":
-                municipio = new String[]{"Brava"};
-                freguesia = new String[]{"São João Baptista", "Nossa Senhora do Monte"};
-                break;
-            default:
-
-                break;
-        }
-    }
-
+    private final int QUANTIDADE_PAGINA = 20;
+    private ObservableList<Aluno> alunos;
     private boolean studantDefault = true;
     int totalAluno;
     int totalBuscarAluno;
@@ -329,8 +266,6 @@ public class AlunoController extends AnchorPane implements Initializable {
     private void telaExcluir(ActionEvent event) {
         configTela("Excluir aluno", "Quantidade de alunos encontrados", 3);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar);
-        //tabela();
-        //atualizarGrade(0);
     }
 
     @FXML
@@ -352,31 +287,46 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     @FXML
     private void adcionarFoto(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fotografia", "*.png", "*.jpg"));
-
-        file = fileChooser.showOpenDialog(null).getAbsoluteFile().toURI().toString().isEmpty() 
-                ? new File("/cv/com/escola/img/avater.jpg") : fileChooser.showOpenDialog(null);
-
-        if (file.length() < 6000000) {
-            try {
-                fileInput = new FileInputStream(file);
-                image = new Image(file.getAbsoluteFile().toURI().toString(), imgView.getFitWidth(), imgView.getFitHeight(), true, true);
-                //image.getPixelReader().
+        File selectedFile = chooseFile();
+        final long maxImageSize = 6000000L;
+        if (selectedFile != null) {
+            if (selectedFile.length() < maxImageSize) {
+                image = new Image(selectedFile.getAbsoluteFile().toURI().toString());
                 imgView.setImage(image);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
+                Mensagem.alerta("A imagem é muito grande para fazer upload.\n "
+                        + "Por favor escolha outra imagem", "Permição");
             }
-        } else {
-            Mensagem.info("Sua image é muito grande para fazer upload.\nPor favor escolha outra imagem", "Permição");
         }
+    }
+
+    private void setFileInputStream() {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imgView.getImage(), null);
+            ImageIO.write(bufferedImage, "jpg", outputStream);
+            byte[] stream = outputStream.toByteArray();
+            fileInput = new ByteArrayInputStream(stream);
+            fileInput.close();
+        } catch (IOException ex) {
+            Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private File chooseFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Fotografia File", "*.png", "*.jpg", "*.gif"));
+        File selectedFile = fileChooser.showOpenDialog(null);
+        return selectedFile;
     }
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean emptyFields = checkEmptyFields(txtNome, txtResidencia, txtNatural, 
-                txtNumBI, txtContacto, txtConselho, txtNacionalidade, txtFreguesia, 
+        boolean emptyFields = checkEmptyFields(txtNome, txtResidencia, txtNatural,
+                txtNumBI, txtContacto, txtConselho, txtNacionalidade, txtFreguesia,
                 txtLocalDeEmisao, dtNascimento, dtEmissao);
+        setFileInputStream();
 
         String nome = txtNome.getText();
         LocalDate dataNascimento = dtNascimento.getValue();
@@ -398,18 +348,24 @@ public class AlunoController extends AnchorPane implements Initializable {
         String localEmissao = txtLocalDeEmisao.getText();
 
         if (emptyFields) {
-            Aluno aluno = new Aluno(idAluno, nome, dataNascimento, numBI, dataEmisao, 
-                    residencia, conselho, natural, email, contato, tipo, pais, file, 
-                    descricao, mae, pai, professao, estadoCivil, localEmissao, freg);
-
-            if (idAluno == 0) {
-                DAOFactory.daoFactury().alunoDAO().create(aluno);
-            } else {
-                if (file != null) {
-                    DAOFactory.daoFactury().alunoDAO().update(aluno);
+            Aluno aluno = new AlunoBuilder().setIdAluno(idAluno).setNome(nome)
+                    .setDataNascimento(dataNascimento).setNumBI(numBI).setDataEmisao(dataEmisao)
+                    .setResidencia(residencia).setConselho(conselho).setNatural(natural)
+                    .setEmail(email).setContato(contato).setHabilitacaoLit(tipo)
+                    .setNacionalidade(pais).setDescricao(descricao).setNomeDaMae(mae)
+                    .setNomeDoPai(pai).setProfessao(professao).setEstadoCivil(estadoCivil)
+                    .setLocalDeEmisao(localEmissao).setFreguesia(freg).createAluno();
+            aluno.setFoto(fileInput);
+            try {
+                if (idAluno == 0) {
+                    DAOFactory.daoFactury().alunoDAO().create(aluno);
+                    Mensagem.info("Aluno salvo com sucesso");
                 } else {
-                    DAOFactory.daoFactury().alunoDAO().editarSemFoto(aluno);
+                    DAOFactory.daoFactury().alunoDAO().update(aluno);
+                    Mensagem.info("Aluno atualizado com sucesso");
                 }
+            } catch (DaoException e) {
+                Mensagem.erro(e.getMessage());
             }
             telaCadastro(null);
             sincronizarDataBase();
@@ -419,46 +375,72 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     @FXML
     private void editar(ActionEvent event) {
-        try {
-            Aluno aluno = tbAluno.getSelectionModel().getSelectedItem();
-            aluno.getClass();
+        TableViewSelectionModel<Aluno> selectionModel = tableViewSelectionModel();
+        if (!selectionModel.isEmpty()) {
+            Aluno aluno = alunoSelected(selectionModel);
+            final File file = writeBinaryIntoFile(aluno);
             telaCadastro(null);
-
-            txtNome.setText(aluno.getNome());
-            dtNascimento.setValue(aluno.getDataNascimento());
-            txtNumBI.setText(aluno.getNumBI());
-            dtEmissao.setValue(aluno.getDataEmisao());
-            txtResidencia.setText(aluno.getResidencia());
-            txtConselho.setText(aluno.getConselho());
-            txtNatural.setText(aluno.getNatural());
-            txtEmail.setText(aluno.getEmail());
-            txtContacto.setText(aluno.getContato());
-            cbxHabilitacao.setValue(aluno.getHabilitacaoLit());
-            txtNacionalidade.setText(aluno.getNacionalidade());
-            image = aluno.image;
+            setFieldToUpdate(aluno);
+            image = new Image(file.getAbsoluteFile().toURI().toString());
             imgView.setImage(image);
-
-            txtDescricao.setText(aluno.getDescricao());
-            txtNomeDaMae.setText(aluno.getNomeDaMae());
-            txtNomeDoPai.setText(aluno.getNomeDoPai());
-            txtProfessao.setText(aluno.getProfessao());
-            cbEstadoCivil.setValue(aluno.getEstadoCivil());
-            txtLocalDeEmisao.setText(aluno.getLocalDeEmisao());
-            txtFreguesia.setText(aluno.getFreguesia());
-
-            lbTitulo.setText("Editar Aluno");
-            menu.selectToggle(menu.getToggles().get(1));
-
-            idAluno = aluno.getIdAluno();
-        } catch (NullPointerException ex) {
-            Nota.alerta("Selecione um aluno na tabela para edição!");
+        } else {
+            Nota.alerta("Voce precisa Selecionar um Aluno na Tabela!");
         }
+    }
+
+    private void setFieldToUpdate(Aluno aluno) {
+        txtNome.setText(aluno.getNome());
+        dtNascimento.setValue(aluno.getDataNascimento());
+        txtNumBI.setText(aluno.getNumBI());
+        dtEmissao.setValue(aluno.getDataEmisao());
+        txtResidencia.setText(aluno.getResidencia());
+        txtConselho.setText(aluno.getConselho());
+        txtNatural.setText(aluno.getNatural());
+        txtEmail.setText(aluno.getEmail());
+        txtContacto.setText(aluno.getContato());
+        cbxHabilitacao.setValue(aluno.getHabilitacaoLit());
+        txtNacionalidade.setText(aluno.getNacionalidade());
+        txtDescricao.setText(aluno.getDescricao());
+        txtNomeDaMae.setText(aluno.getNomeDaMae());
+        txtNomeDoPai.setText(aluno.getNomeDoPai());
+        txtProfessao.setText(aluno.getProfessao());
+        cbEstadoCivil.setValue(aluno.getEstadoCivil());
+        txtLocalDeEmisao.setText(aluno.getLocalDeEmisao());
+        txtFreguesia.setText(aluno.getFreguesia());
+        lbTitulo.setText("Editar Aluno");
+        menu.selectToggle(menu.getToggles().get(1));
+        idAluno = aluno.getIdAluno();
+    }
+
+    private File writeBinaryIntoFile(Aluno aluno) {
+        String fileSeparator = File.separator;
+        final String pathDiretorio = System.getProperty("user.home") + fileSeparator
+                + "Documents/ecos/aluno/";
+        File directorio = new File(pathDiretorio);
+        String filePath = pathDiretorio + fileSeparator + aluno.getNumBI() + ".jpg";
+        File file = new File(filePath);
+        if (!directorio.exists()) {
+            directorio.mkdirs();
+        }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);) {
+            byte[] buffer = new byte[1024];
+            final InputStream foto = aluno.getFoto();
+            if (foto != null) {
+                while (foto.read(buffer) > 0) {
+                    fileOutputStream.write(buffer);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return file;
     }
 
     @FXML
     private void excluir(ActionEvent event) {
-        try {
-            Aluno aluno = tbAluno.getSelectionModel().getSelectedItem();
+        TableViewSelectionModel<Aluno> selectionModel = tableViewSelectionModel();
+        if (!selectionModel.isEmpty()) {
+            Aluno aluno = alunoSelected(selectionModel);
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Aluno: " + aluno.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().alunoDAO().delete(aluno.getIdAluno());
@@ -466,19 +448,31 @@ public class AlunoController extends AnchorPane implements Initializable {
                 mapTableAluno();
             }
             tbAluno.getSelectionModel().clearSelection();
-        } catch (NullPointerException ex) {
-            Mensagem.alerta("Selecione aluno na tabela para exclusão!");
+        } else {
+            Nota.alerta("Voce precisa Selecionar um Aluno na Tabela!");
         }
     }
-    
+
+    private Aluno alunoSelected(TableViewSelectionModel<Aluno> selectionModel) {
+        Aluno alunoSelected = selectionModel.getSelectedItem();
+        alunoSelected.getClass();
+        return alunoSelected;
+    }
+
+    private TableViewSelectionModel<Aluno> tableViewSelectionModel() {
+        final TableViewSelectionModel<Aluno> selectionModel = tbAluno.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        return selectionModel;
+    }
+
     private void sincronizarDataBase() {
         listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
     }
 
     private void configTela(String tituloTela, String msg, int grupoMenu) {
         lbTitulo.setText(tituloTela);
-        Modulo.visualizacao(false, btExcluir, btSalvar, btEditar, btImprimir, 
-                telaCadastro, telaEdicao, telaView, telaPrint, txtPesquisar);
+        Modulo.visualizacao(false, btExcluir, btSalvar, btEditar, btImprimir,
+                telaCadastro, telaEdicao, telaView, txtPesquisar);
         legenda.setText(msg);
         tbAluno.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
@@ -487,11 +481,12 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     private void limparCampos() {
-        Campo.limpar(txtEmail, txtNumBI, txtResidencia, txtNome, txtNacionalidade, 
-                txtContacto, txtConselho, txtNatural, txtNomeDaMae, txtNomeDoPai, 
+        Aluno aluno = new Aluno();
+        Campo.limpar(txtEmail, txtNumBI, txtResidencia, txtNome, txtNacionalidade,
+                txtContacto, txtConselho, txtNatural, txtNomeDaMae, txtNomeDoPai,
                 txtProfessao, txtLocalDeEmisao, txtFreguesia, txtNomeDoPai, txtNomeDaMae);
         Campo.limpar(txtDescricao);
-        imgView.setImage(new Image("cv/com/escola/view/img/sem_foto_0.gif"));
+        imgView.setImage(new Image(defualtImage));
     }
 
     @Override
@@ -502,25 +497,17 @@ public class AlunoController extends AnchorPane implements Initializable {
         Tempo.blockDataPosterior(LocalDate.now().plusYears(100), dtNascimento);
 
         scrollPane.viewportBoundsProperty().addListener(
-                (ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) -> { 
+                (ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) -> {
                     flowPane.setPrefWidth(newValue.getWidth());
-        });
+                });
 
         sincronizarDataBase();
-        lblTotalAluno.setText("Caregando ..........");
-
-        esperar(200);
-        caregando();
-//        Platform.runLater(() -> {
-//            caregando();
-//        });
-
+        loadAlunos();
         pagination.setPageFactory((Integer pagina) -> {
             atualizarGrade(pagina);
             return tbAluno;
         });
 
-        //atualizarGrade(0);
         imgView.setOnMouseClicked((event) -> {
             adcionarFoto(null);
         });
@@ -529,14 +516,13 @@ public class AlunoController extends AnchorPane implements Initializable {
             adcionarFoto(null);
         });
 
-        //telaCadastro(null);
         Grupo.notEmpty(menu);
         combos();
 
         txtPesquisar.textProperty().addListener((obs, old, novo) -> {
             filtro(novo, FXCollections.observableArrayList(listaAluno));
         });
-        
+
         tooltip();
 
         tbAluno.setOnMouseClicked((event) -> {
@@ -603,21 +589,17 @@ public class AlunoController extends AnchorPane implements Initializable {
         colLocalDeEmisao.setCellValueFactory((CellDataFeatures<Aluno, String> obj) -> obj.getValue().localDeEmisaoProperty());
         colProfessao.setCellValueFactory((CellDataFeatures<Aluno, String> obj) -> obj.getValue().professaoProperty());
         colDataCadastro.setCellValueFactory((CellDataFeatures<Aluno, LocalDate> obj) -> obj.getValue().dataCadastroProperty());
-        colFoto.setCellValueFactory(new PropertyValueFactory<>("imageView"));
-    }
-
-    public void caregando() {
-        loadAlunos();
+        colFoto.setCellValueFactory(new PropertyValueFactory<>("foto"));
     }
 
     /**
      * Preencher combos tela
      */
     private void combos() {
-        Combo.popular(cbxHabilitacao, "Basico incompleto", "Basico completo", 
-                "Médio incompleto", "Médio completo", "Superior incompleto", 
-                "Superior completo", "Pòs-graduação completo", "Pòs-graduação incompleto", 
-                "Mestrado incompleto", "Mestrado completo", "Doutorado incompleto", 
+        Combo.popular(cbxHabilitacao, "Basico incompleto", "Basico completo",
+                "Médio incompleto", "Médio completo", "Superior incompleto",
+                "Superior completo", "Pòs-graduação completo", "Pòs-graduação incompleto",
+                "Mestrado incompleto", "Mestrado completo", "Doutorado incompleto",
                 "Doutorado completo");
         Combo.popular(cbEstadoCivil, "Solteiro(a)", "Casado(a)", "Viuvo(a)", "Disvorciado(a)");
     }
@@ -680,17 +662,16 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     @FXML
     private void imprimir(ActionEvent event) {
-        try {
-            Aluno aluno = tbAluno.getSelectionModel().getSelectedItem();
-            aluno.getClass();
-            System.out.println(aluno.getNumBI());
+        TableViewSelectionModel<Aluno> selectionModel = tableViewSelectionModel();
+        if (!selectionModel.isEmpty()) {
+            Aluno aluno = alunoSelected(selectionModel);
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Requiremento para:: " + aluno.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().alunoDAO().reportRequiremento(aluno.getNumBI());
             }
             tbAluno.getSelectionModel().clearSelection();
-        } catch (NullPointerException ex) {
-            Nota.alerta("Selecione aluno na tabela para imprimir o requiremento!");
+        } else {
+            Nota.alerta("Voce precisa Selecionar um Aluno na Tabela!");
         }
     }
 
@@ -756,27 +737,39 @@ public class AlunoController extends AnchorPane implements Initializable {
         studantDefault = true;
         flowPane.getChildren().clear();
         totalAluno = DAOFactory.daoFactury().alunoDAO().count();
-        listaAluno.stream()
-                .parallel()
+        listaAluno.parallelStream()
+                .limit(30)
                 .forEachOrdered((aluno) -> {
-                    card = new AlunoCard(aluno) {
-                    };
+                    AnchorPane card = new AlunoCard(aluno);
                     flowPane.getChildren().add(card);
                 });
+
+//        Pagination pag = new Pagination();
+//        pag.setPageCount(21);
+//        pag.setCurrentPageIndex(0);
+//        pag.setMaxPageIndicatorCount(3);
+//        pag.setPageFactory((Integer pageIndex) -> {
+//            FlowPane flow = new FlowPane();
+//            listaAluno.stream()
+//                    .parallel()
+//                    .limit(20)
+//                    .skip(20)
+//                    .forEachOrdered((aluno) -> {
+//                        AnchorPane card = new AlunoCard(aluno);
+//                        flow.getChildren().add(card);
+//                    });
+//            return flow;
+//        });
+//        vBox.getChildren().add(pag);
     }
 
     private void searchAluno(String query) {
         studantDefault = false;
-        totalBuscarAluno = DAOFactory.daoFactury().alunoDAO().totalSearchStudent(query);
-        paginas.setTotal(totalBuscarAluno);
-        paginas.setInicio(0);
-        paginas.setPerPag(12);
-        paginas.setFim(12);
-        student = DAOFactory.daoFactury().alunoDAO().searchStudent(paginas, query);
         flowPane.getChildren().clear();
-        student.forEach((aluno) -> {
-            card = new AlunoCard(aluno) {
-            };
+        listaAluno.stream()
+                .filter((a) -> a.getNome().startsWith(query))
+                .forEach((aluno) -> {
+            AnchorPane card = new AlunoCard(aluno);
             flowPane.getChildren().add(card);
         });
     }
@@ -788,19 +781,11 @@ public class AlunoController extends AnchorPane implements Initializable {
         tbAluno.setItems(alunos);
     }
 
-    private void abrir(String title) {
-        Print loader = new Print();
-        Tab tab = new Tab(title);
-        tab.setContent(loader.createContentPane());
-        telaPrint.getTabs().add(tab);
-        telaPrint.getSelectionModel().select(tab);
-    }
-
     private static void esperar(long milesegundos) {
         try {
             Thread.sleep(milesegundos);
         } catch (InterruptedException e) {
-            
+
         }
     }
 }

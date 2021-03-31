@@ -24,13 +24,14 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         try {
             String sql = "INSERT INTO "+ db +".tb_artigo (nomeArtigo, preco, descricao) VALUES (?,?,?)";
 
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, artigo.getNomeArtigo());
-            stm.setBigDecimal(2, artigo.getPreco());
-            stm.setString(3, artigo.getDescricao());
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, artigo.getNomeArtigo());
+            preparedStatement.setBigDecimal(2, artigo.getPreco());
+            preparedStatement.setString(3, artigo.getDescricao());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Artigo cadastrada com sucesso!"); 
         } catch (SQLException ex) {
             throw new DaoException("Erro ao cadastrar artigo na base de dados!");
@@ -42,15 +43,16 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         try {
             String sql = "UPDATE "+ db +".tb_artigo SET nomeArtigo=?, preco=?, descricao=? WHERE id_artigo =?";
 
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, artigo.getNomeArtigo());
-            stm.setBigDecimal(2, artigo.getPreco());
-            stm.setString(3, artigo.getDescricao());
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, artigo.getNomeArtigo());
+            preparedStatement.setBigDecimal(2, artigo.getPreco());
+            preparedStatement.setString(3, artigo.getDescricao());
             
-            stm.setInt(4, (int) artigo.getIdArtigo());
+            preparedStatement.setInt(4, (int) artigo.getIdArtigo());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Artigo atualizada com sucesso!");
         } catch (SQLException ex) {
             throw new DaoException("Erro ao atualizar artigo na base de dados! \n");
@@ -62,11 +64,11 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         try {
             String sql = "DELETE FROM "+ db +".tb_artigo WHERE id_artigo=?";
 
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, idArtigo);
-            stm.execute();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, idArtigo);
+            preparedStatement.execute();
 
-            stm.close();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir artigo na base de dados! \n" + ex);
         }
@@ -77,13 +79,13 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         List<Artigo> artigosList = new ArrayList<>();
         try {
             String sql = "SELECT * from "+ db +".tb_artigo";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Artigo artigos = new Artigo(rs.getLong(1), rs.getString(2), rs.getBigDecimal(3), rs.getString(4));
                 artigosList.add(artigos);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao consultar artigos na base de dados!");
@@ -96,9 +98,9 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         String sql = "SELECT * FROM "+ db +".tb_artigo WHERE id_artigo=?";
         Artigo retorno = new Artigo();
         try {
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, (int)artigo.getIdArtigo());
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, (int)artigo.getIdArtigo());
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 retorno.setIdArtigo(rs.getInt("id_artigo"));
                 retorno.setNomeArtigo(rs.getString("nomeArtigo"));

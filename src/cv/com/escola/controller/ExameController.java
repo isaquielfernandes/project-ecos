@@ -53,15 +53,11 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
+
 public class ExameController extends AnchorPane implements Initializable {
 
-    private List<Exame> listaExame;
     private List<Categoria> listaCategoria;
+    private List<Exame> listaExame;
     private List<Aluno> listaAluno;
     private long idMarcar;
 
@@ -158,10 +154,10 @@ public class ExameController extends AnchorPane implements Initializable {
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabelaAluno() {
-
         ObservableList data = FXCollections.observableArrayList(listaAluno);
 
-        colAlunoID.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> new SimpleStringProperty(Integer.toString(obj.getValue().getIdAluno())));
+        colAlunoID.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> 
+                new SimpleStringProperty(Integer.toString(obj.getValue().getIdAluno())));
         colAlunoNome.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
 
         tbAluno.setItems(data);
@@ -183,7 +179,6 @@ public class ExameController extends AnchorPane implements Initializable {
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtroAluno(String valor, ObservableList<Aluno> listaAluno) {
-
         FilteredList<Aluno> dadosFiltrados = new FilteredList<>(listaAluno, aluno -> true);
         dadosFiltrados.setPredicate((aluno) -> {
 
@@ -299,19 +294,17 @@ public class ExameController extends AnchorPane implements Initializable {
         String descricao = txtDescricao.getText();
 
         if (vazio) {
-
             Exame exame = new Exame(idMarcar, tipo_exame, dia, hora, descricao, cat, aluno);
             exame.setRegistroCriminal(copyRegistroCriminal());
             exame.setAtestadoMedico(copyAtestadoMedico());
 
             if (idMarcar == 0) {
                 DAOFactory.daoFactury().exameDAO().create(exame);
-                //Mensagem.info("Exame marcada com sucesso!");
+                Mensagem.info("Exame marcada com sucesso!");
             } else {
                 DAOFactory.daoFactury().exameDAO().update(exame);
-                //Mensagem.info("Exame atualizada com sucesso!");
+                Mensagem.info("Exame atualizada com sucesso!");
             }
-
             telaCadastro(null);
             sincronizarBase();
         }
@@ -455,13 +448,20 @@ public class ExameController extends AnchorPane implements Initializable {
     private void tabela() {
         ObservableList exameMarcado = FXCollections.observableArrayList(listaExame);
 
-        colId.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(Long.toString(obj.getValue().getIdExame())));
-        colAluno.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(obj.getValue().getAluno().getNome()));
-        colCategoria.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(obj.getValue().getCategoria().nomeProperty().get()));
-        colData.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(obj.getValue().getDataExame().toString()));
-        colHora.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(obj.getValue().getHoraDeExame().toString()));
-        colDescricao.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(obj.getValue().getDescricao()));
-        colTipo.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> new SimpleStringProperty(obj.getValue().getTipoExame()));
+        colId.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(Long.toString(obj.getValue().getIdExame())));
+        colAluno.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(obj.getValue().getAluno().getNome()));
+        colCategoria.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(obj.getValue().getCategoria().nomeProperty().get()));
+        colData.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(obj.getValue().getDataExame().toString()));
+        colHora.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(obj.getValue().getHoraDeExame().toString()));
+        colDescricao.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(obj.getValue().getDescricao()));
+        colTipo.setCellValueFactory((TableColumn.CellDataFeatures<Exame, String> obj) -> 
+                new SimpleStringProperty(obj.getValue().getTipoExame()));
 
         tbExame.setItems(exameMarcado);
     }
@@ -517,7 +517,7 @@ public class ExameController extends AnchorPane implements Initializable {
         tbExame.setItems(dadosOrdenados);
     }
 
-    public String copyRegistroCriminal() {
+    private String copyRegistroCriminal() {
         try {
             if (file != null) {
                 if (!diretorioR.exists()) {
@@ -534,7 +534,7 @@ public class ExameController extends AnchorPane implements Initializable {
         return copyFile.getName();
     }
 
-    public String copyAtestadoMedico() {
+    private String copyAtestadoMedico() {
         try {
             if (file != null) {
                 if (!diretorioA.exists()) {
@@ -552,7 +552,7 @@ public class ExameController extends AnchorPane implements Initializable {
     }
 
     //caregando file
-    public void uploadFile() {
+    private void uploadFile() {
         fileChooser.getExtensionFilters().addAll(extensionFilterJPG, extensionFilterPNG, extensionFilterPDF);
         fileChooser.setTitle("Upload File");
         file = fileChooser.showOpenDialog(new Stage());
@@ -561,7 +561,7 @@ public class ExameController extends AnchorPane implements Initializable {
         }
     }
 
-    public void findByTipoDeExame() {
+    private void findByTipoDeExame() {
         listaExame.stream()
                 .filter(e -> e.getTipoExame().equalsIgnoreCase(cbTipoExame.getValue())
                 || e.getDataExame().equals(datePickerDia.getValue()))

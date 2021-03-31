@@ -1,40 +1,25 @@
-/*
- * Copyright (C) 2019 Isaquiel Fernandes.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301  USA
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.app.App;
 import cv.com.escola.app.Configuracao;
 import cv.com.escola.model.dao.db.DAOFactory;
-import cv.com.escola.model.entity.Empresa;
+import cv.com.escola.model.entity.EscolaConducao;
 import cv.com.escola.model.util.Campo;
-import cv.com.escola.model.util.Mensagem;
 import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,22 +35,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.imageio.ImageIO;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
+
 public class ConfiguracaoController implements Initializable {
 
-    private List<Empresa> listaEmpresa;
+    private List<EscolaConducao> listaEmpresa;
     private int idEmpresa = 0;
     private Image image;
     private File file;
     private File fileLogo;
     private File fileAssinatura;
-    private FileOutputStream fileOutput;
-    private FileInputStream fileInput;
+    private OutputStream fileOutput;
+    private InputStream fileInput;
     private byte[] userImage;
     private String imgPath;
 
@@ -90,9 +72,9 @@ public class ConfiguracaoController implements Initializable {
     @FXML
     private TextField txtNif;
     @FXML
-    private ImageView imageViewBarnner;
+    private ImageView logo;
     @FXML
-    private ImageView imageViewAssinatura;
+    private ImageView assinatura;
     @FXML
     private TextField txtID;
     @FXML
@@ -100,75 +82,33 @@ public class ConfiguracaoController implements Initializable {
     @FXML
     private Label legenda;
 
-    /**
-     * Initializes the controller class.
-     *
-     * @param url
-     * @param rb
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        //Grupo.notEmpty(menu);
-        sincronizarBase();
-        //txtID.setText(String.valueOf(idEmpresa));
+        sincronizarDataBase();
 
-        imageViewBarnner.setOnMouseClicked((event) -> {
+        logo.setOnMouseClicked((event) -> {
             uploadLogo();
         });
-        
-        imageViewAssinatura.setOnMouseClicked((event) -> {
+
+        assinatura.setOnMouseClicked((event) -> {
             uploadFileAssinatura();
         });
     }
 
-    public void uploadLogo(){
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fotografia", "*.png", "*.jpg"));
-
-        file = fileChooser.showOpenDialog(null);
-
-        if (file != null) {
-            if (file.length() < 6000000) {
-                try {
-                    fileInput = new FileInputStream(file);
-                    image = new Image(file.getAbsoluteFile().toURI().toString(), imageViewBarnner.getFitWidth(), imageViewBarnner.getFitHeight(), true, true);
-                    imageViewBarnner.setImage(image);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                //fileInput = newFileInputStream(new Image());
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Permiss");
-                alert.setHeaderText("Permission denied");
-                alert.setContentText("Your Image file is too big to upload \n please choise another image");
-                alert.initStyle(StageStyle.UNDECORATED);
-
-            }
-
-        }
-    }
-
-    /**
-     * Sincronizar dados com banco de dados
-     */
-    private void sincronizarBase() {
+    private void sincronizarDataBase() {
         listaEmpresa = DAOFactory.daoFactury().empresaDAO().findAll();
     }
 
-    /**
-     * Limpar campos textfield cadastro de coleções
-     */
     private void limparCampos() {
         Campo.limpar(txtEndereco, txtNomeEscola, txtCidade, txtEmail, txtNif, txtContato);
         Campo.limpar(txtDescricao);
-        imageViewBarnner.setImage(null);
+        logo.setImage(null);
     }
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean vazio = checkEmptyFields(txtCidade, txtNomeEscola, txtNif, txtEmail, txtContato, txtEndereco);
+        boolean vazio = checkEmptyFields(txtCidade, txtNomeEscola, txtNif, txtEmail,
+                txtContato, txtEndereco);
 
         String cidade = txtCidade.getText();
         String nomeEscola = txtNomeEscola.getText();
@@ -179,37 +119,56 @@ public class ConfiguracaoController implements Initializable {
         String descricao = txtDescricao.getText();
         idEmpresa = Integer.valueOf(txtID.getText().trim().isEmpty() ? "0" : txtID.getText());
 
-        if (vazio) {
-            Empresa empresa = new Empresa(idEmpresa, nomeEscola, cidade, endereco, nif, contato, email, descricao, fileLogo);
-            empresa.setFileCarimboAssinatura(fileAssinatura);
-            
-            DAOFactory.daoFactury().empresaDAO().create(empresa);
+//        if (vazio) {
+//            EscolaConducao empresa = new EscolaConducao(idEmpresa, nomeEscola, cidade, endereco,
+//                    nif, contato, email, descricao, fileLogo);
+//            empresa.setFileCarimboAssinatura(fileAssinatura);
+//            DAOFactory.daoFactury().empresaDAO().create(empresa);
+//            sincronizarDataBase();
+//            new App().start(new Stage());
+//            Configuracao.palco.close();
+//        }
+    }
 
-            sincronizarBase();
-            new App().start(new Stage());
-            Configuracao.palco.close();
+    public void uploadLogo() {
+        file = filechooser();
+        if (file.length() < 6000000) {
+            image = new Image(file.getAbsoluteFile().toURI().toString(),
+                    logo.getFitWidth(), logo.getFitHeight(), true, true);
+            logo.setImage(image);
+        } else {
+            alearta();
         }
     }
-    
-    public void uploadFileAssinatura(){
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fotografia", "*.png", "*.jpg"));
 
-        fileAssinatura = fileChooser.showOpenDialog(null);
-
-        if (fileAssinatura != null) {
-            if (fileAssinatura.length() < 6000000) {
-                try {
-                    fileInput = new FileInputStream(fileAssinatura);
-                    image = new Image(fileAssinatura.getAbsoluteFile().toURI().toString(), imageViewAssinatura.getFitWidth(), imageViewAssinatura.getFitHeight(), true, true);
-                    imageViewAssinatura.setImage(image);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(ConfiguracaoController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                Mensagem.info("Permissão", "Sua imagem file é muito grande para upload \n Por favor escolha outra image");
-            }
-
+    public void uploadFileAssinatura() {
+        fileAssinatura = filechooser();
+        if (fileAssinatura.length() < 6000000) {
+            image = new Image(fileAssinatura.getAbsoluteFile().toURI().toString(),
+                    assinatura.getFitWidth(), assinatura.getFitHeight(), true, true);
+            assinatura.setImage(image);
+        } else {
+            alearta();
         }
+    }
+
+    private File filechooser() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image File", "*.png", "*.jpg")
+        );
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            return selectedFile;
+        }
+        return null;
+    }
+    
+    private void alearta() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Permissao");
+        alert.setHeaderText("Permisao negada");
+        alert.setContentText("Your Image file is too big to upload \n please choise another image");
+        alert.initStyle(StageStyle.UNDECORATED);
     }
 }

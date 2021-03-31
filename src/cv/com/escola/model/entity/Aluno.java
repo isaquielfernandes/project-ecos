@@ -1,10 +1,14 @@
 package cv.com.escola.model.entity;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.sql.Blob;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,7 +16,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import org.apache.commons.io.IOUtils;
 
 public class Aluno {
     
@@ -71,6 +75,7 @@ public class Aluno {
         if(conselho == null) conselho = new SimpleStringProperty(this, "conselho");
         return conselho;
     }
+    
     private StringProperty freguesia;
     public String getFreguesia() { return freguesiaProperty().get(); }
     public void setFreguesia(String value) { freguesiaProperty().set(value); }
@@ -118,9 +123,7 @@ public class Aluno {
         if(nacionalidade == null) nacionalidade = new SimpleStringProperty(this, "nacionalidade");
         return nacionalidade;
     }
-    
-    private Blob foto;
-    private Blob fotocopiaBI;
+
     private StringProperty descricao;
     public String getDescricao() { return descricaoProperty().get(); }
     public void setDescricao(String descricao) { descricaoProperty().set(descricao); }
@@ -128,6 +131,7 @@ public class Aluno {
         if(descricao == null) descricao = new SimpleStringProperty(this, "descricao");
         return descricao;
     }
+    
     private StringProperty nomeDaMae;
     public String getNomeDaMae() { return nomeDaMaeProperty().get(); }
     public void setNomeDaMae(String value) { nomeDaMaeProperty().set(value); }
@@ -135,6 +139,7 @@ public class Aluno {
         if(nomeDaMae == null) nomeDaMae = new SimpleStringProperty(this, "nomeDaMae");
         return nomeDaMae;
     }
+    
     private StringProperty nomeDoPai;
     public String getNomeDoPai() { return nomeDoPaiProperty().get(); }
     public void setNomeDoPai(String value) { nomeDoPaiProperty().set(value); }
@@ -142,6 +147,7 @@ public class Aluno {
         if(nomeDoPai == null) nomeDoPai = new SimpleStringProperty(this, "nomeDoPai");
         return nomeDoPai;
     }
+    
     private StringProperty professao;
     public String getProfessao() { return professaoProperty().get(); }
     public void setProfessao(String value) { professaoProperty().set(value); }
@@ -149,6 +155,7 @@ public class Aluno {
         if(professao == null) professao = new SimpleStringProperty(this, "professao");
         return professao;
     }
+    
     private StringProperty estadoCivil;
     public String getEstadoCivil() { return estadoCivilProperty().get(); }
     public void setEstadoCivil(String value) { estadoCivilProperty().set(value); }
@@ -156,6 +163,7 @@ public class Aluno {
         if(estadoCivil == null) estadoCivil = new SimpleStringProperty(this, "estadoCivil");
         return estadoCivil;
     }
+    
     private StringProperty localDeEmisao;
     public String getLocalDeEmisao() { return localDeEmisaoProperty().get(); }
     public void setLocalDeEmisao(String value) { localDeEmisaoProperty().set(value); }
@@ -163,33 +171,7 @@ public class Aluno {
         if(localDeEmisao == null) localDeEmisao = new SimpleStringProperty(this, "localDeEmisao");
         return localDeEmisao;
     }
-    
-    public Image image;
-    public Image getImage() {return image;}
-    public void setImage(Image image) {
-        this.image = image;
-    }
-    
-    public ImageView imageView;
-    public ImageView getImageView() {
-        return imageView = new ImageView(this.getImage());
-    }
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
-    
-    
-    public String imagePath;
-    public String filePath;
-    private File file;
-    private FileInputStream fileInputStream;
-    public FileInputStream getFileInputStream() {
-        return fileInputStream;
-    }
-    public void setFileInputStream(FileInputStream fileInputStream) {
-        this.fileInputStream = fileInputStream;
-    }
-    
+        
     private ObjectProperty<LocalDate> dataCadastro;
     public LocalDate getDataCadastro() { return dataCadastroProperty().get(); }
     public void setDataCadastro(LocalDate value) { dataCadastroProperty().set(value); }
@@ -198,30 +180,24 @@ public class Aluno {
         return dataCadastro;
     }
     
-    public Blob getFoto() {
+    private InputStream foto;
+    private InputStream fotocopiaBI;
+    public InputStream getFoto() {
         return foto;
     }
 
-    public void setFoto(Blob foto) {
+    public void setFoto(InputStream foto) {
         this.foto = foto;
     }
 
-    public Blob getFotocopiaBI() {
+    public InputStream getFotocopiaBI() {
         return fotocopiaBI;
     }
 
-    public void setFotocopiaBI(Blob fotocopiaBI) {
+    public void setFotocopiaBI(InputStream fotocopiaBI) {
         this.fotocopiaBI = fotocopiaBI;
     }
-    
-    public File getFile() {
-        return file;
-    }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
-    
     public Aluno() {
         
     }
@@ -243,7 +219,7 @@ public class Aluno {
     public Aluno(int idAluno, String nome, LocalDate dataNascimento, String numBI, 
             LocalDate dataEmisao, String residencia, String conselho, String natural, 
             String email, String contato, String habilitacaoLit, 
-            String nacionalidade,File file , String descricao, String nomeDaMae, 
+            String nacionalidade, String descricao, String nomeDaMae, 
             String nomeDoPai, String professao, String estadoCivil, 
             String localDeEmisao, String freguesia) {
         this.idAluno = new SimpleIntegerProperty(idAluno);
@@ -258,7 +234,6 @@ public class Aluno {
         this.contato = new SimpleStringProperty(contato);
         this.habilitacaoLit = new SimpleStringProperty(habilitacaoLit);
         this.nacionalidade = new SimpleStringProperty(nacionalidade);
-        this.file = file;
         this.descricao = new SimpleStringProperty(descricao);
         this.nomeDaMae = new SimpleStringProperty(nomeDaMae);
         this.nomeDoPai = new SimpleStringProperty(nomeDoPai);
@@ -266,6 +241,21 @@ public class Aluno {
         this.estadoCivil = new SimpleStringProperty(estadoCivil);
         this.localDeEmisao = new SimpleStringProperty(localDeEmisao);
         this.freguesia = new SimpleStringProperty(freguesia);
+    }
+    
+    public Image readFoto(){
+        Image img = null;
+        final InputStream fileStream = this.getFoto();
+        if(fileStream != null) {
+            try {
+                byte byteArray[] = new byte[fileStream.available()];
+                fileStream.read(byteArray);
+                img = new Image(new ByteArrayInputStream(byteArray));
+            } catch (IOException ex) {
+                Logger.getLogger(Aluno.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return img;
     }
     
     @Override

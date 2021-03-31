@@ -60,8 +60,8 @@ WHERE
 	</background>
 	<title>
 		<band height="131" splitType="Stretch">
-			<image scaleImage="FillFrame" isLazy="true">
-				<reportElement x="210" y="0" width="128" height="59" uuid="470a062a-7404-4422-ac5f-2c6c6ba53192"/>
+			<image scaleImage="FillFrame" isLazy="true" onErrorType="Icon">
+				<reportElement x="0" y="0" width="470" height="59" uuid="470a062a-7404-4422-ac5f-2c6c6ba53192"/>
 				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
 			</image>
 			<image scaleImage="FillFrame" isLazy="true" onErrorType="Icon">
@@ -329,7 +329,7 @@ WHERE
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[2]]></text>
+				<text><![CDATA[12]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="316" y="60" width="22" height="22" backcolor="#F2F0F0" uuid="aa965a41-76ee-41a0-ba18-1dbccb22666a"/>

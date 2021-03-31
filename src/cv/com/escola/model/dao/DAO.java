@@ -10,7 +10,7 @@ public abstract class DAO {
 
     protected Connection conector = ConnectionManager.getInstance().begin();
     protected ResultSet rs;
-    protected PreparedStatement stm;
+    protected PreparedStatement preparedStatement;
     protected DBProperties dBProperties = new DBProperties();
     protected String db = dBProperties.loadPropertiesFile();
     protected String user = dBProperties.loadPropertiesFileUser();

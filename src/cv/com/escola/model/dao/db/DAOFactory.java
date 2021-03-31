@@ -28,7 +28,7 @@ import cv.com.escola.model.dao.impl.CargoSalarioDAOImpl;
 import cv.com.escola.model.dao.impl.CategoriaDAOImpl;
 import cv.com.escola.model.dao.impl.ClienteDAOImpl;
 import cv.com.escola.model.dao.impl.CursoDAOImpl;
-import cv.com.escola.model.dao.impl.EmpresaDAOImpl;
+import cv.com.escola.model.dao.impl.EscolaConducaoDAOImpl;
 import cv.com.escola.model.dao.impl.ExameDAOImpl;
 import cv.com.escola.model.dao.impl.ExameResultadoDAOImpl;
 import cv.com.escola.model.dao.impl.InspecaoTecnicaDAOImpl;
@@ -107,7 +107,7 @@ public class DAOFactory {
     }
 
     public EmpresaDAO empresaDAO() {
-        return new EmpresaDAOImpl();
+        return new EscolaConducaoDAOImpl();
     }
 
     public CargoSalarioDAO getCargo_salarioDAO() {

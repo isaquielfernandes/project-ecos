@@ -16,8 +16,6 @@ public interface AlunoDAO extends CrudDAO<Aluno, Integer>{
         return (int) this.findAll().stream()
                 .filter(aluno -> aluno.getNome().equals(filtro) ).count();
     }
-    
-    void editarSemFoto(Aluno aluno);
     ObservableList<Aluno> listar(int quantidade, int pagina);
     void report();
     void reportRequiremento(String biFiltro);

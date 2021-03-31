@@ -1,12 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package cv.com.escola.model.dao.db;
+package cv.com.escola.controller;
 
 import cv.com.escola.app.Login;
 import cv.com.escola.app.Server;
+import cv.com.escola.model.dao.db.DAOFactory;
+import cv.com.escola.model.dao.db.DBMigration;
 import cv.com.escola.model.util.Dialogo;
 import cv.com.escola.model.util.Mensagem;
 import java.io.FileInputStream;

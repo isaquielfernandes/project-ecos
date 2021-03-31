@@ -24,16 +24,17 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
             String inserir = "INSERT INTO "+ db +".`tb_seguro` "
                     + "(`compania`, `veiculo_seguro`, `desde`, `ate`, `emissao`) VALUES (?,?,?,?,?)";
 
-            stm = conector.prepareStatement(inserir);
+            preparedStatement = conector.prepareStatement(inserir);
 
-            stm.setString(1, seguro.getCompania());
-            stm.setLong(2, seguro.getVeiculo().getCodigo());
-            stm.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
-            stm.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
-            stm.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
+            preparedStatement.setString(1, seguro.getCompania());
+            preparedStatement.setLong(2, seguro.getVeiculo().getCodigo());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
+            preparedStatement.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
+            preparedStatement.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Seguro auto cadastrada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(SeguroAutoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,17 +47,17 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
         try {
             String update = "UPDATE "+ db +".`tb_seguro` SET `compania` = ?, `veiculo_seguro` = ?, `desde` = ?, `ate` = ?, `emissao` = ? WHERE `id` = ?";
 
-            stm = conector.prepareStatement(update);
+            preparedStatement = conector.prepareStatement(update);
 
-            stm.setString(1, seguro.getCompania());
-            stm.setLong(2, seguro.getVeiculo().getCodigo());
-            stm.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
-            stm.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
-            stm.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
+            preparedStatement.setString(1, seguro.getCompania());
+            preparedStatement.setLong(2, seguro.getVeiculo().getCodigo());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
+            preparedStatement.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
+            preparedStatement.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
 
-            stm.setLong(6, seguro.getId());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setLong(6, seguro.getId());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
             Mensagem.info("Seguro Auto atualizada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(SeguroAutoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -68,10 +69,10 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
     public void delete(Long idSeuro) {
         try {
             String sql = "DELETE FROM "+ db +".`tb_seguro` WHERE `id` = ?";
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, idSeuro);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, idSeuro);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(SeguroAutoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao excluir seguro auto na base de dados! \n" + ex);
@@ -86,8 +87,8 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
         try {
             String sql = "SELECT * FROM "+ db +".seguro_auto_view";
 
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
                 Veiculo veiculo = new Veiculo(
@@ -98,7 +99,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
                 dadosSeguro.add(seguro);
             }
 
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {

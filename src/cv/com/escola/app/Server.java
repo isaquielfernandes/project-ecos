@@ -14,11 +14,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-/**
- * Inicialização tela de login
- *
- * @author Isaquiel Fernandes
- */
+
 public class Server extends Application {
 
     public static Stage palco;
@@ -26,9 +22,7 @@ public class Server extends Application {
     private AnchorPane page;
 
     private final Screen screen = Screen.getPrimary();
-    private final Rectangle2D windows = screen.getVisualBounds();
     private static final int COUNT_LIMIT = 10;
-    private Connection conector;
     private double initX;
     private double initY;
 

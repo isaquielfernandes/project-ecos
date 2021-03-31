@@ -11,7 +11,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -182,11 +181,11 @@
             <URL value="@css/custom.css" />
          </stylesheets>
       </AnchorPane>
-      <AnchorPane fx:id="telaEdicao" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="70.0">
+      <AnchorPane fx:id="telaEdicao" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="70.0">
          <children>
             <TableView fx:id="tbAluno" editable="true" prefHeight="498.0" prefWidth="1190.0" stylesheets="@css/table.css" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columns>
-                  <TableColumn fx:id="colFoto" maxWidth="68.0" minWidth="68.0" prefWidth="68.0" text="Foto" visible="false" />
+                  <TableColumn fx:id="colFoto" maxWidth="-1.0" minWidth="120.0" prefWidth="120.0" text="Foto" visible="false" />
                   <TableColumn fx:id="colId" maxWidth="-1.0" minWidth="62.0" prefWidth="62.0" text="Codigo" visible="false" />
                   <TableColumn fx:id="colNome" maxWidth="-1.0" minWidth="210.0" prefWidth="210.0" text="Nome" />
                   <TableColumn fx:id="colEstadoCivil" maxWidth="-1.0" minWidth="92.0" prefWidth="150.0" text="Estado Civil" visible="false" />
@@ -196,7 +195,7 @@
                   <TableColumn fx:id="colDataEmisao" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Data Emissão" />
                   <TableColumn fx:id="colLocalDeEmisao" maxWidth="-1.0" minWidth="118.0" prefWidth="118.0" text="Local De Emissão" visible="false" />
                   <TableColumn fx:id="colNaturalidade" maxWidth="-1.0" minWidth="200.0" prefWidth="200.0" text="Naturalidade" />
-                  <TableColumn fx:id="colResidencia" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="152.0" text="Residencia" />
+                  <TableColumn fx:id="colResidencia" maxWidth="-1.0" minWidth="150.0" prefWidth="200.0" text="Residencia" />
                   <TableColumn fx:id="colConselho" maxWidth="-1.0" minWidth="150.0" prefWidth="150.0" text="Concelho " visible="false" />
                   <TableColumn fx:id="colFreguesia" maxWidth="-1.0" minWidth="180.0" prefWidth="240.0" text="Freguesia" visible="false" />
                   <TableColumn fx:id="colNacionalidade" maxWidth="-1.0" minWidth="120.0" prefWidth="140.0" text="Nacionalidade" visible="false" />
@@ -293,10 +292,13 @@
                </BorderPane.margin>
             </HBox>
          </top>
+         <bottom>
+            <AnchorPane prefHeight="0.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </bottom>
          <center>
             <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-border-color: #C1C1C1;" BorderPane.alignment="CENTER">
                <content>
-                  <FlowPane fx:id="flowPane" hgap="10.0" minWidth="1070.0" prefHeight="200.0" prefWidth="1070.0" vgap="10.0">
+                  <FlowPane fx:id="flowPane" alignment="CENTER" columnHalignment="CENTER" hgap="10.0" minWidth="1070.0" prefHeight="200.0" prefWidth="1070.0" vgap="10.0">
                      <children>
                         <Label prefHeight="17.0" prefWidth="547.0" text="Caregando...." textFill="#9a0c0c">
                            <FlowPane.margin>
@@ -312,14 +314,8 @@
                      </padding>
                   </FlowPane>
                </content>
-               <BorderPane.margin>
-                  <Insets left="1.0" right="1.0" top="1.0" />
-               </BorderPane.margin>
             </ScrollPane>
          </center>
-         <bottom>
-            <AnchorPane prefHeight="0.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-         </bottom>
       </BorderPane>
       <AnchorPane layoutY="623.0" prefHeight="58.0" prefWidth="1191.0" styleClass="box-menus-subtela" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
          <children>
@@ -359,7 +355,6 @@
             <Label fx:id="legenda" layoutX="36.0" layoutY="17.0" styleClass="lb-info-requerido" text="Campos obrigatórios" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
          </children>
       </AnchorPane>
-      <TabPane fx:id="telaPrint" prefHeight="680.0" prefWidth="1220.0" rotateGraphic="true" tabMaxHeight="30.0" tabMaxWidth="100.0" tabMinHeight="30.0" tabMinWidth="80.0" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="70.0" />
    </children>
    <stylesheets>
       <URL value="@css/default.css" />

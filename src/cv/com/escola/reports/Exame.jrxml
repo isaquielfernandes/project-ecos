@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="exame lista" pageWidth="595" pageHeight="842" columnWidth="483" leftMargin="70" rightMargin="42" topMargin="20" bottomMargin="20" uuid="0c2dd6b6-fca8-48cc-a1be-e15ea990edfd">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -153,7 +154,7 @@ FROM dbescola.exame_view,
 	<title>
 		<band height="62" splitType="Stretch">
 			<image scaleImage="FillFrame" isLazy="true" onErrorType="Icon">
-				<reportElement x="160" y="2" width="180" height="60" uuid="3a79d744-dd64-4439-8eff-7c3d366f7e04"/>
+				<reportElement x="0" y="2" width="483" height="60" uuid="3a79d744-dd64-4439-8eff-7c3d366f7e04"/>
 				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
 			</image>
 		</band>
@@ -263,7 +264,7 @@ FROM dbescola.exame_view,
 				</textElement>
 				<text><![CDATA[Pedido de exame]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy">
 				<reportElement style="Detail" positionType="Float" x="0" y="132" width="481" height="39" uuid="99110909-aac2-48d9-8fca-9aef165697fd"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="html">
@@ -299,7 +300,7 @@ FROM dbescola.exame_view,
 		<band height="20" splitType="Stretch">
 			<frame>
 				<reportElement style="Row" mode="Opaque" x="0" y="2" width="483" height="18" uuid="f3197702-e9b4-4a37-995e-2319ef1d3b61"/>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement style="Detail" positionType="Float" x="210" y="0" width="90" height="18" uuid="3b915be5-fbbc-4148-859c-c767bc957464"/>
 					<box topPadding="2" leftPadding="3" bottomPadding="2" rightPadding="2"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -307,7 +308,7 @@ FROM dbescola.exame_view,
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Tipo de Exame}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement style="Detail" positionType="Float" x="361" y="0" width="60" height="18" uuid="a8359b17-aa1d-4f70-882a-90755bd5e18f"/>
 					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 					<textElement verticalAlignment="Middle">
@@ -315,7 +316,7 @@ FROM dbescola.exame_view,
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Descrição}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement style="Detail" positionType="Float" x="301" y="0" width="60" height="18" uuid="d8093f64-62dd-4ff9-99e2-801ff74b21d9"/>
 					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -323,7 +324,7 @@ FROM dbescola.exame_view,
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Categoria}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement style="Detail" positionType="Float" x="30" y="0" width="178" height="18" uuid="30357526-555b-40b4-b243-c99f47c6f273"/>
 					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 					<textElement verticalAlignment="Middle">

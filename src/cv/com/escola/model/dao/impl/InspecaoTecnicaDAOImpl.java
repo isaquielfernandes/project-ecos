@@ -23,17 +23,18 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
             String inserir = "INSERT INTO "+ db +".`tb_inspecao_tecnica` "
                     + "(`veiculo`, `tipoInspecao`, `dataInspecao`, `duracao`, `resultado`, `validade`) VALUES (?,?,?,?,?,?)";
 
-            stm = conector.prepareStatement(inserir);
+            preparedStatement = conector.prepareStatement(inserir);
 
-            stm.setLong(1, inspecao.getVeiculo().getCodigo());
-            stm.setString(2, inspecao.getTipoDeInspeccao());
-            stm.setDate(3, java.sql.Date.valueOf(inspecao.getDataDeInspeccao()));
-            stm.setInt(4, inspecao.getMesDeDuracao());
-            stm.setString(5, inspecao.getResultado());
-            stm.setString(6, inspecao.getValidade());
+            preparedStatement.setLong(1, inspecao.getVeiculo().getCodigo());
+            preparedStatement.setString(2, inspecao.getTipoDeInspeccao());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(inspecao.getDataDeInspeccao()));
+            preparedStatement.setInt(4, inspecao.getMesDeDuracao());
+            preparedStatement.setString(5, inspecao.getResultado());
+            preparedStatement.setString(6, inspecao.getValidade());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Inspecção de veículo cadastrada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,18 +47,19 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
         try {
             String update = "UPDATE "+ db +".`tb_inspecao_tecnica` SET `veiculo` = ?, `tipoInspecao` = ?, `dataInspecao` = ?, `duracao` = ?, `resultado` = ?, `validade` = ? WHERE `id` = ?";
 
-            stm = conector.prepareStatement(update);
+            preparedStatement = conector.prepareStatement(update);
 
-            stm.setLong(1, inspecao.getVeiculo().getCodigo());
-            stm.setString(2, inspecao.getTipoDeInspeccao());
-            stm.setDate(3, java.sql.Date.valueOf(inspecao.getDataDeInspeccao()));
-            stm.setInt(4, inspecao.getMesDeDuracao());
-            stm.setString(5, inspecao.getResultado());
-            stm.setString(6, inspecao.getValidade());
+            preparedStatement.setLong(1, inspecao.getVeiculo().getCodigo());
+            preparedStatement.setString(2, inspecao.getTipoDeInspeccao());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(inspecao.getDataDeInspeccao()));
+            preparedStatement.setInt(4, inspecao.getMesDeDuracao());
+            preparedStatement.setString(5, inspecao.getResultado());
+            preparedStatement.setString(6, inspecao.getValidade());
 
-            stm.setLong(7, inspecao.getId());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setLong(7, inspecao.getId());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Inspecção de Veiculo atualizada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,10 +71,10 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
     public void delete(Long idInspecao) {
         try {
             String sql = "DELETE FROM "+ db +".`tb_inspecao_tecnica` WHERE id=?";
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, idInspecao);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, idInspecao);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao excluir inspecao de veiculo na base de dados! \n" + ex);
@@ -87,8 +89,8 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
         try {
             String sql = "SELECT * FROM "+ db +".inspecao_tecnica_view";
 
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
                 Veiculo veiculo = new Veiculo(
@@ -99,7 +101,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
                 dadosInspecao.add(inspecao);
             }
 
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {

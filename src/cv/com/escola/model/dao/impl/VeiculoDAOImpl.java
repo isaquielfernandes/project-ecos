@@ -14,10 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
     public VeiculoDAOImpl() {
@@ -33,24 +30,25 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
                     + "contatoProprietario, emailProprietario, dataCadastro, especificacao) "
                     + "VALUES (?, ?, ?,?, ?,?,?,?,?,?,?,?,?)";
 
-            stm = conector.prepareStatement(inserir);
+            preparedStatement = conector.prepareStatement(inserir);
 
-            stm.setString(1, veiculo.getPlaca());
-            stm.setString(2, veiculo.getCidade());
-            stm.setString(3, veiculo.getFabricante());
-            stm.setString(4, veiculo.getModelo());
-            stm.setInt(5, veiculo.getAnoFabricacao());
-            stm.setInt(6, veiculo.getAnoModelo());
-            stm.setString(7, veiculo.getChassi());
-            stm.setString(8, veiculo.getTipoCombustivel());
-            stm.setString(9, veiculo.getProprietario().getNomePropretario());
-            stm.setString(10, veiculo.getProprietario().getTelefonePropretario());
-            stm.setString(11, veiculo.getProprietario().getEmailPropertario());
-            stm.setTimestamp(12, Tempo.toTimestamp(veiculo.getDataCadastro()));
-            stm.setString(13, veiculo.getEspecificacoes());
+            preparedStatement.setString(1, veiculo.getPlaca());
+            preparedStatement.setString(2, veiculo.getCidade());
+            preparedStatement.setString(3, veiculo.getFabricante());
+            preparedStatement.setString(4, veiculo.getModelo());
+            preparedStatement.setInt(5, veiculo.getAnoFabricacao());
+            preparedStatement.setInt(6, veiculo.getAnoModelo());
+            preparedStatement.setString(7, veiculo.getChassi());
+            preparedStatement.setString(8, veiculo.getTipoCombustivel());
+            preparedStatement.setString(9, veiculo.getProprietario().getNomePropretario());
+            preparedStatement.setString(10, veiculo.getProprietario().getTelefonePropretario());
+            preparedStatement.setString(11, veiculo.getProprietario().getEmailPropertario());
+            preparedStatement.setTimestamp(12, Tempo.toTimestamp(veiculo.getDataCadastro()));
+            preparedStatement.setString(13, veiculo.getEspecificacoes());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Veiculo cadastrada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(VeiculoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,25 +64,26 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
                     + "contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? "
                     + "WHERE  codigo =?";
 
-            stm = conector.prepareStatement(update);
+            preparedStatement = conector.prepareStatement(update);
 
-            stm.setString(1, veiculo.getPlaca());
-            stm.setString(2, veiculo.getCidade());
-            stm.setString(3, veiculo.getFabricante());
-            stm.setString(4, veiculo.getModelo());
-            stm.setInt(5, veiculo.getAnoFabricacao());
-            stm.setInt(6, veiculo.getAnoModelo());
-            stm.setString(7, veiculo.getChassi());
-            stm.setString(8, veiculo.getTipoCombustivel());
-            stm.setString(9, veiculo.getProprietario().getNomePropretario());
-            stm.setString(10, veiculo.getProprietario().getTelefonePropretario());
-            stm.setString(11, veiculo.getProprietario().getEmailPropertario());
-            stm.setTimestamp(12, Tempo.toTimestamp(LocalDateTime.now()));
-            stm.setString(13, veiculo.getEspecificacoes());
+            preparedStatement.setString(1, veiculo.getPlaca());
+            preparedStatement.setString(2, veiculo.getCidade());
+            preparedStatement.setString(3, veiculo.getFabricante());
+            preparedStatement.setString(4, veiculo.getModelo());
+            preparedStatement.setInt(5, veiculo.getAnoFabricacao());
+            preparedStatement.setInt(6, veiculo.getAnoModelo());
+            preparedStatement.setString(7, veiculo.getChassi());
+            preparedStatement.setString(8, veiculo.getTipoCombustivel());
+            preparedStatement.setString(9, veiculo.getProprietario().getNomePropretario());
+            preparedStatement.setString(10, veiculo.getProprietario().getTelefonePropretario());
+            preparedStatement.setString(11, veiculo.getProprietario().getEmailPropertario());
+            preparedStatement.setTimestamp(12, Tempo.toTimestamp(LocalDateTime.now()));
+            preparedStatement.setString(13, veiculo.getEspecificacoes());
 
-            stm.setLong(14, veiculo.getCodigo());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setLong(14, veiculo.getCodigo());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Veiculo atualizada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(VeiculoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -96,10 +95,10 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     public void delete(Long idVeiculo) {
         try {
             String sql = "DELETE FROM "+ db +".tb_veiculo WHERE codigo=?";
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, idVeiculo);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, idVeiculo);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(VeiculoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao excluir veiculo na base de dados! \n" + ex);
@@ -112,8 +111,8 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
         try {
             String sql = "SELECT * FROM "+ db +".tb_veiculo";
 
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
                 Proprietario proprietario = new Proprietario(rs.getString(10), rs.getString(11), rs.getString(12));
@@ -132,7 +131,7 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
                         rs.getString(15));
                 dadosVeiculo.add(veiculo);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
@@ -145,12 +144,12 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     public int total() {
         try {
             String sql = "SELECT COUNT(*) FROM "+ db +".tb_veiculo";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao consultar total de veiculo na base de dados");

@@ -1,8 +1,6 @@
 package cv.com.escola.model.entity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.sql.Blob;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
@@ -10,10 +8,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.image.Image;
 
 
-public class Empresa {
+public class EscolaConducao {
 
     private IntegerProperty idEscola;
     private StringProperty nome;
@@ -23,20 +20,15 @@ public class Empresa {
     private StringProperty contato;
     private StringProperty email;
     private StringProperty descricao;
+    private InputStream logo;
+    private InputStream assinatura;
     private ObjectProperty<LocalDate> anoVigencia;
-    private File fileLogo;
-    private File fileCarimboAssinatura;
-    private Blob logo;
-    private Blob assinatura;
-    public FileInputStream fileInputStreamLogo;
-    public FileInputStream fileInputStreamAssinatura;
-    private Image imageLogo;
-    private Image imageAssinatura;
 
-    public Empresa() {
+    public EscolaConducao() {
+        
     }
     
-    public Empresa(String nome, String cidade, String nif, String endereco, String email, String contato, String descricao) {
+    public EscolaConducao(String nome, String cidade, String nif, String endereco, String email, String contato, String descricao) {
         this.nome = new SimpleStringProperty(nome);
         this.cidade = new SimpleStringProperty(cidade);
         this.nif = new SimpleStringProperty(nif);
@@ -46,7 +38,7 @@ public class Empresa {
         this.descricao = new SimpleStringProperty(descricao);
     }
     
-    public Empresa(int idEscola, String nome, String cidade, String nif, String endereco, String email, String contato, String descricao) {
+    public EscolaConducao(int idEscola, String nome, String cidade, String nif, String endereco, String email, String contato, String descricao) {
         this.idEscola = new SimpleIntegerProperty(idEscola);
         this.nome = new SimpleStringProperty(nome);
         this.cidade = new SimpleStringProperty(cidade);
@@ -55,18 +47,6 @@ public class Empresa {
         this.email = new SimpleStringProperty(email);
         this.contato = new SimpleStringProperty(contato);
         this.descricao = new SimpleStringProperty(descricao);
-    }
-    
-    public Empresa(int idEscola, String nomeEscola, String cidade, String endereco, String nif, String contato, String email, String descricao, File file) {
-        this.idEscola = new SimpleIntegerProperty(idEscola);
-        this.nome = new SimpleStringProperty(nomeEscola);
-        this.cidade = new SimpleStringProperty(cidade);
-        this.nif = new SimpleStringProperty(nif);
-        this.endereco = new SimpleStringProperty(endereco);
-        this.contato = new SimpleStringProperty(contato);
-        this.email = new SimpleStringProperty(email);
-        this.descricao = new SimpleStringProperty(descricao);
-        this.fileLogo = file;
     }
 
     public final int getIdEmpresa() {
@@ -176,68 +156,21 @@ public class Empresa {
     public StringProperty descricaoProperty() {
         return descricao;
     }
-    public Blob getLogo() {
+
+    public InputStream getLogo() {
         return logo;
     }
 
-    public void setLogo(Blob logo) {
+    public void setLogo(InputStream logo) {
         this.logo = logo;
     }
 
-    public FileInputStream getFileInputStreamLogo() {
-        return fileInputStreamLogo;
-    }
-
-    public void setFileInputStreamLogo(FileInputStream fileInputStreamLogo) {
-        this.fileInputStreamLogo = fileInputStreamLogo;
-    }
-    
-    public File getFileLogo() {
-        return fileLogo;
-    }
-
-    public void setFileLogo(File fileLogo) {
-        this.fileLogo = fileLogo;
-    }
-    
-    public File getFileCarimboAssinatura() {
-        return fileCarimboAssinatura;
-    }
-
-    public void setFileCarimboAssinatura(File fileCarimboAssinatura) {
-        this.fileCarimboAssinatura = fileCarimboAssinatura;
-    }
-    
-    public Image getImageLogo() {
-        return imageLogo;
-    }
-
-    public void setImageLogo(Image imageLogo) {
-        this.imageLogo = imageLogo;
-    }
-
-    public Image getImageAssinatura() {
-        return imageAssinatura;
-    }
-
-    public void setImageAssinatura(Image imageAssinatura) {
-        this.imageAssinatura = imageAssinatura;
-    }
-
-    public Blob getAssinatura() {
+    public InputStream getAssinatura() {
         return assinatura;
     }
 
-    public void setAssinatura(Blob assinatura) {
+    public void setAssinatura(InputStream assinatura) {
         this.assinatura = assinatura;
-    }
-
-    public FileInputStream getFileInputStreamAssinatura() {
-        return fileInputStreamAssinatura;
-    }
-
-    public void setFileInputStreamAssinatura(FileInputStream fileInputStreamAssinatura) {
-        this.fileInputStreamAssinatura = fileInputStreamAssinatura;
     }
 
     @Override
@@ -259,7 +192,7 @@ public class Empresa {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Empresa other = (Empresa) obj;
+        final EscolaConducao other = (EscolaConducao) obj;
         if (!Objects.equals(this.idEscola, other.idEscola)) {
             return false;
         }

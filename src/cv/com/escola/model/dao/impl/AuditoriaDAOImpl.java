@@ -19,14 +19,15 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     public void inserir(Auditoria log) {
         try {
             String sql = "INSERT INTO "+ db +".tb_auditoria (acao, data, descricao, fk_usuario) VALUES (?, ?, ?, ?);";
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
             
-            stm.setString(1, log.getAcao());
-            stm.setTimestamp(2, Tempo.toTimestamp(log.getData()));
-            stm.setString(3, log.getDescricao());
-            stm.setInt(4, log.getUser().getId());
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.setString(1, log.getAcao());
+            preparedStatement.setTimestamp(2, Tempo.toTimestamp(log.getData()));
+            preparedStatement.setString(3, log.getDescricao());
+            preparedStatement.setInt(4, log.getUser().getId());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao inserir logs na base de dados!");
         }
@@ -36,10 +37,10 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     public void excluir(int id) {
         try {
             String sql = "DELETE FROM "+ db +".tb_auditoria WHERE id_auditoria = ?";
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, id);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao excluir logs na base de dados!");
         }
@@ -53,16 +54,16 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
                     + "usuario.nome FROM "+ db +".tb_auditoria AS log, "+ db +".tb_usuario AS usuario "
                     +  "WHERE log.fk_usuario = usuario.id_usuario AND log.fk_usuario = ? ";
 
-            stm = conector.prepareStatement(sql);
-            stm.setInt(1, id);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
                 Auditoria logs = new Auditoria(rs.getInt(1), rs.getString(2), Tempo.toDate(rs.getTimestamp(3)), rs.getString(4), null);
                 logs.setUser(new Usuario(rs.getInt(5), rs.getString(6)));
                 dados.add(logs);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao consultar logs na base de dados!");
@@ -77,14 +78,14 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             String sql = "SELECT log.id_auditoria, log.acao, log.data, log.descricao , usuario.nome "
                     + "FROM "+ db +".tb_auditoria AS log, "+ db +".tb_usuario AS usuario WHERE log.fk_usuario = usuario.id_usuario ";
 
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Auditoria log = new Auditoria(rs.getInt(1), rs.getString(2), Tempo.toDate(rs.getTimestamp(3)), rs.getString(4), null);
                 log.setUser(new Usuario(rs.getInt(5), rs.getString(6)));
                 dados.add(log);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao consultar logs na base de dados!");

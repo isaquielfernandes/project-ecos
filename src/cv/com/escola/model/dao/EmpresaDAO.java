@@ -1,10 +1,10 @@
 package cv.com.escola.model.dao;
 
-import cv.com.escola.model.entity.Empresa;
+import cv.com.escola.model.entity.EscolaConducao;
 
-public interface EmpresaDAO extends CrudDAO<Empresa, Integer>{
+public interface EmpresaDAO extends CrudDAO<EscolaConducao, Integer>{
 
-    void editarSemLogo(Empresa empresa);
+    void editarSemLogo(EscolaConducao empresa);
     int total();
     
 }

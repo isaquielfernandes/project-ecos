@@ -24,14 +24,15 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     public void create(Curso curso) {
         try {
             String sql = "INSERT INTO "+ db +".tb_curso (nome_curso, duracao, descricao, fk_categoria)VALUES(?,?,?,?)";
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, curso.getCurso());
-            stm.setInt(2, curso.getDuracao());
-            stm.setString(3, curso.getDescricao());
-            stm.setInt(4, curso.getCategoria().getId_categoria());
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, curso.getCurso());
+            preparedStatement.setInt(2, curso.getDuracao());
+            preparedStatement.setString(3, curso.getDescricao());
+            preparedStatement.setInt(4, curso.getCategoria().getId_categoria());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Curso cadastrado com sucesso");
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -43,16 +44,17 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     public void update(Curso curso) {
         try {
             String sql = "UPDATE "+ db +".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?";
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, curso.getCurso());
-            stm.setInt(2, curso.getDuracao());
-            stm.setString(3, curso.getDescricao());
-            stm.setInt(4, curso.getCategoria().getId_categoria());
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, curso.getCurso());
+            preparedStatement.setInt(2, curso.getDuracao());
+            preparedStatement.setString(3, curso.getDescricao());
+            preparedStatement.setInt(4, curso.getCategoria().getId_categoria());
 
-            stm.setLong(5, curso.getCodigo());
+            preparedStatement.setLong(5, curso.getCodigo());
 
-            stm.executeUpdate();
-            stm.close();
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
             Mensagem.info("Curso atualizado com sucesso");
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,10 +66,10 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     public void delete(Long IdCurso) {
         try {
             String sql = "DELETE FROM "+ db +".tb_curso WHERE codigo=?";
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, IdCurso);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, IdCurso);
+            preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DaoException("Erro ao excluir curso na base de dados!");
@@ -80,14 +82,14 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
         try {
             String sql = "SELECT c.*, cat.categoria FROM "+ db +".tb_curso c INNER JOIN "
                     + ""+ db +".tb_categoria cat ON c.fk_categoria = cat.id_categoria";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Categoria cat = new Categoria(rs.getInt(5), rs.getString(6));
                 Curso curso = new Curso(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4), cat);
                 cursos.add(curso);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);

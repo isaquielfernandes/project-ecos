@@ -5,6 +5,8 @@ import cv.com.escola.model.entity.Categoria;
 import cv.com.escola.model.entity.Exame;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.ExameDAO;
+import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.ReportException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
@@ -26,10 +28,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class ExameDAOImpl extends DAO implements ExameDAO{
     public ExameDAOImpl() {
         super();
@@ -42,23 +41,23 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
                     + "fk_categoria, fk_aluno, registroCriminal, atestadoMedico) "
                     + "VALUES(?,?,?,?,?,?,?,?)";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, marcar.getTipoExame());
-            stm.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
-            stm.setString(3, marcar.getHoraDeExame().toString());
-            stm.setString(4, marcar.getDescricao());
-            stm.setInt(5, marcar.getCategoria().getId_categoria());
-            stm.setInt(6, marcar.getAluno().getIdAluno());
-            stm.setString(7, marcar.getRegistroCriminal());
-            stm.setString(8, marcar.getAtestadoMedico());
+            preparedStatement.setString(1, marcar.getTipoExame());
+            preparedStatement.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
+            preparedStatement.setString(3, marcar.getHoraDeExame().toString());
+            preparedStatement.setString(4, marcar.getDescricao());
+            preparedStatement.setInt(5, marcar.getCategoria().getId_categoria());
+            preparedStatement.setInt(6, marcar.getAluno().getIdAluno());
+            preparedStatement.setString(7, marcar.getRegistroCriminal());
+            preparedStatement.setString(8, marcar.getAtestadoMedico());
 
-            stm.executeUpdate();
-            stm.close();
-            Mensagem.info("Exame marcada com sucesso!");
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao cadastrar exame no base de dados" + ex);
+            throw new DaoException("Erro ao cadastrar exame no base de dados", ex);
         }
     }
     
@@ -68,24 +67,22 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             String sql = "UPDATE "+ db +".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,"
                     + "fk_categoria=?, fk_aluno=? WHERE id_exame=?";
 
-            stm = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(sql);
 
-            stm.setString(1, marcar.getTipoExame());
-            stm.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
-            stm.setString(3, marcar.getHoraDeExame().toString());
-            stm.setString(4, marcar.getDescricao());
-            stm.setInt(5, marcar.getCategoria().getId_categoria());
-            stm.setInt(6, marcar.getAluno().getIdAluno());
-            //stm.setString(7, marcar.getRegistroCriminal());
-            //stm.setString(8, marcar.getAtestadoMedico());
+            preparedStatement.setString(1, marcar.getTipoExame());
+            preparedStatement.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
+            preparedStatement.setString(3, marcar.getHoraDeExame().toString());
+            preparedStatement.setString(4, marcar.getDescricao());
+            preparedStatement.setInt(5, marcar.getCategoria().getId_categoria());
+            preparedStatement.setInt(6, marcar.getAluno().getIdAluno());
 
-            stm.setLong(7, marcar.getIdExame());
-            stm.executeUpdate();
-            stm.close();
-            Mensagem.info("Exame atualizada com sucesso!");
+            preparedStatement.setLong(7, marcar.getIdExame());
+            preparedStatement.executeUpdate();
+            conector.commit();
+            preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao atualizar dados no base de dados" + ex);
+           throw new DaoException("Erro ao atualizar dados no base de dados", ex);
         }
     }
     
@@ -94,10 +91,10 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
         try {
             String sql = "DELETE FROM "+ db +".`tb_exame` WHERE id_exame =?";
 
-            stm = conector.prepareStatement(sql);
-            stm.setLong(1, idExame);
-            stm.execute();
-            stm.close();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setLong(1, idExame);
+            preparedStatement.execute();
+            preparedStatement.close();
 
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao excluir exame na base de dados! \n" + ex);
@@ -107,20 +104,20 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public List<Exame> findAll(){
         List<Exame> dadosExame = new ArrayList<>();
-
         try {
             String sql = "SELECT * FROM "+ db +".exame_view order by Dia desc";
-
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
-                Exame marcado = new Exame(rs.getInt(1), rs.getString(2), Tempo.toDate(rs.getTimestamp(3)), rs.getTime(4).toLocalTime(), rs.getString(5), new Categoria(rs.getInt(6), rs.getString(7)), new Aluno(rs.getInt(8), rs.getString(9)));
+                Exame marcado = new Exame(rs.getInt(1), rs.getString(2), 
+                        Tempo.toDate(rs.getTimestamp(3)), rs.getTime(4).toLocalTime(), 
+                        rs.getString(5), new Categoria(rs.getInt(6), rs.getString(7)), 
+                        new Aluno(rs.getInt(8), rs.getString(9)));
                 dadosExame.add(marcado);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao consultar exame na base de dados! \n" + ex);
         }
@@ -131,13 +128,13 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     public int total() {
         try {
             String sql = "SELECT COUNT(*) FROM "+ db +".tb_exame";
-            stm = conector.prepareStatement(sql);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            rs = preparedStatement.executeQuery();
             if(rs.next()) {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar total de exame marcado na base de dados!");
+            throw new DaoException("Erro ao consultar total de exame marcado na base de dados!");
         }
         return 0;
     }
@@ -145,7 +142,6 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public void report() {
         try {
-            //null: caso não existem filtros
             Map parametros = new HashMap();
             parametros.put("de", Date.valueOf(LocalDate.of(2018, 10, 1)));
             parametros.put("ate",Date.valueOf(LocalDate.of(2018, 10, 31)));
@@ -160,7 +156,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             jasperViewer.setVisible(true);
         } catch (JRException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir Exames marcado! \n" + ex);
+            throw new ReportException("Erro ao imprimir Exames marcado!", ex.getCause());
         }
     }
     
@@ -174,13 +170,14 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             URL url = getClass().getResource("/cv/com/escola/reports/Exame.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, filtro, conector);//null: caso não existam filtro
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, filtro, conector);
             Print jasperViewer = new Print();
             jasperViewer.viewReport("Exame", jasperPrint);
 
         } catch (JRException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir lista de candidato selecionado para exame! \n" + ex);
+            throw new ReportException("Erro ao imprimir lista de candidato selecionado para exame!\n",
+                    ex.getCause());
         }
     }
 }

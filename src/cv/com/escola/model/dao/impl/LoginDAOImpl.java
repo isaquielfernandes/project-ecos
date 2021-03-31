@@ -19,14 +19,14 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
     public boolean autenticarUsername(String nome) {
         try {
             String sql = "SELECT login FROM "+ db +".tb_usuario WHERE login=? AND status = 1 ";
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, nome);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, nome);
+            rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
                 return nome.equals(rs.getString(1));
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
@@ -40,15 +40,15 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
         String chave = Criptografia.converter(senha);
         try {
             String sql = "SELECT login, senha FROM "+ db +".tb_usuario WHERE login=? AND senha=? ";
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, nome);
-            stm.setString(2, chave);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, nome);
+            preparedStatement.setString(2, chave);
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 return rs.getString(1).equals(nome) && rs.getString(2).equals(chave);
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
             Mensagem.erro("Erro ao autenticar senha usuário na base de dados! \n" + ex);
@@ -66,9 +66,9 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
                     + "WHERE usuario.login=? "
                     + "AND tipo.id_tipo_usuario = usuario.fk_tipo_usuario";
 
-            stm = conector.prepareStatement(sql);
-            stm.setString(1, login);
-            rs = stm.executeQuery();
+            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement.setString(1, login);
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 TipoUsuario tipo = new TipoUsuario(rs.getInt(9), rs.getString(10));
@@ -76,7 +76,7 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
                         rs.getString(4), rs.getString(5), (rs.getInt(6) == 1), null, rs.getString(8), tipo);
                 user.setDataCriacao(Tempo.toDate(rs.getTimestamp(7)));
             }
-            stm.close();
+            preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
