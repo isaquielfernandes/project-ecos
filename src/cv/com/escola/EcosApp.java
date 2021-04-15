@@ -10,14 +10,10 @@ import javafx.stage.Stage;
 
 public final class EcosApp extends Application {
 
-    public static Stage palco;
-    private static final int COUNT_LIMIT = 10;
-    private static File arq;
-
     @Override
     @SuppressWarnings("UseSpecificCatch")
     public void start(final Stage stage) {
-        arq = new File("database.properties");
+        File arq = new File("database.properties");
         if (arq.exists()) {
             new Login().start(new Stage());
         } else {
@@ -28,7 +24,7 @@ public final class EcosApp extends Application {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void init() throws Exception {
-
+        final int COUNT_LIMIT = 10;
         // Perform some heavy lifting (i.e. database start, check for application updates, etc. )
         for (int i = 1; i <= COUNT_LIMIT; i++) {
             double progress = (double) i / 10;
