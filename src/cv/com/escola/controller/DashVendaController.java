@@ -1,29 +1,13 @@
-/*
- * Copyright (C) 2019 Isaquiel Fernandes.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301  USA
- */
 package cv.com.escola.controller;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import cv.com.escola.model.dao.db.DAOFactory;
 import cv.com.escola.model.util.Mensagem;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -84,8 +68,8 @@ public class DashVendaController extends AnchorPane implements Initializable {
             fxml.load();
 
         } catch (IOException ex) {
+            LOGGER.log(Level.WARNING, "context", ex); 
             Mensagem.erro("Erro ao carregar tela dashboard venda! \n" + ex);
-            ex.printStackTrace();
         }
     }
 }

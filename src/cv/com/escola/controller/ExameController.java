@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -143,7 +142,6 @@ public class ExameController extends AnchorPane implements Initializable {
     private FileChooser.ExtensionFilter extensionFilterPNG = new FileChooser.ExtensionFilter("PNG Files(*.PNG)", "*.PNG");
     private FileChooser.ExtensionFilter extensionFilterPDF = new FileChooser.ExtensionFilter("PDF Files(*.pdf)", "*.PDF");
     private String path = System.getProperty("user.home");
-    private Random rand = new Random();
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
     private String n = LocalDateTime.now().format(formatter);//rand.nextInt(999999999) + 1;
     private String sep = File.separator;

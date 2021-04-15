@@ -50,10 +50,12 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
     @Override
     public void update(Categoria categoria) {
         try {
-            String sql = "UPDATE "+ db +".tb_categoria SET categoria=?, descricao=?"
-                    + " WHERE id_categoria =?";
+            StringBuilder query = new StringBuilder();
+            query.append("UPDATE ")
+                    .append(db)
+                    .append(".tb_categoria SET categoria=?, descricao=? WHERE id_categoria =?");
             connection = ConnectionManager.getInstance().begin();
-            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(query.toString());
             preparedStatement.setString(1, categoria.getNome());
             preparedStatement.setString(2, categoria.getDescricao());
             preparedStatement.setInt(3, categoria.getId_categoria());
@@ -69,9 +71,11 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
     @Override
     public void delete(Integer idCategoria) {
         try {
-            String sql = "DELETE FROM "+ db +".tb_categoria WHERE id_categoria=?";
+            StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db)
+                    .append(".tb_categoria WHERE id_categoria=?");
             connection = ConnectionManager.getInstance().begin();
-            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(query.toString());
             preparedStatement.setInt(1, idCategoria);
             preparedStatement.execute();
         } catch (SQLException ex) {
@@ -85,10 +89,11 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
     public List<Categoria> findAll() {
         List<Categoria> categorias = new ArrayList<>();
         try {
-            String sql = "SELECT * from "+ db +".tb_categoria";
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * from ").append(db).append(".tb_categoria");
             connection = ConnectionManager.getInstance().begin();
-            preparedStatement = connection.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            preparedStatement = connection.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery(query.toString());
             while (rs.next()) {
                 Categoria categ = new Categoria(rs.getInt(1), rs.getString(2), rs.getString(3));
                 categorias.add(categ);

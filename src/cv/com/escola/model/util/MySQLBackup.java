@@ -1,5 +1,6 @@
 package cv.com.escola.model.util;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import cv.com.escola.model.dao.DAO;
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 
 public class MySQLBackup extends DAO {
@@ -72,7 +74,7 @@ public class MySQLBackup extends DAO {
                         "Backup do banco de dados (" + i + "): " + dbName + dataAgora +" ...");
                 pb.start();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.SEVERE, "context", e);
             }
             i++;
         }

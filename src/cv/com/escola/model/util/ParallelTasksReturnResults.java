@@ -1,5 +1,6 @@
 package cv.com.escola.model.util;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -7,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
 
 public class ParallelTasksReturnResults {
@@ -27,7 +29,7 @@ public class ParallelTasksReturnResults {
         try {
             THREADLAUNCHER.invokeAll(this.callableList);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -41,7 +43,7 @@ public class ParallelTasksReturnResults {
                 resultArray[i] = resultList.get(i).get();
             }
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return resultArray;
     }
