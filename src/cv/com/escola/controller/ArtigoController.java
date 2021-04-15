@@ -164,8 +164,10 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
             if (idArtigo == 0) {
                 DAOFactory.daoFactury().artigosDAO().create(artigo);
+                Mensagem.info("Artigo cadastrada com sucesso!"); 
             } else {
                 DAOFactory.daoFactury().artigosDAO().update(artigo);
+                Mensagem.info("Artigo atualizada com sucesso!");
             }
 
             telaCadastro(null);
@@ -213,10 +215,14 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
     private void tabela() {
         ObservableList data = FXCollections.observableArrayList(listaArtigo);
-        colCodigo.setCellValueFactory((CellDataFeatures<Artigo, Long> obj) -> obj.getValue().idArtigoProperty().asObject());
-        colNome.setCellValueFactory((CellDataFeatures<Artigo, String> obj) -> obj.getValue().nomeArtigoProperty());
-        colDescricao.setCellValueFactory((CellDataFeatures<Artigo, String> obj) -> obj.getValue().descricaoProperty());
-        colPreco.setCellValueFactory((CellDataFeatures<Artigo, BigDecimal> obj) -> obj.getValue().precoProperty());
+        colCodigo.setCellValueFactory((CellDataFeatures<Artigo, Long> obj) -> 
+                obj.getValue().idArtigoProperty().asObject());
+        colNome.setCellValueFactory((CellDataFeatures<Artigo, String> obj) -> 
+                obj.getValue().nomeArtigoProperty());
+        colDescricao.setCellValueFactory((CellDataFeatures<Artigo, String> obj) -> 
+                obj.getValue().descricaoProperty());
+        colPreco.setCellValueFactory((CellDataFeatures<Artigo, BigDecimal> obj) -> 
+                obj.getValue().precoProperty());
         colActions.setCellFactory(actions);
         tbArtigo.setItems(data);
     }

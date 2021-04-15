@@ -11,20 +11,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import cv.com.escola.model.dao.ArtigoDAO;
 import cv.com.escola.model.dao.exception.DaoException;
+import java.sql.ResultSet;
 
 public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     public ArtigoDAOImpl() {
         super();
-        conector = ConnectionManager.getInstance().getConnection();
     }
 
     @Override
     public void create(Artigo artigo) {
         try {
-            String sql = "INSERT INTO "+ db +".tb_artigo (nomeArtigo, preco, descricao) VALUES (?,?,?)";
+            StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db)
+                    .append(".tb_artigo (nomeArtigo, preco, descricao)");
+            query.append(" VALUES (?,?,?)");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, artigo.getNomeArtigo());
             preparedStatement.setBigDecimal(2, artigo.getPreco());
             preparedStatement.setString(3, artigo.getDescricao());
@@ -32,7 +35,6 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Artigo cadastrada com sucesso!"); 
         } catch (SQLException ex) {
             throw new DaoException("Erro ao cadastrar artigo na base de dados!");
         }
@@ -41,9 +43,12 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
     @Override
     public void update(Artigo artigo) {
         try {
-            String sql = "UPDATE "+ db +".tb_artigo SET nomeArtigo=?, preco=?, descricao=? WHERE id_artigo =?";
+            StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db)
+                 .append(".tb_artigo SET nomeArtigo=?, preco=?, descricao=? ");
+            query.append(" WHERE id_artigo =?;");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, artigo.getNomeArtigo());
             preparedStatement.setBigDecimal(2, artigo.getPreco());
             preparedStatement.setString(3, artigo.getDescricao());
@@ -53,7 +58,6 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Artigo atualizada com sucesso!");
         } catch (SQLException ex) {
             throw new DaoException("Erro ao atualizar artigo na base de dados! \n");
         }
@@ -70,7 +74,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
             preparedStatement.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir artigo na base de dados! \n" + ex);
+            throw new DaoException("Erro ao excluir artigo na base de dados! \n" + ex);
         }
     }
 
@@ -82,8 +86,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
-                Artigo artigos = new Artigo(rs.getLong(1), rs.getString(2), rs.getBigDecimal(3), rs.getString(4));
-                artigosList.add(artigos);
+                artigosList.add(mapRowToObject(rs));
             }
             preparedStatement.close();
             rs.close();
@@ -95,7 +98,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
     
     @Override
     public Artigo buscar(Artigo artigo) {
-        String sql = "SELECT * FROM "+ db +".tb_artigo WHERE id_artigo=?";
+        String sql = "SELECT id_artigo, nomeArtigo, preco FROM "+ db +".tb_artigo WHERE id_artigo=?";
         Artigo retorno = new Artigo();
         try {
             preparedStatement = conector.prepareStatement(sql);
@@ -108,7 +111,17 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ArtigoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DaoException("Erro ao consultar artigos na base de dados!");
         }
         return retorno;
+    }
+    
+    public Artigo mapRowToObject(ResultSet resultSet) throws SQLException {
+        Artigo artigo = new Artigo();
+        artigo.setIdArtigo(resultSet.getLong(1)); 
+        artigo.setNomeArtigo(resultSet.getString(2));
+        artigo.setPreco(resultSet.getBigDecimal(3));
+        artigo.setDescricao(resultSet.getString(4));
+        return artigo;
     }
 }

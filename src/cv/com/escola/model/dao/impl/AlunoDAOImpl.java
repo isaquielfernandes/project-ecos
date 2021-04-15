@@ -90,8 +90,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
-                Aluno aluno = new Aluno();
-                alunos.add(map(aluno, rs));
+                alunos.add(mapRowToObject(rs));
             }
             preparedStatement.close();
             rs.close();
@@ -110,8 +109,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
-                Aluno aluno = new Aluno();
-                listaAluno.add(map(aluno, rs));
+                listaAluno.add(mapRowToObject(rs));
             }
             preparedStatement.close();
             rs.close();
@@ -175,8 +173,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Aluno aluno = new Aluno();
-                listData.add(map(aluno, rs));
+                listData.add(mapRowToObject(rs));
             }
             rs.close();
             preparedStatement.close();
@@ -199,8 +196,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.setString(4, query + "%");
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Aluno aluno = new Aluno();
-                alunos.add(map(aluno, rs));
+                alunos.add(mapRowToObject(rs));
             }
             rs.close();
             preparedStatement.close();
@@ -264,7 +260,8 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         ps.setString(20, aluno.getFreguesia());
     }
 
-    private Aluno map(Aluno aluno, ResultSet resultSet) throws SQLException {
+    private Aluno mapRowToObject(ResultSet resultSet) throws SQLException {
+        Aluno aluno = new Aluno();
         aluno.setIdAluno(resultSet.getInt("id_aluno"));
         aluno.setNome(resultSet.getString("nome"));
         aluno.setDataNascimento(Tempo.toDate(resultSet.getTimestamp("dataNascimento")));

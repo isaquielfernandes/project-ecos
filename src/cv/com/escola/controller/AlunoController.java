@@ -50,8 +50,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -413,14 +411,15 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     private File writeBinaryIntoFile(Aluno aluno) {
+        String tmpdir = System.getProperty("java.oi.temdir");
         String fileSeparator = File.separator;
-        final String pathDiretorio = System.getProperty("user.home") + fileSeparator
+        final String homeDirectory = System.getProperty("user.home") + fileSeparator
                 + "Documents/ecos/aluno/";
-        File directorio = new File(pathDiretorio);
-        String filePath = pathDiretorio + fileSeparator + aluno.getNumBI() + ".jpg";
+        File directory = new File(homeDirectory);
+        String filePath = homeDirectory + fileSeparator + aluno.getNumBI() + ".jpg";
         File file = new File(filePath);
-        if (!directorio.exists()) {
-            directorio.mkdirs();
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
         try (FileOutputStream fileOutputStream = new FileOutputStream(file);) {
             byte[] buffer = new byte[1024];

@@ -12,17 +12,19 @@ public class AlunoService {
     }
 
     public Aluno save(Aluno aluno) {
-        
+        alunoDAO.create(aluno);
+        return aluno;
+    }
+
+    public Aluno update(Aluno aluno) {
         if (aluno.idAlunoProperty().get() == 0) {
-            alunoDAO.create(aluno);
-        } else {
             alunoDAO.update(aluno);
         }
         return aluno;
     }
-    
+
     public void delete(int id) {
-        
+        alunoDAO.delete(id);
     }
 
 }

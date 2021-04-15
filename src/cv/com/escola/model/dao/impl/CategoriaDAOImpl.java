@@ -106,7 +106,6 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             connection = ConnectionManager.getInstance().begin();
             URL url = getClass().getResource("/cv/com/escola/reports/Categoria.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
-            //null: caso não existem filtros
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, conector);
             
             Print jasperViewer = new Print();
