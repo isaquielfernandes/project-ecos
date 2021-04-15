@@ -5,7 +5,6 @@ import cv.com.escola.model.dao.CategoriaDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DaoException;
-import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
 import java.net.URL;
 import java.sql.Connection;

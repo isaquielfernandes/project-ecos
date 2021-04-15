@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,7 +66,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
@@ -79,7 +76,7 @@ public class AlunoController extends AnchorPane implements Initializable {
     private int idAluno = 0;
 
     private Image image;
-    final String defualtImage = "/cv/com/escola/view/img/avater.jpg";
+    private static final String DEFAULT_IMAGE = "/cv/com/escola/view/img/avater.jpg";
     private InputStream fileInput;
 
     @FXML
@@ -220,11 +217,9 @@ public class AlunoController extends AnchorPane implements Initializable {
     private Label lblShowingAluno;
     @FXML
     private Pagination pagination;
-    //@FXML
-    private VBox vBox;
 
-    private final int QUANTIDADE_PAGINA = 20;
-    private ObservableList<Aluno> alunos;
+    private static final int QUANTIDADE_POR_PAGINA = 20;
+    private ObservableList<Aluno> alunos = FXCollections.observableArrayList();
     private boolean studantDefault = true;
     int totalAluno;
     int totalBuscarAluno;
@@ -315,8 +310,7 @@ public class AlunoController extends AnchorPane implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Fotografia File", "*.png", "*.jpg", "*.gif"));
-        File selectedFile = fileChooser.showOpenDialog(null);
-        return selectedFile;
+        return fileChooser.showOpenDialog(null);
     }
 
     @FXML
@@ -411,16 +405,14 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     private File writeBinaryIntoFile(Aluno aluno) {
-        String tmpdir = System.getProperty("java.oi.temdir");
+        //String tmpdir = System.getProperty("java.oi.temdir");
         String fileSeparator = File.separator;
         final String homeDirectory = System.getProperty("user.home") + fileSeparator
                 + "Documents/ecos/aluno/";
         File directory = new File(homeDirectory);
-        String filePath = homeDirectory + fileSeparator + aluno.getNumBI() + ".jpg";
-        File file = new File(filePath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+        String path = homeDirectory + fileSeparator + aluno.getNumBI() + ".jpg";
+        File file = new File(path);
+        createDirIfNotExist(directory);
         try (FileOutputStream fileOutputStream = new FileOutputStream(file);) {
             byte[] buffer = new byte[1024];
             final InputStream foto = aluno.getFoto();
@@ -430,9 +422,15 @@ public class AlunoController extends AnchorPane implements Initializable {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            Nota.erro("error ao tentar crear file!");
         }
         return file;
+    }
+
+    private void createDirIfNotExist(File directory) {
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
     }
 
     @FXML
@@ -480,12 +478,11 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     private void limparCampos() {
-        Aluno aluno = new Aluno();
         Campo.limpar(txtEmail, txtNumBI, txtResidencia, txtNome, txtNacionalidade,
                 txtContacto, txtConselho, txtNatural, txtNomeDaMae, txtNomeDoPai,
                 txtProfessao, txtLocalDeEmisao, txtFreguesia, txtNomeDoPai, txtNomeDaMae);
         Campo.limpar(txtDescricao);
-        imgView.setImage(new Image(defualtImage));
+        imgView.setImage(new Image(DEFAULT_IMAGE));
     }
 
     @Override
@@ -497,6 +494,7 @@ public class AlunoController extends AnchorPane implements Initializable {
 
         scrollPane.viewportBoundsProperty().addListener(
                 (ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) -> {
+                    observable.getValue().contains(oldValue);
                     flowPane.setPrefWidth(newValue.getWidth());
                 });
 
@@ -508,11 +506,13 @@ public class AlunoController extends AnchorPane implements Initializable {
         });
 
         imgView.setOnMouseClicked((event) -> {
-            adcionarFoto(null);
+            if (event.getClickCount() == 2)
+                adcionarFoto(null);
         });
 
         hlAnexarFoto.setOnMouseClicked((event) -> {
-            adcionarFoto(null);
+            if (event.getClickCount() == 1)
+                adcionarFoto(null);
         });
 
         Grupo.notEmpty(menu);
@@ -623,42 +623,6 @@ public class AlunoController extends AnchorPane implements Initializable {
         tbAluno.setItems(dadosOrdenados);
     }
 
-    // validação de e-mail
-    private boolean emailValidate() {
-        Pattern p = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
-        Matcher m = p.matcher(txtEmail.getText());
-        if (m.find() && m.group().equals(txtEmail.getText()) || txtEmail.getText().isEmpty()) {
-            return true;
-        } else {
-            Mensagem.erro("Por favor! digite um e-mail valido", "Erro de Validaçao");
-            return false;
-        }
-    }
-
-    // validação de numero de BI
-    private boolean biValidate() {
-        Pattern p = Pattern.compile("([A-Z]{0,1})*[0-9]{6,7}");
-        Matcher m = p.matcher(txtNumBI.getText());
-        if (m.find() && m.group().equals(txtNumBI.getText())) {
-            return true;
-        } else {
-            Mensagem.erro("Por favor! digite um numero de Nº BI/Passaporte valido.", "Erro de Validação");
-            return false;
-        }
-    }
-
-    // validação de numero de telefone
-    private boolean foneValidate() {
-        Pattern p = Pattern.compile("[5,9][0-9]{6}");
-        Matcher m = p.matcher(txtContacto.getText());
-        if (m.find() && m.group().equals(txtContacto.getText())) {
-            return true;
-        } else {
-            Mensagem.erro("Por favor! digite um numero de telefone valido", "Erro de Validação");
-            return false;
-        }
-    }
-
     @FXML
     private void imprimir(ActionEvent event) {
         TableViewSelectionModel<Aluno> selectionModel = tableViewSelectionModel();
@@ -738,36 +702,18 @@ public class AlunoController extends AnchorPane implements Initializable {
         totalAluno = DAOFactory.daoFactury().alunoDAO().count();
         listaAluno.parallelStream()
                 .limit(30)
-                .forEachOrdered((aluno) -> {
+                .forEachOrdered(aluno -> {
                     AnchorPane card = new AlunoCard(aluno);
                     flowPane.getChildren().add(card);
                 });
-
-//        Pagination pag = new Pagination();
-//        pag.setPageCount(21);
-//        pag.setCurrentPageIndex(0);
-//        pag.setMaxPageIndicatorCount(3);
-//        pag.setPageFactory((Integer pageIndex) -> {
-//            FlowPane flow = new FlowPane();
-//            listaAluno.stream()
-//                    .parallel()
-//                    .limit(20)
-//                    .skip(20)
-//                    .forEachOrdered((aluno) -> {
-//                        AnchorPane card = new AlunoCard(aluno);
-//                        flow.getChildren().add(card);
-//                    });
-//            return flow;
-//        });
-//        vBox.getChildren().add(pag);
     }
 
     private void searchAluno(String query) {
         studantDefault = false;
         flowPane.getChildren().clear();
         listaAluno.stream()
-                .filter((a) -> a.getNome().startsWith(query))
-                .forEach((aluno) -> {
+                .filter(aluno -> aluno.getNome().startsWith(query))
+                .forEach(aluno -> {
             AnchorPane card = new AlunoCard(aluno);
             flowPane.getChildren().add(card);
         });
@@ -775,16 +721,9 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     private void atualizarGrade(int pagina) {
         totalAluno = DAOFactory.daoFactury().alunoDAO().count();
-        pagination.setPageCount((int) Math.ceil(((double) totalAluno)) / QUANTIDADE_PAGINA);
-        alunos = DAOFactory.daoFactury().alunoDAO().listar(QUANTIDADE_PAGINA, pagina);
+        pagination.setPageCount((int) Math.ceil(((double) totalAluno)) / QUANTIDADE_POR_PAGINA);
+        alunos = DAOFactory.daoFactury().alunoDAO().listar(QUANTIDADE_POR_PAGINA, pagina);
         tbAluno.setItems(alunos);
     }
 
-    private static void esperar(long milesegundos) {
-        try {
-            Thread.sleep(milesegundos);
-        } catch (InterruptedException e) {
-
-        }
-    }
 }

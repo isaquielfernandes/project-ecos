@@ -164,7 +164,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
             if (idArtigo == 0) {
                 DAOFactory.daoFactury().artigosDAO().create(artigo);
-                Mensagem.info("Artigo cadastrada com sucesso!"); 
+                Mensagem.info("Artigo cadastrada com sucesso!");
             } else {
                 DAOFactory.daoFactury().artigosDAO().update(artigo);
                 Mensagem.info("Artigo atualizada com sucesso!");
@@ -215,14 +215,14 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
     private void tabela() {
         ObservableList data = FXCollections.observableArrayList(listaArtigo);
-        colCodigo.setCellValueFactory((CellDataFeatures<Artigo, Long> obj) -> 
-                obj.getValue().idArtigoProperty().asObject());
-        colNome.setCellValueFactory((CellDataFeatures<Artigo, String> obj) -> 
-                obj.getValue().nomeArtigoProperty());
-        colDescricao.setCellValueFactory((CellDataFeatures<Artigo, String> obj) -> 
-                obj.getValue().descricaoProperty());
-        colPreco.setCellValueFactory((CellDataFeatures<Artigo, BigDecimal> obj) -> 
-                obj.getValue().precoProperty());
+        colCodigo.setCellValueFactory((CellDataFeatures<Artigo, Long> obj)
+                -> obj.getValue().idArtigoProperty().asObject());
+        colNome.setCellValueFactory((CellDataFeatures<Artigo, String> obj)
+                -> obj.getValue().nomeArtigoProperty());
+        colDescricao.setCellValueFactory((CellDataFeatures<Artigo, String> obj)
+                -> obj.getValue().descricaoProperty());
+        colPreco.setCellValueFactory((CellDataFeatures<Artigo, BigDecimal> obj)
+                -> obj.getValue().precoProperty());
         colActions.setCellFactory(actions);
         tbArtigo.setItems(data);
     }
@@ -293,7 +293,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     }
 
     private void combos() {
-        
+
     }
 
     private void filtro(String valor, ObservableList<Artigo> listaArtigo) {
@@ -321,30 +321,29 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
     }
 
-    Callback<TableColumn<Artigo, String>, TableCell<Artigo, String>> actions = (param) -> {
-        final TableCell<Artigo, String> cell = new TableCell<Artigo, String>() {
+    Callback<TableColumn<Artigo, String>, TableCell<Artigo, String>> actions = (TableColumn<Artigo, String> param) -> {
+        final TableCell<Artigo, String> cell;
+        cell = new TableCell<Artigo, String>() {
             @Override
             public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
+                if (!empty) {
                     Actions action = new Actions() {
 
                         @Override
                         protected void editButton(ActionEvent actionEvent) {
-
+                            param.getColumns().size();
                         }
 
                         @Override
                         protected void deleteButton(ActionEvent actionEvent) {
-
+                            param.getColumns().remove(this);
                         }
                     };
                     setGraphic(action);
                 }
             }
         };
-        return cell; 
+        return cell;
     };
 }
