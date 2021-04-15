@@ -30,10 +30,12 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
     @Override
     public void create(Categoria categoria) {
         try {
-            String sql = "INSERT INTO "+ db +".tb_categoria ( categoria, descricao)"
-                    + " VALUES (?, ?)";
+            StringBuilder query = new StringBuilder(); 
+            query.append("INSERT INTO ")
+                    .append(db)
+                    .append(".tb_categoria ( categoria, descricao) VALUES (?, ?)");
             connection = ConnectionManager.getInstance().begin();
-            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(query.toString());
             preparedStatement.setString(1, categoria.getNome());
             preparedStatement.setString(2, categoria.getDescricao());
             preparedStatement.executeUpdate();
