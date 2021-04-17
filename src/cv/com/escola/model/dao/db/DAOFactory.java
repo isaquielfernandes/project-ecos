@@ -134,7 +134,7 @@ public class DAOFactory {
         return new RelatorioEscolaDAOImpl();
     }
 
-    public ArtigoDAO artigosDAO() {
+    public ArtigoDAO artigoDAO() {
         return new ArtigoDAOImpl();
     }
 

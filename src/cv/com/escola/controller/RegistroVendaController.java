@@ -334,7 +334,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         });
 
         cbArtigo.setOnMouseClicked((event) -> {
-            ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigosDAO().findAll());
+            ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
             cbArtigo.setItems(dadoArtigo);
         });
         // Limpa os detalhes do artigo.
@@ -720,7 +720,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         cbArtigo.setPromptText("- Selecione um Artigo -");
         cbCliente.setPromptText("- Selecione um Cliente -");
         listaCliente = DAOFactory.daoFactury().clienteDAO().findAll();
-        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigosDAO().findAll());
+        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
         ObservableList dadoCliente = FXCollections.observableArrayList(listaCliente);
         cbArtigo.setItems(dadoArtigo);
         cbCliente.setItems(dadoCliente);
@@ -778,7 +778,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         listVendas = DAOFactory.daoFactury().orderDAO().findAll();
         listaDeItem = DAOFactory.daoFactury().itemDAO().findAll();
         listaCliente = DAOFactory.daoFactury().clienteDAO().findAll();
-        listaProduto = DAOFactory.daoFactury().artigosDAO().findAll();
+        listaProduto = DAOFactory.daoFactury().artigoDAO().findAll();
         cod = DAOFactory.daoFactury().orderDAO().ultimoRegisto(LocalDate.now().getYear());
     }
 
@@ -901,14 +901,10 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     }
 
     // Gerar e setando num de recibo na label
-    public void gerarNumRecibo() {
+    private void gerarNumRecibo() {
         GerarCodigo.gerar(cod);
         String numRecibo = GerarCodigo.serie();
-        if (numRecibo.matches("000001")) {
-            labelNumRecibo.setText(numRecibo);
-        } else {
-            labelNumRecibo.setText(numRecibo);
-        }
+        labelNumRecibo.setText(numRecibo);
     }
 
     /**
@@ -1344,7 +1340,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private GridPane createEditor(TableRowExpanderColumn.TableRowDataFeatures<Item> p) {
         p.setExpanded(false);
 
-        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigosDAO().findAll());
+        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
 
         GridPane editor = new GridPane();
         editor.setPadding(new Insets(10));

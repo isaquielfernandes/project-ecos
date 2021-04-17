@@ -157,16 +157,16 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().artigosDAO().findAll().contains(idArtigo)) {
+        } else if (DAOFactory.daoFactury().artigoDAO().findAll().contains(idArtigo)) {
             Nota.alerta("Artigo ja Cadastrado!");
         } else {
             Artigo artigo = new Artigo(idArtigo, nome, preco, descricao);
 
             if (idArtigo == 0) {
-                DAOFactory.daoFactury().artigosDAO().create(artigo);
+                DAOFactory.daoFactury().artigoDAO().create(artigo);
                 Mensagem.info("Artigo cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().artigosDAO().update(artigo);
+                DAOFactory.daoFactury().artigoDAO().update(artigo);
                 Mensagem.info("Artigo atualizada com sucesso!");
             }
 
@@ -203,7 +203,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
             Artigo artigo = tbArtigo.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Artigo:: " + artigo.getNomeArtigo() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().artigosDAO().delete((int) artigo.getIdArtigo());
+                DAOFactory.daoFactury().artigoDAO().delete((int) artigo.getIdArtigo());
                 sincronizarBase();
                 tabela();
             }
@@ -228,7 +228,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     }
 
     private void sincronizarBase() {
-        listaArtigo = DAOFactory.daoFactury().artigosDAO().findAll();
+        listaArtigo = DAOFactory.daoFactury().artigoDAO().findAll();
     }
 
     private void configTela(String tituloTela, String msg, int grupoMenu) {

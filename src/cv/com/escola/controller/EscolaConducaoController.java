@@ -203,7 +203,7 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
         String email = txtEmail.getText();
         String descricao = txtDescricao.getText();
         idEmpresa = Integer.valueOf(txtID.getText().trim().isEmpty() ? "0" : txtID.getText());
-        
+
         InputStream inputStreamLogo = converterImageFileToInputStream(imageViewLogo);
         InputStream inputStreamAssinatura = converterImageFileToInputStream(imageViewAssinatura);
 
@@ -229,8 +229,8 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
         TableViewSelectionModel<EscolaConducao> selectionModel = tableViewSelectionModel();
         if (!selectionModel.isEmpty()) {
             EscolaConducao escolaConducao = empresaSelected(selectionModel);
-             final File fileLogo = writeFile(escolaConducao.getLogo(), "logo");
-             final File fileAssinatura = writeFile(escolaConducao.getAssinatura(), "assinatura");
+            final File fileLogo = writeFile(escolaConducao.getLogo(), "logo");
+            final File fileAssinatura = writeFile(escolaConducao.getAssinatura(), "assinatura");
             telaCadastro(null);
             imagelogo = new Image(fileLogo.getAbsoluteFile().toURI().toString());
             imageViewLogo.setImage(imagelogo);
@@ -246,7 +246,6 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
             txtEmail.setText(escolaConducao.getEmail());
             txtContato.setText(escolaConducao.getContato());
             txtDescricao.setText(escolaConducao.getDescricao());
-            
 
             lbTitulo.setText("Editar Empresa");
             menu.selectToggle(menu.getToggles().get(1));
@@ -308,6 +307,9 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
 
     public void uploadLogo() {
         File selectedFile = filechooser();
+        if (selectedFile == null) {
+            return;
+        }
         final int maxImageSize = 6000000;
         if (selectedFile.length() < maxImageSize) {
             imagelogo = new Image(selectedFile.getAbsoluteFile().toURI().toString(),
@@ -320,6 +322,10 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
 
     public void uploadFileAssinatura() {
         File selectedFile = filechooser();
+        if (selectedFile == null) {
+            return;
+        }
+
         final int maxImageSize = 6000000;
         if (selectedFile.length() < maxImageSize) {
             imageAssinatura = new Image(selectedFile.getAbsoluteFile().toURI().toString(),

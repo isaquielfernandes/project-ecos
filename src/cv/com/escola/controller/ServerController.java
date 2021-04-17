@@ -30,12 +30,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FXML Controller class
  *
  * @author Isaquiel Fernandes
  */
+@Slf4j
 public class ServerController implements Initializable {
 
     @FXML
@@ -74,7 +76,6 @@ public class ServerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         checkSQLStatus();
-        //getDataFromFile();
     }
 
     @FXML
@@ -166,12 +167,7 @@ public class ServerController implements Initializable {
     public void mkDbPropertiesReset() {
         try {
             output = new FileOutputStream("database.properties");
-
-            tfHost.clear();
-            thPort.clear();
-            tfDBName.clear();
-            tfUserName.clear();
-            pfPassword.clear();
+            clearField();
             properties.setProperty("host", null);
             properties.setProperty("port", null);
             properties.setProperty("db", null);
@@ -179,7 +175,6 @@ public class ServerController implements Initializable {
             properties.setProperty("password", null);
             properties.store(output, null);
             output.close();
-
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -187,19 +182,25 @@ public class ServerController implements Initializable {
         }
     }
 
+    private void clearField() {
+        tfHost.clear();
+        thPort.clear();
+        tfDBName.clear();
+        tfUserName.clear();
+        pfPassword.clear();
+    }
+
     public void checkSQLStatus() {
         try {
             String host = tfHost.getText();
-            int port = Integer.parseInt(thPort.getText());//3306;
+            int port = Integer.parseInt(thPort.getText());
             if (port == 3306 || port == 3307 || port == 3308 || port == 8887) {
-                try {
-                    Socket socket = new Socket(host, port);
+                try (Socket socket = new Socket(host, port);) {
                     if (socket.isConnected()) {
                         lablServerStatus.setText("Server is running on port: " + port);
                     }
                 } catch (ConnectException ex) {
-                    System.out.println("port nao encontrada!");
-                    //Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+                    log.error("port nao encontrada!", ex);
                 }
             } else {
                 Mensagem.erro("Nao foi possivel conectar com o servidor na port: " + port, "Erro de conexao");
@@ -218,8 +219,8 @@ public class ServerController implements Initializable {
             url = "jdbc:mysql://" + properties.getProperty("host") + ":" + properties.getProperty("port") + "/";
             user = properties.getProperty("user");
             pass = properties.getProperty("password");
-        } catch (IOException e) {
-            System.out.println("erro ao caregar arquivo de configuracao!");
+        } catch (IOException ex) {
+            log.error("erro ao caregar arquivo de configuracao!", ex);
         }
     }
 
@@ -230,7 +231,7 @@ public class ServerController implements Initializable {
             con = DriverManager.getConnection(url + unicode, user, pass);
             return true;
         } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("error");
+            log.error(ex.getMessage());
         }
         return false;
     }
@@ -238,7 +239,9 @@ public class ServerController implements Initializable {
     private static void esperar(long milesegundos) {
         try {
             Thread.sleep(milesegundos);
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            log.warn("Interrupted!: ", e);
+            Thread.currentThread().interrupt();
         }
     }
 }

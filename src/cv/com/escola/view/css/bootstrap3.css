@@ -56,7 +56,7 @@
 .info .arrow,
 .warning .arrow,
 .danger .arrow {
-	-fx-background-color: transparent, white;
+    -fx-background-color: transparent, white;
 }
 
 .primary > .label,
@@ -64,11 +64,11 @@
 .info > .label,
 .warning > .label,
 .danger > .label {
-	-fx-text-fill: white;
+    -fx-text-fill: white;
 }
 
 .action-btn {
-	-fx-min-width: 80;
+    -fx-min-width: 80;
 }
 
 /*positions*/

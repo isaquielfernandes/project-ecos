@@ -10,12 +10,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+ @Slf4j
+ @Getter
 public class App extends Application {
 
-    public static Stage palco;
-    private static Scene cena;
-    private static AnchorPane page;
+    private Stage palco;
+    private Scene cena;
+    private AnchorPane page;
 
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
@@ -42,7 +46,7 @@ public class App extends Application {
             stage.show();
 
         } catch (IOException ex) {
-            System.out.println("Erro ao inicializar aplicação!\n" + ex.getLocalizedMessage());
+            log.error("Erro ao inicializar aplicação!\n" + ex.getLocalizedMessage());
         }
     }
 

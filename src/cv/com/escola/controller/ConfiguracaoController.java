@@ -37,7 +37,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
 
-
 public class ConfiguracaoController implements Initializable {
 
     private List<EscolaConducao> listaEmpresa;
@@ -132,6 +131,10 @@ public class ConfiguracaoController implements Initializable {
 
     public void uploadLogo() {
         file = filechooser();
+        if (file == null) {
+            return;
+        }
+
         if (file.length() < 6000000) {
             image = new Image(file.getAbsoluteFile().toURI().toString(),
                     logo.getFitWidth(), logo.getFitHeight(), true, true);
@@ -143,6 +146,10 @@ public class ConfiguracaoController implements Initializable {
 
     public void uploadFileAssinatura() {
         fileAssinatura = filechooser();
+        if (fileAssinatura == null) {
+            return;
+        }
+
         if (fileAssinatura.length() < 6000000) {
             image = new Image(fileAssinatura.getAbsoluteFile().toURI().toString(),
                     assinatura.getFitWidth(), assinatura.getFitHeight(), true, true);
@@ -163,7 +170,7 @@ public class ConfiguracaoController implements Initializable {
         }
         return null;
     }
-    
+
     private void alearta() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Permissao");

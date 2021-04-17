@@ -43,6 +43,8 @@ public class AlunoCard extends AnchorPane {
 
     protected final int alunoID;
     
+    private static final String SYSTEM_BOLD = "System Bold";
+    
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public AlunoCard(Aluno aluno) {
 
@@ -56,27 +58,28 @@ public class AlunoCard extends AnchorPane {
         nome = new Label("Nome:");
         nome.setMaxHeight(25.0);
         nome.setPrefWidth(70.0);
-        nome.setFont(new Font("System Bold", 11.0));
+
+        nome.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         contato = new Label("Contato:");
         contato.setMaxHeight(25.0);
         contato.setPrefWidth(70.0);
-        contato.setFont(new Font("System Bold", 11.0));
+        contato.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         dataNascimento = new Label("Dt. Nasc: ");
         dataNascimento.setMaxHeight(25.0);
         dataNascimento.setPrefWidth(70.0);
-        dataNascimento.setFont(new Font("System Bold", 11.0));
+        dataNascimento.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         nomeMae = new Label("Mãe:");
         nomeMae.setMaxHeight(25.0);
         nomeMae.setPrefWidth(70.0);
-        nomeMae.setFont(new Font("System Bold", 11.0));
+        nomeMae.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         nomePai = new Label("Pai:");
         nomePai.setMaxHeight(25.0);
         nomePai.setPrefWidth(70.0);
-        nomePai.setFont(new Font("System Bold", 11.0));
+        nomePai.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         numDoc = new Label("N° BI/CNI");
         numDoc.setFont(new Font("System Bold", 11.0));
@@ -85,33 +88,33 @@ public class AlunoCard extends AnchorPane {
         idade = new Label("Idade:");
         idade.setMaxHeight(25.0);
         idade.setPrefWidth(70.0);
-        idade.setFont(new Font("System Bold", 11.0));
+        idade.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         endereco = new Label("Endereço:");
         endereco.setMaxHeight(25.0);
         endereco.setPrefWidth(70.0);
-        endereco.setFont(new Font("System Bold", 11.0));
+        endereco.setFont(new Font(SYSTEM_BOLD, 11.0));
 
         imageView = new ImageView();
         labelNome = new Label();
-        labelNome.setFont(new Font("System Bold", 11.0));
+        labelNome.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelNome.setMaxWidth(Double.MAX_VALUE);
         labelContato = new Label();
-        labelContato.setFont(new Font("System Bold", 11.0));
+        labelContato.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelDataNascimento = new Label();
         labelDataNascimento.setFont(new Font("System Bold", 11.0));
         labelNomeMae = new Label();
-        labelNomeMae.setFont(new Font("System Bold", 11.0));
+        labelNomeMae.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelNomeMae.setStyle("-fx-padding: 0px 0px 0px 6px");
         labelNomePai = new Label();
-        labelNomePai.setFont(new Font("System Bold", 11.0));
+        labelNomePai.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelNomePai.setStyle("-fx-padding: 0px 0px 0px 6px");
         labelNumDoc = new Label();
-        labelNumDoc.setFont(new Font("System Bold", 11.0));
+        labelNumDoc.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelIdade = new Label();
-        labelIdade.setFont(new Font("System Bold", 11.0));
+        labelIdade.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelEndereco = new Label();
-        labelEndereco.setFont(new Font("System Bold", 11.0));
+        labelEndereco.setFont(new Font(SYSTEM_BOLD, 11.0));
 
         anchorPane.setPrefSize(340, 180);
         anchorPane.getChildren().add(gridPane);

@@ -294,7 +294,7 @@ public class AppController implements Initializable {
     private void menuSair(ActionEvent event) {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja mesno Sair do sistema?");
         if (responses == Dialogo.Resposta.YES) {
-            App.palco.close();
+            new App().getPalco().close();
         }
     }
 
@@ -480,7 +480,7 @@ public class AppController implements Initializable {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja fazer alterar aconfiguracao do servidor?");
         if (responses == Dialogo.Resposta.YES) {
             new Server().start(new Stage());
-            App.palco.close();
+            new App().getPalco().close();
         }
     }
 
@@ -492,7 +492,7 @@ public class AppController implements Initializable {
 
     @FXML
     private void terminarSeccao(ActionEvent event) {
-        App.palco.close();
+        new App().getPalco().close();
         new Login().start(new Stage());
     }
 

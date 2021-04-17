@@ -9,7 +9,7 @@ public class GerarCodigo {
     
     private static int CODIGO;
     private static final int COUNT=1;
-    private static String num="";
+    private static String num="";//String.format("%015d", id);
     private static final int ANOAGORA = Year.now().getValue();
     
     public static void gerar(int codigo){

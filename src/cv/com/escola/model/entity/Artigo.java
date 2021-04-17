@@ -33,51 +33,55 @@ public class Artigo {
         this.descricao = new SimpleStringProperty(descricao);
     }
 
-    public final long getIdArtigo() {
-        return idArtigo.get();
+    public long getIdArtigo() {
+        return idArtigoProperty().get();
     }
 
-    public final void setIdArtigo(long value) {
-        idArtigo.set(value);
+    public void setIdArtigo(long value) {
+        idArtigoProperty().set(value);
     }
 
     public LongProperty idArtigoProperty() {
+        if(idArtigo == null) idArtigo = new SimpleLongProperty(this, "idArtigo");
         return idArtigo;
     }
 
     public final String getNomeArtigo() {
-        return nomeArtigo.get();
+        return nomeArtigoProperty().get();
     }
 
-    public final void setNomeArtigo(String value) {
-        nomeArtigo.set(value);
+    public void setNomeArtigo(String value) {
+        nomeArtigoProperty().set(value);
     }
 
     public StringProperty nomeArtigoProperty() {
+        if(nomeArtigo == null) nomeArtigo = new SimpleStringProperty(this, "nomeArtigo");
         return nomeArtigo;
     }
 
-    public final BigDecimal getPreco() {
-        return preco.get();
+    public BigDecimal getPreco() {
+        return precoProperty().get();
     }
 
-    public final void setPreco(BigDecimal value) {
-        preco.set(value);
+    public void setPreco(BigDecimal value) {
+        precoProperty().set(value);
     }
 
     public ObjectProperty<BigDecimal> precoProperty() {
+        if(preco == null) preco = new SimpleObjectProperty(this, "preco");
         return preco;
     }
 
-    public final String getDescricao() {
-        return descricao.get();
+    public String getDescricao() {
+        return descricaoProperty().get();
     }
 
-    public final void setDescricao(String value) {
-        descricao.set(value);
+    public void setDescricao(String value) {
+        descricaoProperty().set(value);
     }
 
     public StringProperty descricaoProperty() {
+        if(descricao == null) descricao = new SimpleStringProperty(this, "descricao");
         return descricao;
     }
 

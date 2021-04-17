@@ -219,7 +219,6 @@ public class AlunoController extends AnchorPane implements Initializable {
     private Pagination pagination;
 
     private static final int QUANTIDADE_POR_PAGINA = 20;
-    private ObservableList<Aluno> alunos = FXCollections.observableArrayList();
     private boolean studantDefault = true;
     int totalAluno;
     int totalBuscarAluno;
@@ -722,7 +721,8 @@ public class AlunoController extends AnchorPane implements Initializable {
     private void atualizarGrade(int pagina) {
         totalAluno = DAOFactory.daoFactury().alunoDAO().count();
         pagination.setPageCount((int) Math.ceil(((double) totalAluno)) / QUANTIDADE_POR_PAGINA);
-        alunos = DAOFactory.daoFactury().alunoDAO().listar(QUANTIDADE_POR_PAGINA, pagina);
+        final ObservableList<Aluno> alunos = FXCollections
+                .observableArrayList(DAOFactory.daoFactury().alunoDAO().listar(QUANTIDADE_POR_PAGINA, pagina));
         tbAluno.setItems(alunos);
     }
 

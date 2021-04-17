@@ -2,8 +2,6 @@ package cv.com.escola.model.dao.impl;
 
 import cv.com.escola.model.entity.Artigo;
 import cv.com.escola.model.dao.DAO;
-import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.util.Mensagem;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +69,6 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setInt(1, idArtigo);
             preparedStatement.execute();
-
             preparedStatement.close();
         } catch (SQLException ex) {
             throw new DaoException("Erro ao excluir artigo na base de dados! \n" + ex);
@@ -82,7 +79,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
     public List<Artigo> findAll() {
         List<Artigo> artigosList = new ArrayList<>();
         try {
-            String sql = "SELECT * from "+ db +".tb_artigo";
+            String sql = "SELECT * from "+ db +".tb_artigo;";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {

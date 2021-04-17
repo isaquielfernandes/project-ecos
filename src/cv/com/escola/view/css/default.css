@@ -313,7 +313,6 @@
 }
 
 .axis {
-    AXIS_COLOR: #f7f7f7;
     -fx-axis_color:#f7f7f7;
     -fx-tick-label-font-size: 0.85em;
     -fx-tick-length: 10px;
