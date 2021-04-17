@@ -195,13 +195,7 @@ public class ServerController implements Initializable {
             String host = tfHost.getText();
             int port = Integer.parseInt(thPort.getText());
             if (port == 3306 || port == 3307 || port == 3308 || port == 8887) {
-                try (Socket socket = new Socket(host, port);) {
-                    if (socket.isConnected()) {
-                        lablServerStatus.setText("Server is running on port: " + port);
-                    }
-                } catch (ConnectException ex) {
-                    log.error("port nao encontrada!", ex);
-                }
+                socketConnection(host, port);
             } else {
                 Mensagem.erro("Nao foi possivel conectar com o servidor na port: " + port, "Erro de conexao");
             }
@@ -209,6 +203,16 @@ public class ServerController implements Initializable {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void socketConnection(String host, int port) throws IOException {
+        try (Socket socket = new Socket(host, port);) {
+            if (socket.isConnected()) {
+                lablServerStatus.setText("Server is running on port: " + port);
+            }
+        } catch (ConnectException ex) {
+            log.error("porta nao encontrada: ", ex);
         }
     }
 

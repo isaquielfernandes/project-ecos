@@ -20,7 +20,6 @@ public final class EcosApp extends Application {
     }
 
     @Override
-    @SuppressWarnings("SleepWhileInLoop")
     public void init() throws Exception {
         
     }

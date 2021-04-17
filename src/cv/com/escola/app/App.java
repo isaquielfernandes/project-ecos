@@ -18,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 public class App extends Application {
 
     private Stage palco;
-    private Scene cena;
-    private AnchorPane page;
-
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
 
@@ -28,8 +25,8 @@ public class App extends Application {
     public void start(final Stage stage) {
         try {
             palco = stage;
-            page = FXMLLoader.load(App.class.getResource("/cv/com/escola/view/app/app.fxml"));
-            cena = new Scene(page);
+            AnchorPane page = FXMLLoader.load(App.class.getResource("/cv/com/escola/view/app/app.fxml"));
+            Scene cena = new Scene(page);
 
             stage.initStyle(StageStyle.DECORATED);
             stage.setTitle("SGEC");
@@ -40,13 +37,13 @@ public class App extends Application {
             stage.setHeight(windows.getHeight());
             stage.setFullScreen(false);
 
-            stage.getIcons().addAll(new Image(App.class.getResourceAsStream("/cv/com/escola/view/img/servidor.png")));
+            stage.getIcons().addAll(new Image(App.class
+                    .getResourceAsStream("/cv/com/escola/view/img/servidor.png")));
 
             stage.setScene(cena);
             stage.show();
-
         } catch (IOException ex) {
-            log.error("Erro ao inicializar aplicação!\n" + ex.getLocalizedMessage());
+            log.warn("Erro ao inicializar aplicação!\n" + ex.getLocalizedMessage());
         }
     }
 

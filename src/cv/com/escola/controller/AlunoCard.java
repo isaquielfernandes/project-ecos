@@ -82,7 +82,7 @@ public class AlunoCard extends AnchorPane {
         nomePai.setFont(new Font(SYSTEM_BOLD, 11.0));
         
         numDoc = new Label("N° BI/CNI");
-        numDoc.setFont(new Font("System Bold", 11.0));
+        numDoc.setFont(new Font(SYSTEM_BOLD, 11.0));
         numDoc.setStyle("-fx-padding: 0px 0px 0px 6px");
         
         idade = new Label("Idade:");
@@ -102,7 +102,7 @@ public class AlunoCard extends AnchorPane {
         labelContato = new Label();
         labelContato.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelDataNascimento = new Label();
-        labelDataNascimento.setFont(new Font("System Bold", 11.0));
+        labelDataNascimento.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelNomeMae = new Label();
         labelNomeMae.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelNomeMae.setStyle("-fx-padding: 0px 0px 0px 6px");
