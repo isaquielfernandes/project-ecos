@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.app.Login;
@@ -17,7 +12,6 @@ import cv.com.escola.model.util.Criptografia;
 import cv.com.escola.model.util.Dialogo;
 import cv.com.escola.model.util.Filtro;
 import cv.com.escola.model.util.Grupo;
-import cv.com.escola.model.util.Mascara;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
@@ -36,7 +30,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -196,8 +189,7 @@ public class RegistrarController implements Initializable{
                 Mensagem.info("Usuário atualizado com sucesso!");
             }
             sincronizarBase();
-            Registrar.palco.close();
-            //caregarTelaLogin();
+            Registrar.fechar();
             new Login().start(new Stage());
         }
     }

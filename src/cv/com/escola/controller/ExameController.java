@@ -163,7 +163,6 @@ public class ExameController extends AnchorPane implements Initializable {
     }
 
     public void showAlunoSelected(Aluno aluno) {
-        aluno = cbCliente.getSelectionModel().getSelectedItem();
         if (aluno != null) {
             txtId_Aluno.setText(String.valueOf(aluno.getIdAluno()));
             txtNome_Aluno.setText(aluno.getNome());

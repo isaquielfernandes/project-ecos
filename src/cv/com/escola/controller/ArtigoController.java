@@ -250,7 +250,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         decimal(txtPreco);
-        txtPreco.setOnKeyReleased((key) -> {
+        txtPreco.setOnKeyReleased(key -> {
             if (key.getCode() == KeyCode.ENTER) {
                 try {
                     salvar(null);

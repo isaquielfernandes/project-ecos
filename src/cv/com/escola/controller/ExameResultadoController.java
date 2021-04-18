@@ -362,7 +362,6 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
     }
 
     public void selectedTableAluno(Exame exame) {
-        exame = tbExame.getSelectionModel().getSelectedItem();
         if (exame != null) {
             txtIDExame.setText(String.valueOf(exame.getIdExame()));
             txtAluno.setText(exame.getAluno().getNome());

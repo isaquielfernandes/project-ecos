@@ -4,7 +4,7 @@ import cv.com.escola.model.entity.Cliente;
 import cv.com.escola.model.dao.ClienteDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Mensagem;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO{
             preparedStatement.close();
             Mensagem.info("Cliente cadastrada com sucesso!");
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao cadastrar cliente na base de dados!");
+            throw new DataAccessException("Erro ao cadastrar cliente na base de dados!");
         }
     }
     
@@ -84,7 +84,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO{
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir cliente na base de dados!");
+            throw new DataAccessException("Erro ao excluir cliente na base de dados!");
         }
     }
     
@@ -105,7 +105,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO{
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar cliente na base de dados!");
+            throw new DataAccessException("Erro ao consultar cliente na base de dados!");
         }
         return clientes;
     }

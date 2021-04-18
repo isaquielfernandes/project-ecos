@@ -7,6 +7,7 @@ import cv.com.escola.model.entity.Usuario;
 import cv.com.escola.model.entity.Venda;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.OrderDAO;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Nota;
 import cv.com.escola.model.util.Print;
@@ -23,25 +24,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
-import javafx.util.Duration;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
-import tray.animations.AnimationType;
-import tray.notification.NotificationType;
-import tray.notification.TrayNotification;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 
 public class OrderDAOImpl extends DAO implements OrderDAO {
 
+    private final JdbcTemplate jdbcTemplate;
     private List<Item> itemDeVenda;
-    private ObservableList<Item> itens;
     
     public OrderDAOImpl() {
         super();
+        jdbcTemplate = new JdbcTemplate();
     }
 
     @Override
@@ -127,11 +125,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                         rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14),
                         rs.getString(15), rs.getString(16));
                 
-                Usuario user = new Usuario(rs.getInt(17), rs.getString(18));
+                Usuario usuario = new Usuario(rs.getInt(17), rs.getString(18));
                 
                 Venda vendas = new Venda(rs.getInt(1), rs.getDate(2).toLocalDate(),
                         rs.getBigDecimal(3), rs.getBoolean(4), rs.getString(5),
-                        rs.getBigDecimal(6), rs.getString(7), cliente, user, rs.getBigDecimal(19));
+                        rs.getBigDecimal(6), rs.getString(7), cliente, usuario, rs.getBigDecimal(19));
                 
                 itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(vendas);
                 vendas.setItens(FXCollections.observableArrayList(itemDeVenda));
@@ -155,11 +153,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                         rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14),
                         rs.getString(15), rs.getString(16));
                 
-                Usuario user = new Usuario(rs.getInt(17), rs.getString(18));
+                Usuario usuario = new Usuario(rs.getInt(17), rs.getString(18));
                 
                 Venda vendas = new Venda(rs.getInt(1), rs.getDate(2).toLocalDate(),
                         rs.getBigDecimal(3), rs.getBoolean(4), rs.getString(5),
-                        rs.getBigDecimal(6), rs.getString(7), cliente, user, rs.getBigDecimal(19));
+                        rs.getBigDecimal(6), rs.getString(7), cliente, usuario, rs.getBigDecimal(19));
                 
                 itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(vendas);
                 vendas.setItens(FXCollections.observableArrayList(itemDeVenda));
@@ -174,8 +172,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public int count() {
         try {
-            String sql = "SELECT COUNT(*) FROM " + db + ".tb_vendas";
-            preparedStatement = conector.prepareStatement(sql);
+            String query = "SELECT COUNT(*) FROM " + db + ".tb_vendas";
+            preparedStatement = conector.prepareStatement(query);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -183,7 +181,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar total de vendas na base de dados");
+            throw new DataAccessException("Erro ao consultar total de vendas na base de dados", ex);
         }
         return 0;
     }
@@ -199,8 +197,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             if (rs.next()) {
                 j = rs.getInt(1);
             }
-        } catch (SQLException e) {
-            Mensagem.erro("Erro ao consultar registro na base de dados!");
+        } catch (SQLException ex) {
+            throw new DataAccessException("Erro ao consultar registro na base de dados!", ex);
         }
         return j;
     }
@@ -239,11 +237,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                         rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14),
                         rs.getString(15), rs.getString(16));
 
-                Usuario user = new Usuario(rs.getInt(17), rs.getString(18));
+                Usuario usuario = new Usuario(rs.getInt(17), rs.getString(18));
 
                 retorno = new Venda(rs.getInt(1), rs.getDate(2).toLocalDate(),
                         rs.getBigDecimal(3), rs.getBoolean(4), rs.getString(5),
-                        rs.getBigDecimal(6), rs.getString(7), cliente, user, rs.getBigDecimal(19));
+                        rs.getBigDecimal(6), rs.getString(7), cliente, usuario, rs.getBigDecimal(19));
 
                 retorno = venda;
             }
@@ -382,7 +380,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             if(rs.next())
                 return rs.getBigDecimal(1);
         } catch (SQLException ex){
-            Mensagem.erro("Erro ao consultar na base de dados\n!"+ ex);
+            throw new DataAccessException("Erro ao consultar na base de dados\n!"+ ex);
         }
         return BigDecimal.ZERO;
     }

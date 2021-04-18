@@ -5,7 +5,7 @@ import cv.com.escola.model.entity.Curso;
 import cv.com.escola.model.dao.CursoDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Mensagem;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             Mensagem.info("Curso cadastrado com sucesso");
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao cadastrar curso na base de dados!");
+            throw new DataAccessException("Erro ao cadastrar curso na base de dados!");
         }
     }
 
@@ -58,7 +58,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             Mensagem.info("Curso atualizado com sucesso");
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao atualizar curso na base de dados! \n");
+            throw new DataAccessException("Erro ao atualizar curso na base de dados! \n");
         }
     }
 
@@ -72,7 +72,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao excluir curso na base de dados!");
+            throw new DataAccessException("Erro ao excluir curso na base de dados!");
         }
     }
 
@@ -93,7 +93,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao consultar cursos na base de dados!");
+            throw new DataAccessException("Erro ao consultar cursos na base de dados!");
         }
         return cursos;
     }

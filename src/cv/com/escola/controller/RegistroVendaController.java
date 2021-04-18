@@ -97,8 +97,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.table.TableRowExpanderColumn;
 
+@Slf4j
 public class RegistroVendaController extends AnchorPane implements Initializable, Itens {
 
     private List<Venda> listVendas;
@@ -556,9 +558,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //Grafico de Bara (BarChart)
     protected void barChart() {
-
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
-
         dados.entrySet().stream().map((dadosItem) -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -602,7 +602,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //Grafico de area (AreaChart)
     protected void areaChart() {
-
         //AreaChart pra vendas por mes
         Map<Integer, ArrayList> area = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
 
@@ -644,12 +643,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         }).forEachOrdered((pieChartObser) -> {
             pieChart.setData(pieChartObser);
         });
-        GraficoPie.info(pieChart, DAOFactory.daoFactury().orderDAO().totalAnual(ano).doubleValue());
+        double value = DAOFactory.daoFactury().orderDAO().totalAnual(ano).doubleValue();
+        GraficoPie.info(pieChart, value);
     }
 
     //Grafico de Bara (StackedAreaChart)
     protected void stackedAreaChart() {
-
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
 
         dados.entrySet().stream().map((dadosItem) -> {
@@ -672,7 +671,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //Grafico de linha (LineChart)
     protected void lineChart(LocalDate dataAgora) {
-        dataAgora = dateTextFieldMes.getValue();
         String mes = String.valueOf(dataAgora.getMonthValue());
         String anoAgora = String.valueOf(dataAgora.getYear());
         lineChartDia.getData().clear();
@@ -747,7 +745,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     // Setando dados do combobox no caixa de texto
     public void showArtigoSelected(Artigo artigo) {
-        artigo = cbArtigo.getSelectionModel().getSelectedItem();
         if (artigo != null) {
             if (txtQuantia.getText().trim().isEmpty()) {
                 txtPrecoDeVenda.setText(artigo.getPreco().toString());
@@ -763,7 +760,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     // Setando dados do combobox no caixa de texto
     public void showClienteSelected(Cliente cliente) {
-        cliente = cbCliente.getSelectionModel().getSelectedItem();
         if (cliente != null) {
             cbCliente.setValue(cliente);
         } else {
@@ -805,8 +801,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     }
 
     //Função para verificar se os campo esta vazio
-    public boolean inNotNull() {
-        //boolean vazio = Campo.noEmpty(txtQuantia, txtPrecoDeVenda, txtCustoItem);
+    public boolean isNotNull() {
         boolean isNotNull = false;
         if (txtPrecoDeVenda.getText().trim().isEmpty() || txtQuantia.getText().trim().matches("")) {
             Nota.erro("Por favor, Selecione um artigo...");
@@ -857,8 +852,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabela() {
-        //ObservableList dadoVenda = FXCollections.observableArrayList(listVendas);
-
         colIdVenda.setCellValueFactory(new PropertyValueFactory<>("idVenda"));
         colNumFatura.setCellValueFactory(new PropertyValueFactory<>("numFatura"));
         colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
@@ -940,7 +933,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //Filtrar dados de venda com por data
     private void filtro(LocalDate valor, ObservableList<Venda> listVendas) {
-
         FilteredList<Venda> dadosFiltrados = new FilteredList<>(listVendas, venda -> true);
         dadosFiltrados.setPredicate(venda -> {
 
@@ -1157,7 +1149,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     // funcao para remover item da tabela items
     public void removerItem(Item itens, TableView<Item> tb) {
         try {
-            itens = tb.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir item: " + itens.getArtigo().getNomeArtigo() + "?");
             if (response == Dialogo.Resposta.YES) {
                 tb.getItems().remove(tb.getSelectionModel().getSelectedIndex());
@@ -1233,7 +1224,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     public void adcionarItemAoCarinho() {
         try {
-            if (inNotNull()) {
+            if (isNotNull()) {
                 Artigo artigoList = cbArtigo.getValue();
                 Integer quantia = Integer.parseInt(txtQuantia.getText());
                 BigDecimal valor = new BigDecimal(txtCustoItem.getText());
@@ -1280,7 +1271,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     private boolean validarDados() {
         String errorMessage = "";
-
         if (tbItens.getItems().isEmpty()) {
             errorMessage += "Adicione Itens de Venda na tabela!\n";
         }
@@ -1393,7 +1383,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     }
 
     public void clienteSelecionadoDialog() {
-
         Group rootGroup = new Group();
         Scene scene = new Scene(rootGroup, 250, 340, Color.WHITESMOKE);
         
@@ -1403,7 +1392,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         //Especifica a modalidade para esta fase . Isso deve ser feito antes de fazer o estágio visível. A modalidade pode ser: Modality.NONE , Modality.WINDOW_MODAL , ou Modality.APPLICATION_MODAL
         stage.initModality(Modality.APPLICATION_MODAL);//WINDOW_MODAL (possibilita minimizar)
         stage.setResizable(false);
-        stage.getIcons().add(new Image(RegistrarController.class.getResourceAsStream("/cv/com/escola/img/avater.jpg")));
+        stage.getIcons().add(new Image(RegistrarController.class.getResourceAsStream("/cv/com/escola/view/img/avater.jpg")));
         stage.initStyle(StageStyle.DECORATED);
         stage.setScene(scene);
         
@@ -1472,7 +1461,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     // Setando dados do listView no caixa de texto
     public void clienteSelectedListView(Cliente cliente) {
-        cliente = listCliente.getSelectionModel().getSelectedItem();
         if (cliente != null) {
             cbCliente.setValue(cliente);
         } else {
@@ -1484,7 +1472,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtrosCliente(String valor, ObservableList<Cliente> listaCliente) {
-
         FilteredList<Cliente> dadosFiltrados = new FilteredList<>(listaCliente, clientes -> true);
         dadosFiltrados.setPredicate(clientes -> {
             if (clientes == null || valor.isEmpty()) {
@@ -1533,7 +1520,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     // Setando dados do listview no caixa de texto
     public void listViewProdutoSelected(Artigo artigo) {
-        artigo = listViewProduto.getSelectionModel().getSelectedItem();
         if (artigo != null) {
             cbArtigo.setValue(artigo);
             if (txtQuantia.getText().trim().isEmpty()) {
@@ -1583,6 +1569,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private static void esperar(long milesegundos) {
         try {
             Thread.sleep(milesegundos);
-        } catch (Exception e) {}
+        } catch (InterruptedException e) {
+            log.warn("InterruptedException: ", e);
+        }
     }
 }

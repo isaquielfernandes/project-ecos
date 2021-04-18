@@ -47,9 +47,10 @@ public class MyPreloader extends Preloader {
     public void handleStateChangeNotification(Preloader.StateChangeNotification info) {
         StateChangeNotification.Type type = info.getType();
         switch (type) {
-            
             case BEFORE_START:
                 preloaderStage.hide();
+                break;
+            default:
                 break;
         }
     }

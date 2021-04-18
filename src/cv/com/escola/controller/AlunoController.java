@@ -1,7 +1,7 @@
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.entity.Aluno;
 import cv.com.escola.model.entity.AlunoBuilder;
 import cv.com.escola.model.entity.Pagina;
@@ -355,7 +355,7 @@ public class AlunoController extends AnchorPane implements Initializable {
                     DAOFactory.daoFactury().alunoDAO().update(aluno);
                     Mensagem.info("Aluno atualizado com sucesso");
                 }
-            } catch (DaoException e) {
+            } catch (DataAccessException e) {
                 Mensagem.erro(e.getMessage());
             }
             telaCadastro(null);
@@ -504,12 +504,12 @@ public class AlunoController extends AnchorPane implements Initializable {
             return tbAluno;
         });
 
-        imgView.setOnMouseClicked((event) -> {
+        imgView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2)
                 adcionarFoto(null);
         });
 
-        hlAnexarFoto.setOnMouseClicked((event) -> {
+        hlAnexarFoto.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1)
                 adcionarFoto(null);
         });
@@ -523,7 +523,7 @@ public class AlunoController extends AnchorPane implements Initializable {
 
         tooltip();
 
-        tbAluno.setOnMouseClicked((event) -> {
+        tbAluno.setOnMouseClicked(event -> {
             if (tbAluno.getSelectionModel().getSelectedItem() != null) {
                 if (event.getClickCount() == 2) {
                     imprimir(null);

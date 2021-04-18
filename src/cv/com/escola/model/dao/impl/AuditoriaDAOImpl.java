@@ -4,7 +4,7 @@ import cv.com.escola.model.entity.Auditoria;
 import cv.com.escola.model.entity.Usuario;
 import cv.com.escola.model.dao.AuditoriaDAO;
 import cv.com.escola.model.dao.DAO;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Tempo;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao inserir logs na base de dados!");
+            throw new DataAccessException("Erro ao inserir logs na base de dados!");
         }
     }
 
@@ -42,7 +42,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir logs na base de dados!");
+            throw new DataAccessException("Erro ao excluir logs na base de dados!");
         }
     }
 
@@ -66,7 +66,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar logs na base de dados!");
+            throw new DataAccessException("Erro ao consultar logs na base de dados!");
         }
         return dados;
     }
@@ -88,7 +88,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar logs na base de dados!");
+            throw new DataAccessException("Erro ao consultar logs na base de dados!");
         }
         return dados;
     }

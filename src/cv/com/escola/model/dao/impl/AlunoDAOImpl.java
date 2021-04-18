@@ -4,7 +4,7 @@ import cv.com.escola.model.entity.Aluno;
 import cv.com.escola.model.entity.Pagina;
 import cv.com.escola.model.dao.AlunoDAO;
 import cv.com.escola.model.dao.DAO;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.dao.exception.NotFoundException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
@@ -47,7 +47,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             Mensagem.info("Aluno cadastrada com sucesso!");
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao salvar aluno na base de dados! \n", ex);
+            throw new DataAccessException("Erro ao salvar aluno na base de dados! \n", ex);
         }
     }
 
@@ -65,7 +65,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao atualizar aluno na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao atualizar aluno na base de dados! \n" + ex);
         }
     }
 
@@ -78,7 +78,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir aluno na base de dados!");
+            throw new DataAccessException("Erro ao excluir aluno na base de dados!");
         }
     }
 
@@ -95,7 +95,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar aluno na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao consultar aluno na base de dados! \n" + ex);
         }
         return alunos;
     }
@@ -138,7 +138,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar aluno na base de dados!");
+            throw new DataAccessException("Erro ao consultar aluno na base de dados!");
         }
         return alunos;
     }

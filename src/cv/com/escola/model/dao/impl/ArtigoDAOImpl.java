@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import cv.com.escola.model.dao.ArtigoDAO;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.ResultSet;
 
 public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
@@ -34,7 +34,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao cadastrar artigo na base de dados!");
+            throw new DataAccessException("Erro ao cadastrar artigo na base de dados!");
         }
     }
 
@@ -57,7 +57,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao atualizar artigo na base de dados! \n");
+            throw new DataAccessException("Erro ao atualizar artigo na base de dados! \n");
         }
     }
 
@@ -71,7 +71,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir artigo na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao excluir artigo na base de dados! \n" + ex);
         }
     }
 
@@ -88,7 +88,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar artigos na base de dados!");
+            throw new DataAccessException("Erro ao consultar artigos na base de dados!");
         }
         return artigosList;
     }
@@ -108,7 +108,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ArtigoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao consultar artigos na base de dados!");
+            throw new DataAccessException("Erro ao consultar artigos na base de dados!");
         }
         return retorno;
     }

@@ -4,7 +4,7 @@ import cv.com.escola.model.entity.Categoria;
 import cv.com.escola.model.dao.CategoriaDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Print;
 import java.net.URL;
 import java.sql.Connection;
@@ -41,7 +41,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             preparedStatement.executeUpdate();
             conector.commit();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao inserir categoria na base de dados!");
+            throw new DataAccessException("Erro ao inserir categoria na base de dados!");
         } finally  {
             ConnectionManager.close(preparedStatement, connection);
         }
@@ -62,7 +62,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             preparedStatement.executeUpdate();
             conector.commit();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao atualizar categoria na base de dados!n");
+            throw new DataAccessException("Erro ao atualizar categoria na base de dados!n");
         } finally  {
             ConnectionManager.close(preparedStatement, connection);
         }
@@ -79,7 +79,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             preparedStatement.setInt(1, idCategoria);
             preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir categoria na base de dados!");
+            throw new DataAccessException("Erro ao excluir categoria na base de dados!");
         }finally  {
             ConnectionManager.close(preparedStatement, connection);
         }
@@ -99,7 +99,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
                 categorias.add(categ);
             }
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar categoria na base de dados!");
+            throw new DataAccessException("Erro ao consultar categoria na base de dados!");
         } finally  {
             ConnectionManager.close(preparedStatement, rs, connection);
         }

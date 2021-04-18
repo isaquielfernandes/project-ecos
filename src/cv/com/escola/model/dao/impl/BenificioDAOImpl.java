@@ -3,7 +3,7 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.dao.BenificioDAO;
 import cv.com.escola.model.entity.Benificio;
 import cv.com.escola.model.dao.DAO;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(BenificioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao savar benificio na base de dados!");
+            throw new DataAccessException("Erro ao savar benificio na base de dados!");
         }
     }
     
@@ -47,7 +47,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(BenificioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao editar benificio na base de dados!");
+            throw new DataAccessException("Erro ao editar benificio na base de dados!");
         }
     }
     
@@ -63,7 +63,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir benificio na base de dados!");
+            throw new DataAccessException("Erro ao excluir benificio na base de dados!");
         }
     }
     
@@ -82,7 +82,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar benificio na base de dados!");
+            throw new DataAccessException("Erro ao consultar benificio na base de dados!");
         }
         return dadosBenificio;
     }
@@ -101,7 +101,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar benificio na base de dados!");
+            throw new DataAccessException("Erro ao consultar benificio na base de dados!");
         }
         return dadosBenificio;
     }
@@ -120,7 +120,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao validar benificio na base de dados!");
+            throw new DataAccessException("Erro ao validar benificio na base de dados!");
         }
         return false;
     }

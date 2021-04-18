@@ -227,7 +227,7 @@
                               </ToggleButton>
                               <VBox fx:id="boxRelatorio" styleClass="box-submenus">
                                  <children>
-                                    <ToggleButton fx:id="btRel_Geral" alignment="CENTER_LEFT" layoutX="40.0" layoutY="70.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#subMenuRel_Geral" styleClass="submenus" text="Relatorios Gerais">
+                                    <ToggleButton fx:id="btRelatorioGeral" alignment="CENTER_LEFT" layoutX="40.0" layoutY="70.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#subMenuRelatorioGeral" styleClass="submenus" text="Relatorios Gerais">
                                        <tooltip>
                                           <Tooltip autoHide="true" prefWidth="200.0" text="Relatorios Gerais">
                                              <font>

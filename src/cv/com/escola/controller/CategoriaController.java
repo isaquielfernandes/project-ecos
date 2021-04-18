@@ -88,12 +88,12 @@ public class CategoriaController extends AnchorPane implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        txtCategoria.setOnKeyReleased((key) -> {
+        txtCategoria.setOnKeyReleased(key -> {
             if (key.getCode() == KeyCode.ENTER) {
                 salvar(null);
             }
         });
-        txtDescricao.setOnKeyReleased((key) -> {
+        txtDescricao.setOnKeyReleased(key -> {
             if (key.getCode() == KeyCode.ENTER) {
                 salvar(null);
             }
@@ -103,9 +103,9 @@ public class CategoriaController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria))
+        );
     }
 
     @FXML
@@ -203,7 +203,6 @@ public class CategoriaController extends AnchorPane implements Initializable {
         ObservableList data = FXCollections.observableArrayList(listaCategoria);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id_categoria"));
-        //colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         colCategoria.setCellValueFactory((TableColumn.CellDataFeatures<Categoria, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
         colDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
 

@@ -3,7 +3,7 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.entity.EscolaConducao;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.EmpresaDAO;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
 import java.sql.SQLException;
@@ -32,7 +32,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao inserir dados da empresa na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao inserir dados da empresa na base de dados! \n" + ex);
         }
     }
 
@@ -51,7 +51,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao editar dados da empresa na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao editar dados da empresa na base de dados! \n" + ex);
         }
     }
 
@@ -91,7 +91,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao editar dados da empresa na base de dados! \n", ex.getCause());
+            throw new DataAccessException("Erro ao editar dados da empresa na base de dados! \n", ex.getCause());
         }
     }
 
@@ -104,7 +104,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao excluir emprasa na base de dados! \n", ex.getCause());
+            throw new DataAccessException("Erro ao excluir emprasa na base de dados! \n", ex.getCause());
         }
     }
 
@@ -126,7 +126,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar empresa na base de dados! \n", ex);
+            throw new DataAccessException("Erro ao consultar empresa na base de dados! \n", ex);
         }
         return dadosEmpresa;
     }

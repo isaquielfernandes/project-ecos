@@ -44,6 +44,7 @@ public class AlunoCard extends AnchorPane {
     protected final int alunoID;
     
     private static final String SYSTEM_BOLD = "System Bold";
+    private static final String PADDING_0PX_0PX_0PX_6PX = "-fx-padding: 0px 0px 0px 6px";
     
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public AlunoCard(Aluno aluno) {
@@ -83,7 +84,7 @@ public class AlunoCard extends AnchorPane {
         
         numDoc = new Label("N° BI/CNI");
         numDoc.setFont(new Font(SYSTEM_BOLD, 11.0));
-        numDoc.setStyle("-fx-padding: 0px 0px 0px 6px");
+        numDoc.setStyle(PADDING_0PX_0PX_0PX_6PX);
         
         idade = new Label("Idade:");
         idade.setMaxHeight(25.0);
@@ -105,10 +106,10 @@ public class AlunoCard extends AnchorPane {
         labelDataNascimento.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelNomeMae = new Label();
         labelNomeMae.setFont(new Font(SYSTEM_BOLD, 11.0));
-        labelNomeMae.setStyle("-fx-padding: 0px 0px 0px 6px");
+        labelNomeMae.setStyle(PADDING_0PX_0PX_0PX_6PX);
         labelNomePai = new Label();
         labelNomePai.setFont(new Font(SYSTEM_BOLD, 11.0));
-        labelNomePai.setStyle("-fx-padding: 0px 0px 0px 6px");
+        labelNomePai.setStyle(PADDING_0PX_0PX_0PX_6PX);
         labelNumDoc = new Label();
         labelNumDoc.setFont(new Font(SYSTEM_BOLD, 11.0));
         labelIdade = new Label();
@@ -214,8 +215,6 @@ public class AlunoCard extends AnchorPane {
 
     private String idade(Aluno aluno) {
         LocalDate dataNas = aluno.getDataNascimento();
-        LocalDate now = LocalDate.now();
-        String anos = String.valueOf(ChronoUnit.YEARS.between(dataNas, now));
-        return anos;
+        return String.valueOf(ChronoUnit.YEARS.between(dataNas, LocalDate.now()));
     }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
@@ -132,7 +127,6 @@ public class SeguroController extends AnchorPane implements Initializable {
     }
     
     public void selectComboBoxVeiculo(Veiculo veiculo){
-        veiculo = cbVeiculo.getSelectionModel().getSelectedItem();
         if (veiculo != null) {
             txtProprietario.setText(veiculo.getProprietario().getNomePropretario());
         } else {

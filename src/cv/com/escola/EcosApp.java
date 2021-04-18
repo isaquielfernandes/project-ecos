@@ -5,7 +5,9 @@ import cv.com.escola.app.Server;
 import java.io.File;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public final class EcosApp extends Application {
 
     @Override
@@ -20,8 +22,8 @@ public final class EcosApp extends Application {
     }
 
     @Override
-    public void init() throws Exception {
-        
+    public void init() {
+        log.debug("iniciando ...");
     }
 
     public static void main(String[] args) {

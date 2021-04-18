@@ -86,7 +86,7 @@ public class ServerController implements Initializable {
     @FXML
     private void btnIniciarOnAction(ActionEvent event) {
         new Login().start(new Stage());
-        Server.palco.close();
+        Server.close();
     }
 
     @FXML
@@ -100,7 +100,6 @@ public class ServerController implements Initializable {
         if (res == Dialogo.Resposta.YES) {
             DBMigration.createDataBase();
         }
-        
         esperar(1000);
 
         Dialogo.Resposta resView = Mensagem.confirmar("Criar Views?");

@@ -204,7 +204,6 @@ public class InscricaoController extends AnchorPane implements Initializable {
     }
 
     public void selectAlunoListView(Aluno aluno) {
-        aluno = listViewAluno.getSelectionModel().getSelectedItem();
         if (aluno != null) {
             txtAluno.setText(aluno.getNome());
         } else {

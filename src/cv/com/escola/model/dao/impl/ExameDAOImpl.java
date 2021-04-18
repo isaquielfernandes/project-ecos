@@ -5,7 +5,7 @@ import cv.com.escola.model.entity.Categoria;
 import cv.com.escola.model.entity.Exame;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.ExameDAO;
-import cv.com.escola.model.dao.exception.DaoException;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.dao.exception.ReportException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
@@ -57,7 +57,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DaoException("Erro ao cadastrar exame no base de dados", ex);
+            throw new DataAccessException("Erro ao cadastrar exame no base de dados", ex);
         }
     }
     
@@ -82,7 +82,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-           throw new DaoException("Erro ao atualizar dados no base de dados", ex);
+           throw new DataAccessException("Erro ao atualizar dados no base de dados", ex);
         }
     }
     
@@ -134,7 +134,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DaoException("Erro ao consultar total de exame marcado na base de dados!");
+            throw new DataAccessException("Erro ao consultar total de exame marcado na base de dados!");
         }
         return 0;
     }

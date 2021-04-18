@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
+import org.apache.poi.util.IOUtils;
 
 public class Aluno {
     
@@ -242,12 +243,11 @@ public class Aluno {
     
     public Image readFoto(){
         Image img = null;
-        final InputStream fileStream = this.getFoto();
-        if(fileStream != null) {
+        final InputStream inputStream = this.getFoto();
+        if(inputStream != null) {
             try {
-                byte byteArray[] = new byte[fileStream.available()];
-                fileStream.read(byteArray);
-                img = new Image(new ByteArrayInputStream(byteArray));
+                byte[] buffer = IOUtils.toByteArray(inputStream);
+                img = new Image(new ByteArrayInputStream(buffer));
             } catch (IOException ex) {
                 Logger.getLogger(Aluno.class.getName()).log(Level.SEVERE, null, ex);
             }

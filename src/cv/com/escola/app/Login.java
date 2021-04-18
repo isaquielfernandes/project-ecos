@@ -9,16 +9,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Login extends Application {
 
     public static Stage palco;
-    private Scene cena;
-    private AnchorPane page;
 
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
-    private static final int COUNT_LIMIT = 10;
     
     
     @Override
@@ -27,8 +26,8 @@ public class Login extends Application {
         try {
 
             palco = stage;
-            page = FXMLLoader.load(Login.class.getResource("/cv/com/escola/view/login/login.fxml"));
-            cena = new Scene(page);
+            AnchorPane page = FXMLLoader.load(Login.class.getResource("/cv/com/escola/view/login/login.fxml"));
+            Scene cena = new Scene(page);
 
             stage.initStyle(StageStyle.UNDECORATED);
 
@@ -44,7 +43,7 @@ public class Login extends Application {
             stage.show();
 
         } catch (Exception ex) {
-            System.out.println("Erro ao inicializar aplicação 11!" + ex);
+            log.debug("Erro ao inicializar aplicação 11!" + ex);
         }
     }
     

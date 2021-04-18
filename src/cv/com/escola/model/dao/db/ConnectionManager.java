@@ -43,11 +43,7 @@ public final class ConnectionManager extends LoadProperties {
     }
 
     public static void close(final Connection conector) {
-        /*try {
-            conector.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        
     }
 
     public static void close(final PreparedStatement stm) {

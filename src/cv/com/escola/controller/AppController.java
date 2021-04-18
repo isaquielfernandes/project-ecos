@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,7 +38,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 
 public class AppController implements Initializable {
 
@@ -95,7 +95,7 @@ public class AppController implements Initializable {
     @FXML
     private ToggleButton btCurso;
     @FXML
-    private ToggleButton btRel_Geral;
+    private ToggleButton btRelatorioGeral;
     @FXML
     private ToggleButton btDashBoards;
     @FXML
@@ -176,7 +176,7 @@ public class AppController implements Initializable {
     private ToggleGroup grupoProcesso;
     @FXML
     private VBox boxProcesso;
- 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         instance = this;
@@ -189,7 +189,7 @@ public class AppController implements Initializable {
         aniversarioNoMes();
         //alertaAuto();
     }
-    
+
     public VBox boxNotas() {
         return boxNotas;
     }
@@ -251,7 +251,7 @@ public class AppController implements Initializable {
 
     @FXML
     private void menuDashboard(MouseEvent event) {
-        close();
+        esconder();
         Modulo.getRelatorioEscolar(boxConteudo);
     }
 
@@ -262,39 +262,40 @@ public class AppController implements Initializable {
 
     @FXML
     private void subMenuAluno(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getAluno(boxConteudo);
     }
 
     @FXML
     private void subMenuVeiculo(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getMenuVeiculo(boxConteudo);
     }
 
     @FXML
     private void subMenuArtigo(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getArtigo(boxConteudo);
     }
 
     @FXML
     private void subMenuCategoria(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getCategoria(boxConteudo);
     }
 
     @FXML
     private void subMenuCurso(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getCurso(boxConteudo);
     }
 
     @FXML
-    private void menuSair(ActionEvent event) {
+    private void menuSair(ActionEvent event) throws Exception {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja mesno Sair do sistema?");
         if (responses == Dialogo.Resposta.YES) {
-            new App().getPalco().close();
+            new App().stop();
+            Platform.exit();
         }
     }
 
@@ -305,19 +306,19 @@ public class AppController implements Initializable {
 
     @FXML
     private void subUsuarios(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getUsuario(boxConteudo);
     }
 
     @FXML
     private void subOrganizacao(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getOrganizacao(boxConteudo);
     }
 
     @FXML
     private void subEmpresa(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getConfigEmpresa(boxConteudo);
     }
 
@@ -328,29 +329,17 @@ public class AppController implements Initializable {
 
     @FXML
     private void sideMenuToogleBtnOnCLick(ActionEvent event) {
-        /*if (sideMenuToogleBtn.isSelected()) {
-            TranslateTransition sideMenu = new TranslateTransition(Duration.millis(300.0), menus);
-            sideMenu.setByX(230);
-            sideMenu.play();
-            menus.getChildren().clear();
-        } else {
-            TranslateTransition sideMenu = new TranslateTransition(Duration.millis(300.0), menus);
-            sideMenu.setByX(-230);
-            sideMenu.play();
-            menus.getChildren().add(addHBox);
-            menus.getChildren().add(leftSideBarScrollPane);
-            menus.getChildren().add(addAnchorPane);
-        }*/
+
     }
 
     @FXML
-    private void subMenuRel_Geral(ActionEvent event) {
+    private void subMenuRelatorioGeral(ActionEvent event) {
 
     }
 
     @FXML
     private void subMenuDashBoards(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getRelatorioEscolar(boxConteudo);
     }
 
@@ -361,30 +350,30 @@ public class AppController implements Initializable {
 
     @FXML
     private void menuRelatorios(ActionEvent event) {
-        submenus(btRelatorios, boxRelatorio, btRel_Geral, btDashBoards);
+        submenus(btRelatorios, boxRelatorio, btRelatorioGeral, btDashBoards);
     }
 
     @FXML
     private void subMenuInstrutor(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getInstrutor(boxConteudo);
     }
 
     @FXML
     private void subMenuMarcarExame(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getExame(boxConteudo);
     }
 
     @FXML
     private void subMenuResultadoExame(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getExameResultado(boxConteudo);
     }
 
     @FXML
     private void telaMais(ActionEvent event) {
-        close();
+        esconder();
         vboxUtilizador.setVisible(false);
         vBoxAlerta.setVisible(false);
         if (tbMais.isSelected()) {
@@ -398,7 +387,7 @@ public class AppController implements Initializable {
 
     @FXML
     private void telaUserLogado(ActionEvent event) {
-        close();
+        esconder();
         boxNotes.setVisible(false);
         vBoxAlerta.setVisible(false);
         if (tbUserLogado.isSelected()) {
@@ -412,7 +401,7 @@ public class AppController implements Initializable {
 
     @FXML
     private void telaAlerta(ActionEvent event) {
-        close();
+        esconder();
         boxNotes.setVisible(false);
         vboxUtilizador.setVisible(false);
         if (tbAlerta.isSelected()) {
@@ -426,7 +415,7 @@ public class AppController implements Initializable {
 
     @FXML
     private void subMenuInscricao(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getInscricao(boxConteudo);
     }
 
@@ -437,14 +426,13 @@ public class AppController implements Initializable {
 
     @FXML
     private void configuracao(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getUsuario(boxConteudo);
     }
-    
-    
+
     @FXML
     private void closeBoxImprisao(MouseEvent event) {
-        close();
+        esconder();
     }
 
     @FXML
@@ -472,27 +460,29 @@ public class AppController implements Initializable {
 
     @FXML
     private void subRestoure(ActionEvent event) {
-        
+
     }
 
     @FXML
-    private void subServer(ActionEvent event) {
+    private void subServer(ActionEvent event) throws Exception {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja fazer alterar aconfiguracao do servidor?");
         if (responses == Dialogo.Resposta.YES) {
             new Server().start(new Stage());
-            new App().getPalco().close();
+            new App().stop();
+            Platform.exit();
         }
     }
 
     @FXML
     private void subMenuLancamento(ActionEvent event) {
-        close();
+        esconder();
         Modulo.getRegistroVenda(boxConteudo);
     }
 
     @FXML
-    private void terminarSeccao(ActionEvent event) {
-        new App().getPalco().close();
+    private void terminarSeccao(ActionEvent event) throws Exception {
+        new App().stop();
+        Platform.exit();
         new Login().start(new Stage());
     }
 
@@ -506,25 +496,25 @@ public class AppController implements Initializable {
 
     private void aniversarioNoMes() {
         List<Aluno> listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
-        listaAluno.forEach((a) -> {
-            if (a.getDataNascimento().getMonthValue() == LocalDate.now().getMonthValue()) {
-                Nota.alertaAniversario("Nome: " + a.getNome() + "\nNascido em: " + a.getDataNascimento());
+        listaAluno.forEach(aluno -> {
+            if (aluno.getDataNascimento().getMonthValue() == LocalDate.now().getMonthValue()) {
+                Nota.alertaAniversario("Nome: " + aluno.getNome() + "\nNascido em: " + aluno.getDataNascimento());
                 count++;
             }
         });
         lblAniversarioCount.setText("" + count);
     }
 
-    private void alertaAuto() {
+    public void alertaAuto() {
         List<Seguro> listaSeguroAuto = DAOFactory.daoFactury().seguroAutoDAO().findAll();
         List<InspecaoTecnica> listaInspecaoTecnicao = DAOFactory.daoFactury().inspecaoTecnicaDAO().findAll();
 
-        listaSeguroAuto.stream()
-                .forEach((s) -> {
-                    diasQueFaltam = DAYS.between(LocalDate.now(), s.getValidade());
+        listaSeguroAuto.parallelStream()
+                .forEach(seguro -> {
+                    diasQueFaltam = DAYS.between(LocalDate.now(), seguro.getValidade());
 
                     if (diasQueFaltam >= 0 && diasQueFaltam < 10) {
-                        Nota.alertaAlerta("Seguro: " + s.getVeiculo().getPlaca() + " \nFalta(m) " + diasQueFaltam + " dia(s) para o vencimento do seguro.");
+                        Nota.alertaAlerta("Seguro: " + seguro.getVeiculo().getPlaca() + " \nFalta(m) " + diasQueFaltam + " dia(s) para o vencimento do seguro.");
                         countAlert++;
                     } else if (diasQueFaltam < 0 && diasQueFaltam > -5) {
                         Nota.alertaAlerta("Seguro vencido. Por favor reguralize sua situação");
@@ -532,20 +522,21 @@ public class AppController implements Initializable {
                     }
                 });
 
-        listaInspecaoTecnicao.forEach((i) -> {
-            diasQueFaltam = DAYS.between(LocalDate.now(), i.getDataDeInspeccao().plusMonths(i.getMesDeDuracao()));
-            if (diasQueFaltam >= 0 && diasQueFaltam < 10) {
-                Nota.alertaAlerta("IT: " + i.getVeiculo().getPlaca() + "\nFalta(m) " + diasQueFaltam + " dia(s) para o vencimento da inpesção.");
-                countAlert++;
-            } else if (diasQueFaltam < 0 && diasQueFaltam > -5) {
-                Nota.alertaAlerta("Seguro vencido. Por favor reguralize sua situação");
-                countAlert++;
-            }
-        });
+        listaInspecaoTecnicao.parallelStream()
+                .forEach(inspecao -> {
+                    diasQueFaltam = DAYS.between(LocalDate.now(), inspecao.getDataDeInspeccao().plusMonths(inspecao.getMesDeDuracao()));
+                    if (diasQueFaltam >= 0 && diasQueFaltam < 10) {
+                        Nota.alertaAlerta("IT: " + inspecao.getVeiculo().getPlaca() + "\nFalta(m) " + diasQueFaltam + " dia(s) para o vencimento da inpesção.");
+                        countAlert++;
+                    } else if (diasQueFaltam < 0 && diasQueFaltam > -5) {
+                        Nota.alertaAlerta("Seguro vencido. Por favor reguralize sua situação");
+                        countAlert++;
+                    }
+                });
         lblNotificCount.setText(countAlert + "");
     }
-    
-    private void close() {
+
+    private void esconder() {
         this.boxImprisao.setVisible(false);
         this.lblClose.setVisible(false);
         this.tbPrint.setSelected(false);
