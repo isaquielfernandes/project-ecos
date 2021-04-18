@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class DAO {
 
     protected Connection conector = ConnectionManager.getInstance().begin();
@@ -46,7 +48,7 @@ public abstract class DAO {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    throw new DataAccessException(e);
+                    log.debug(e.getMessage());
                 }
             }
         }

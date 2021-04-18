@@ -1571,6 +1571,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Thread.sleep(milesegundos);
         } catch (InterruptedException e) {
             log.warn("InterruptedException: ", e);
+             Thread.currentThread().interrupt();
         }
     }
 }

@@ -291,11 +291,15 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    private void menuSair(ActionEvent event) throws Exception {
+    private void menuSair(ActionEvent event)  {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja mesno Sair do sistema?");
         if (responses == Dialogo.Resposta.YES) {
-            new App().stop();
-            Platform.exit();
+            try {
+                new App().stop();
+                Platform.exit();
+            } catch (Exception ex) {
+                Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -329,12 +333,12 @@ public class AppController implements Initializable {
 
     @FXML
     private void sideMenuToogleBtnOnCLick(ActionEvent event) {
-
+        throw new UnsupportedOperationException();
     }
 
     @FXML
     private void subMenuRelatorioGeral(ActionEvent event) {
-
+        throw new UnsupportedOperationException();
     }
 
     @FXML
