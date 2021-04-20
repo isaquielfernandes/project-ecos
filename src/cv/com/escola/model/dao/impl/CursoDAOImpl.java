@@ -7,6 +7,7 @@ import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Mensagem;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +18,11 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
 
     public CursoDAOImpl() {
         super();
-        conector = ConnectionManager.getInstance().getConnection();
     }
 
     @Override
     public void create(Curso curso) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "INSERT INTO "+ db +".tb_curso (nome_curso, duracao, descricao, fk_categoria)VALUES(?,?,?,?)";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, curso.getCurso());
@@ -42,7 +42,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
 
     @Override
     public void update(Curso curso) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "UPDATE "+ db +".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, curso.getCurso());
@@ -64,7 +64,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
 
     @Override
     public void delete(Long IdCurso) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM "+ db +".tb_curso WHERE codigo=?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setLong(1, IdCurso);
@@ -79,7 +79,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     @Override
     public List<Curso> findAll() {
         List<Curso> cursos = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT c.*, cat.categoria FROM "+ db +".tb_curso c INNER JOIN "
                     + ""+ db +".tb_categoria cat ON c.fk_categoria = cat.id_categoria";
             preparedStatement = conector.prepareStatement(sql);

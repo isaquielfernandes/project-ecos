@@ -4,12 +4,14 @@ import cv.com.escola.model.entity.Aluno;
 import cv.com.escola.model.entity.Pagina;
 import cv.com.escola.model.dao.AlunoDAO;
 import cv.com.escola.model.dao.DAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.dao.exception.NotFoundException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +41,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
                 + "naturalidade, email, contato, habilitacaoLit, nacionalidade, "
                 + "foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)";
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(sql);
             mapToSave(aluno, preparedStatement);
             preparedStatement.executeUpdate();
@@ -53,7 +55,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void update(Aluno aluno) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "UPDATE " + db + ".tb_aluno SET nome=?, dataNascimento=?, numBI=?, dataEmisao=?, resedencia=?, conselho=?,"
                     + "naturalidade=?, email=?, contato=?, habilitacaoLit=?, nacionalidade=?, "
                     + "foto=?, fotocopiaBI=?, descricao=?, nomeDaMae=?, nomeDoPai=?, professao=?, estadoCivil=?, localDeEmisao=?, freguesia=? WHERE id_aluno =?";
@@ -71,7 +73,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void delete(Integer idAluno) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM " + db + ".tb_aluno WHERE id_aluno=?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setInt(1, idAluno);
@@ -85,7 +87,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public List<Aluno> findAll() {
         List<Aluno> alunos = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * from " + db + ".tb_aluno order by nome";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -103,7 +105,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public ObservableList<Aluno> listar(int quantidade, int pagina) {
         ObservableList listaAluno = FXCollections.observableArrayList();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * from " + db + ".tb_aluno limit " + quantidade * pagina + "," + quantidade + "";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -124,7 +126,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public List<Aluno> autoCompletion() {
         List<Aluno> alunos = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT id_aluno, nome, numBI from " + db + ".tb_aluno ORDER BY nome";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -146,7 +148,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public int totalSearchStudent(String param) {
         int total = 0;
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.
                     prepareStatement("select count(id_aluno) from " + db + ".tb_aluno "
                             + "where nome like ? or contato like ? or numBI like ?");
@@ -168,7 +170,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public ObservableList<Aluno> student(int pagina) {
         ObservableList<Aluno> listData = FXCollections.observableArrayList();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "select * from " + db + ".tb_aluno limit " + pagina;
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
@@ -186,7 +188,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public ObservableList<Aluno> searchStudent(Pagina pagina, String query) {
         ObservableList<Aluno> alunos = FXCollections.observableArrayList();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement("select * from " + db + 
                     ".tb_aluno where nome like ? or contato like ? or email like ? "
                     + "or numBI like ? limit " + pagina.getInicio() + "," + pagina.getFim());
@@ -208,21 +210,20 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void report() {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             URL url = getClass().getResource("/cv/com/escola/reports/Aluno.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, conector);
             JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
             jasperViewer.setVisible(true);
-        } catch (JRException ex) {
+        } catch (JRException | SQLException ex) {
             Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir lista de alunos! \n" + ex);
         }
     }
 
     @Override
     public void reportRequiremento(String biFiltro) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             HashMap filtro = new HashMap();
             filtro.put("bi", biFiltro);
 
@@ -231,9 +232,8 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, filtro, conector);
             Print jasperViewer = new Print();
             jasperViewer.viewReport("Requiremento", jasperPrint);
-        } catch (JRException ex) {
+        } catch (JRException | SQLException ex) {
             Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir requirimento! \n" + ex.getMessage());
         }
     }
 

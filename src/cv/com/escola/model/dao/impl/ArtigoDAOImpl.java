@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import cv.com.escola.model.dao.ArtigoDAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
@@ -19,53 +22,50 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     @Override
     public void create(Artigo artigo) {
-        try {
-            StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO ").append(db)
-                    .append(".tb_artigo (nomeArtigo, preco, descricao)");
-            query.append(" VALUES (?,?,?)");
+        final StringBuilder INSERT_QUERY = new StringBuilder();
+        INSERT_QUERY.append("INSERT INTO ").append(db).append(".tb_artigo (nomeArtigo, preco, descricao)");
+        INSERT_QUERY.append(" VALUES (?,?,?)");
 
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setString(1, artigo.getNomeArtigo());
-            preparedStatement.setBigDecimal(2, artigo.getPreco());
-            preparedStatement.setString(3, artigo.getDescricao());
-
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao cadastrar artigo na base de dados!");
-        }
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    INSERT_QUERY.toString()
+            )) {
+                pstmt.setString(1, artigo.getNomeArtigo());
+                pstmt.setBigDecimal(2, artigo.getPreco());
+                pstmt.setString(3, artigo.getDescricao());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataAccessException(e);
+            }
+        });
     }
 
     @Override
     public void update(Artigo artigo) {
-        try {
-            StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db)
-                 .append(".tb_artigo SET nomeArtigo=?, preco=?, descricao=? ");
-            query.append(" WHERE id_artigo =?;");
-
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setString(1, artigo.getNomeArtigo());
-            preparedStatement.setBigDecimal(2, artigo.getPreco());
-            preparedStatement.setString(3, artigo.getDescricao());
-            
-            preparedStatement.setInt(4, (int) artigo.getIdArtigo());
-
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao atualizar artigo na base de dados! \n");
-        }
+        StringBuilder query = new StringBuilder();
+        query.append("UPDATE ").append(db)
+                .append(".tb_artigo SET nomeArtigo=?, preco=?, descricao=? ");
+        query.append(" WHERE id_artigo =?;");
+        
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    query.toString()
+            )) {
+                pstmt.setString(1, artigo.getNomeArtigo());
+                pstmt.setBigDecimal(2, artigo.getPreco());
+                pstmt.setString(3, artigo.getDescricao());
+                pstmt.setLong(4, artigo.getIdArtigo());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataAccessException(e);
+            }
+        });
     }
 
     @Override
     public void delete(Integer idArtigo) {
-        try {
-            String sql = "DELETE FROM "+ db +".tb_artigo WHERE id_artigo=?";
-
+        String sql = "DELETE FROM " + db + ".tb_artigo WHERE id_artigo=?";
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setInt(1, idArtigo);
             preparedStatement.execute();
@@ -78,8 +78,8 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
     @Override
     public List<Artigo> findAll() {
         List<Artigo> artigosList = new ArrayList<>();
-        try {
-            String sql = "SELECT * from "+ db +".tb_artigo;";
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
+            String sql = "SELECT * from " + db + ".tb_artigo;";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
@@ -92,14 +92,14 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         }
         return artigosList;
     }
-    
+
     @Override
     public Artigo buscar(Artigo artigo) {
-        String sql = "SELECT id_artigo, nomeArtigo, preco FROM "+ db +".tb_artigo WHERE id_artigo=?";
+        String sql = "SELECT id_artigo, nomeArtigo, preco FROM " + db + ".tb_artigo WHERE id_artigo=?";
         Artigo retorno = new Artigo();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(sql);
-            preparedStatement.setInt(1, (int)artigo.getIdArtigo());
+            preparedStatement.setInt(1, (int) artigo.getIdArtigo());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 retorno.setIdArtigo(rs.getInt("id_artigo"));
@@ -112,10 +112,10 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
         }
         return retorno;
     }
-    
+
     public Artigo mapRowToObject(ResultSet resultSet) throws SQLException {
         Artigo artigo = new Artigo();
-        artigo.setIdArtigo(resultSet.getLong(1)); 
+        artigo.setIdArtigo(resultSet.getLong(1));
         artigo.setNomeArtigo(resultSet.getString(2));
         artigo.setPreco(resultSet.getBigDecimal(3));
         artigo.setDescricao(resultSet.getString(4));

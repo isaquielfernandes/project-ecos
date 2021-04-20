@@ -3,8 +3,10 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.entity.Organizacao;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.OrganizacaoDAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
 
     @Override
     public void create(Organizacao organizacao) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "INSERT INTO "+ db +".tb_organizacao(nome, sigla, email, fax, telefone, logradouro, bairro, cidade, estado, pais, descricao, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -45,7 +47,7 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
 
     @Override
     public void update(Organizacao organizacao) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "UPDATE "+ db +".tb_organizacao SET nome=?, sigla=?, email=?, fax=?, telefone=?, logradouro=?, bairro=?, cidade=?, estado=?, pais=?, descricao=? WHERE id_orgao=? ";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -75,7 +77,7 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
 
     @Override
     public void delete(Integer idOrganizacao) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM "+ db +".tb_organizacao WHERE id_orgao =?";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -92,7 +94,7 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     @Override
     public List<Organizacao> findAll() {
         List<Organizacao> dados = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * FROM "+ db +".tb_organizacao";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -113,7 +115,7 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     @Override
     public List<Organizacao> combo() {
         List<Organizacao> dados = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT id_orgao, nome FROM "+ db +".tb_organizacao ORDER BY nome ";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);

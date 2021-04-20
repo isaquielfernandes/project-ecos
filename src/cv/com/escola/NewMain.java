@@ -2,13 +2,15 @@
 package cv.com.escola;
 
 import cv.com.escola.model.util.Criptografia;
-import lombok.extern.slf4j.Slf4j;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
- @Slf4j
 public class NewMain {
 
+    private static final Logger LOG = Logger.getLogger(NewMain.class.getName());
     public static void main(String[] args) {
-        log.debug(Criptografia.converter("admin"));
+        
+        LOG.log(Level.INFO, Criptografia.converter("ecos"));
     }
     
 }

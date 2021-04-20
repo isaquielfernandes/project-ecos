@@ -3,10 +3,12 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.entity.Inventario;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.InventariaDAO;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.JasperViewerFX;
-import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +28,12 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void create(Inventario inventario) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();){
             String sql = "insert into " + db + ".tb_inventario ( num_serie, fk_categoria, item, responsavel, "
                     + "fk_area, local, data_compra, meses_desde_compra, valor, estado_consrvacao, "
                     + "vida_util_ano, valor_atual, depreciacao ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, inventario.getNumSerie());
             preparedStatement.setString(2, inventario.getCategoria());
@@ -51,18 +53,18 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao lançar inventario na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void update(Inventario inventario) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();){
             String sql = "UPDATE " + db + ".tb_inventario SET num_serie =?, fk_categoria =?, item =?, responsavel =?, "
                     + "fk_area =?, local =?, data_compra =?, meses_desde_compra =?, valor =?, estado_consrvacao =?, "
                     + "vida_util_ano =?, valor_atual =?, depreciacao =? WHERE id_inventario =?";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, inventario.getNumSerie());
             preparedStatement.setString(2, inventario.getCategoria());
@@ -79,35 +81,35 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             preparedStatement.setString(13, inventario.getDepreciacao());
             preparedStatement.setInt(14, inventario.getIdInventario());
             preparedStatement.executeUpdate();
-            conector.commit();
+            conn.commit();
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao editar item do inventario na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void delete(Integer idInventario) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "DELETE FROM " + db + ".tb_inventario WHERE id_inventario=?";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, idInventario);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir item do inventario na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public List<Inventario> findAll() {
         List<Inventario> inventario = new ArrayList<>();
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
 
             String sql = "SELECT * from " + db + ".tb_inventario";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
@@ -124,17 +126,17 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao listar item do inventario na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
         return inventario;
     }
 
     @Override
     public boolean isNumSerie(String nome, int id) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "SELECT num_serie FROM " + db + ".tb_inventario WHERE num_serie =? AND id_inventario !=? ";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, nome);
             preparedStatement.setInt(2, id);
             rs = preparedStatement.executeQuery();
@@ -147,7 +149,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao validar numero de serie do item num inventario na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
 
         return false;
@@ -155,32 +157,34 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public int total() {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();){
             String sql = "SELECT COUNT(*) FROM " + db + ".tb_inventario";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar total de item de inventario na base de dados");
+            throw new DataAccessException(ex);
         }
         return 0;
     }
 
     @Override
     public void report() {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             URL url = getClass().getResource("/cv/com/escola/reports/inventario.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             //null: caso não existem filtros
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, conector);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, conn);
 
             JasperViewerFX jasperViewer = new JasperViewerFX();
             jasperViewer.viewReport("Inventario", jasperPrint);
         } catch (JRException ex) {
             Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir inventario! \n" + ex);
+            throw new DataAccessException(ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

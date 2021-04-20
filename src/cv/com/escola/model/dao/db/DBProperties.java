@@ -11,6 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBProperties {
+
+    private static final Logger LOG = Logger.getLogger(DBProperties.class.getName());
     
     private static final Properties PROPERTIES = new Properties();
     private static InputStream inputStream;
@@ -33,35 +35,35 @@ public class DBProperties {
         }
     }
     
-    public String loadPropertiesFile() {
+    public static String loadPropertiesDB() {
         try {
             inputStream = new FileInputStream("database.properties");
             PROPERTIES.load(inputStream);
             return PROPERTIES.getProperty("db");
         } catch (IOException e) {
-            System.out.println("err");
+            LOG.log(Level.FINER, e.getMessage());
         }
         return "";
     }
     
-    public String loadPropertiesFileUser() {
+    public static String loadPropertiesFileUser() {
         try {
             inputStream = new FileInputStream("database.properties");
             PROPERTIES.load(inputStream);
             return PROPERTIES.getProperty("user");
         } catch (IOException e) {
-            System.out.println("err");
+            LOG.log(Level.FINER, e.getMessage());
         }
         return "";
     }
     
-    public String loadPropertiesFilePass() {
+    public static String loadPropertiesFilePass() {
         try {
             inputStream = new FileInputStream("database.properties");
             PROPERTIES.load(inputStream);
             return PROPERTIES.getProperty("password");
         } catch (IOException e) {
-            System.out.println("err");
+            LOG.log(Level.FINER, e.getMessage());
         }
         return "";
     }
@@ -72,7 +74,7 @@ public class DBProperties {
             PROPERTIES.load(inputStream);
             return PROPERTIES.getProperty("host");
         } catch (IOException e) {
-            System.out.println("err");
+            LOG.log(Level.FINER, e.getMessage());
         }
         return "";
     }
@@ -83,7 +85,7 @@ public class DBProperties {
             PROPERTIES.load(inputStream);
             return PROPERTIES.getProperty("port");
         } catch (IOException e) {
-            System.out.println("err");
+           LOG.log(Level.FINER, e.getMessage());
         }
         return "";
     }

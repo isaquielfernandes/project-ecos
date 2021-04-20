@@ -3,11 +3,13 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.dao.InstrutorDAO;
 import cv.com.escola.model.entity.Instrutor;
 import cv.com.escola.model.dao.DAO;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +29,10 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
     
     @Override
     public void create(Instrutor instrutor ){
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "INSERT INTO "+ db +".`tb_instrutor` (`nome`, `admissao`, `email`, `telefone`, `movel`, `foto`, `pai`, `mae`, `grauAcademico`, `tipoSanguineo`, `morada`, `cidadeIlha`, `numeroDeIndentificacao`, `naturalidade`, `nacionalidade`, `nascimento`, `cartaConducao`, `banco`, `agencia`,`numDeConta`, `obsercacao`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, instrutor.getNome());
             preparedStatement.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
@@ -55,7 +57,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
             preparedStatement.setString(21, instrutor.getObservacao());
 
             preparedStatement.executeUpdate();
-            conector.commit();
+            conn.commit();
             preparedStatement.close();
             Mensagem.info("Instrutor cadastrada com sucesso!");
         } catch (SQLException ex) {
@@ -65,10 +67,10 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
     
     @Override
     public void update(Instrutor instrutor ){
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "UPDATE "+ db +".`tb_instrutor` SET `nome` = ?, `admissao` = ?, `email` = ?, `telefone` = ?, `movel` = ?, `foto` = ?, `pai` = ?, `mae` = ?, `grauAcademico` = ?, `tipoSanguineo` = ?, `morada` = ?, `cidadeIlha` = ?, `numeroDeIndentificacao` = ?, `naturalidade` = ?, `nacionalidade` = ?, `nascimento` = ?, `cartaConducao` = ?, `banco` = ?, `agencia` = ?, `numDeConta` = ?, `obsercacao` = ? WHERE `id` = ?;";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, instrutor.getNome());
             preparedStatement.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
@@ -94,7 +96,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
             
             preparedStatement.setLong(22, instrutor.getId());
             preparedStatement.executeUpdate();
-            conector.commit();
+            conn.commit();
             preparedStatement.close();
             Mensagem.info("Instrutor atualizada com sucesso!");
         } catch (SQLException ex) {
@@ -104,10 +106,10 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
     
     @Override
     public void delete(Long idInstrutor) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "DELETE FROM "+ db +".tb_instrutor WHERE id=?";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setLong(1, idInstrutor);
             preparedStatement.execute();
@@ -122,9 +124,9 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
     public List<Instrutor> findAll() {
         List<Instrutor> instrutores = new ArrayList<>();
         ImageView img;
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();){
             String sql = "SELECT * from "+ db +".tb_instrutor";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
 
@@ -168,8 +170,8 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO{
     public Instrutor buscar(Instrutor instrutor) {
         String sql = "SELECT * FROM "+ db +".tb_instrutor WHERE id=?";
         Instrutor retorno = new Instrutor();
-        try {
-            preparedStatement = conector.prepareStatement(sql);
+        try (Connection conn = HikariCPDataSource.getConnection();) {
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setLong(1, instrutor.getId());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {

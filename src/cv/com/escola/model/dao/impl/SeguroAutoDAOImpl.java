@@ -5,7 +5,9 @@ import cv.com.escola.model.entity.Seguro;
 import cv.com.escola.model.entity.Veiculo;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.SeguroAutoDAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.util.Mensagem;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
     @Override
     public void create(Seguro seguro) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String inserir = "INSERT INTO "+ db +".`tb_seguro` "
                     + "(`compania`, `veiculo_seguro`, `desde`, `ate`, `emissao`) VALUES (?,?,?,?,?)";
 
@@ -44,7 +46,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
     @Override
     public void update(Seguro seguro) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String update = "UPDATE "+ db +".`tb_seguro` SET `compania` = ?, `veiculo_seguro` = ?, `desde` = ?, `ate` = ?, `emissao` = ? WHERE `id` = ?";
 
             preparedStatement = conector.prepareStatement(update);
@@ -67,7 +69,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
     @Override
     public void delete(Long idSeuro) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM "+ db +".`tb_seguro` WHERE `id` = ?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setLong(1, idSeuro);
@@ -84,7 +86,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
         List<Seguro> dadosSeguro = new ArrayList<>();
 
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * FROM "+ db +".seguro_auto_view";
 
             preparedStatement = conector.prepareStatement(sql);

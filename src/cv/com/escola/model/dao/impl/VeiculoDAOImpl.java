@@ -7,6 +7,7 @@ import cv.com.escola.model.dao.VeiculoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,18 +15,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
     public VeiculoDAOImpl() {
         super();
-        conector = ConnectionManager.getInstance().getConnection();
     }
 
     @Override
     public void create(Veiculo veiculo) {
-        try {
-            String inserir = "insert into "+ db +".tb_veiculo (placa, ilha, fabricante, modelo,"
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
+            String inserir = "insert into " + db + ".tb_veiculo (placa, ilha, fabricante, modelo,"
                     + "anoFabricacao, anoModelo, chassi, tipoCombustivel, nomeProprietario,"
                     + "contatoProprietario, emailProprietario, dataCadastro, especificacao) "
                     + "VALUES (?, ?, ?,?, ?,?,?,?,?,?,?,?,?)";
@@ -58,8 +57,8 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
     @Override
     public void update(Veiculo veiculo) {
-        try {
-            String update = "UPDATE "+ db +".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,"
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
+            String update = "UPDATE " + db + ".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,"
                     + "anoFabricacao=?, anoModelo=?, chassi=?, tipoCombustivel=?, nomeProprietario=?,"
                     + "contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? "
                     + "WHERE  codigo =?";
@@ -93,8 +92,8 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
     @Override
     public void delete(Long idVeiculo) {
-        try {
-            String sql = "DELETE FROM "+ db +".tb_veiculo WHERE codigo=?";
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
+            String sql = "DELETE FROM " + db + ".tb_veiculo WHERE codigo=?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setLong(1, idVeiculo);
             preparedStatement.execute();
@@ -108,8 +107,8 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     @Override
     public List<Veiculo> findAll() {
         List<Veiculo> dadosVeiculo = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM "+ db +".tb_veiculo";
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
+            String sql = "SELECT * FROM " + db + ".tb_veiculo";
 
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -139,11 +138,11 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
         }
         return dadosVeiculo;
     }
-    
+
     @Override
     public int total() {
-        try {
-            String sql = "SELECT COUNT(*) FROM "+ db +".tb_veiculo";
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
+            String sql = "SELECT COUNT(*) FROM " + db + ".tb_veiculo";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {

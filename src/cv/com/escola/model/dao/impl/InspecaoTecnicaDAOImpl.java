@@ -4,7 +4,9 @@ import cv.com.escola.model.entity.InspecaoTecnica;
 import cv.com.escola.model.entity.Veiculo;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.InspecaoTecnicaDAO;
-import cv.com.escola.model.util.Mensagem;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
+import cv.com.escola.model.dao.exception.DataAccessException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +21,11 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
     @Override
     public void create(InspecaoTecnica inspecao) {
-        try {
+        try(Connection conn = HikariCPDataSource.getConnection();) {
             String inserir = "INSERT INTO "+ db +".`tb_inspecao_tecnica` "
                     + "(`veiculo`, `tipoInspecao`, `dataInspecao`, `duracao`, `resultado`, `validade`) VALUES (?,?,?,?,?,?)";
 
-            preparedStatement = conector.prepareStatement(inserir);
+            preparedStatement = conn.prepareStatement(inserir);
 
             preparedStatement.setLong(1, inspecao.getVeiculo().getCodigo());
             preparedStatement.setString(2, inspecao.getTipoDeInspeccao());
@@ -33,21 +35,20 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
             preparedStatement.setString(6, inspecao.getValidade());
 
             preparedStatement.executeUpdate();
-            conector.commit();
+            conn.commit();
             preparedStatement.close();
-            Mensagem.info("Inspecção de veículo cadastrada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao inserir dados da inspecção de veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void update(InspecaoTecnica inspecao) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String update = "UPDATE "+ db +".`tb_inspecao_tecnica` SET `veiculo` = ?, `tipoInspecao` = ?, `dataInspecao` = ?, `duracao` = ?, `resultado` = ?, `validade` = ? WHERE `id` = ?";
 
-            preparedStatement = conector.prepareStatement(update);
+            preparedStatement = conn.prepareStatement(update);
 
             preparedStatement.setLong(1, inspecao.getVeiculo().getCodigo());
             preparedStatement.setString(2, inspecao.getTipoDeInspeccao());
@@ -58,26 +59,25 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
             preparedStatement.setLong(7, inspecao.getId());
             preparedStatement.executeUpdate();
-            conector.commit();
+            conn.commit();
             preparedStatement.close();
-            Mensagem.info("Inspecção de Veiculo atualizada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao atualizar Inspecção de veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void delete(Long idInspecao) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "DELETE FROM "+ db +".`tb_inspecao_tecnica` WHERE id=?";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setLong(1, idInspecao);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao excluir inspecao de veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
@@ -86,10 +86,10 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
         List<InspecaoTecnica> dadosInspecao = new ArrayList<>();
 
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "SELECT * FROM "+ db +".inspecao_tecnica_view";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
 
             while (rs.next()) {
@@ -105,7 +105,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar da inspecao do veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
         return dadosInspecao;
     }

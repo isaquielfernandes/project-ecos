@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fatura" columnCount="2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="385" columnSpacing="2" leftMargin="35" rightMargin="35" topMargin="35" bottomMargin="35" uuid="bef344ba-341b-4c09-9247-32b9c58fbec4">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="ireport.zoom" value="1.0"/>
@@ -361,7 +362,7 @@ WHERE
 					<text><![CDATA[FATURA/RECIBO]]></text>
 				</staticText>
 				<image scaleImage="FillFrame" isLazy="true" onErrorType="Icon">
-					<reportElement x="3" y="0" width="96" height="39" uuid="4ac51c26-cd7b-4eb3-b60a-68f7fd19f7df"/>
+					<reportElement x="1" y="0" width="284" height="39" uuid="4ac51c26-cd7b-4eb3-b60a-68f7fd19f7df"/>
 					<imageExpression><![CDATA[$F{tb_empresa_logo}]]></imageExpression>
 				</image>
 			</frame>
@@ -623,7 +624,7 @@ WHERE
 					<text><![CDATA[FATURA/RECIBO]]></text>
 				</staticText>
 				<image scaleImage="FillFrame" isLazy="true" onErrorType="Icon">
-					<reportElement x="3" y="0" width="96" height="39" uuid="151153ba-2a0d-481a-8a14-66cc0ea497bb"/>
+					<reportElement x="1" y="0" width="284" height="39" uuid="151153ba-2a0d-481a-8a14-66cc0ea497bb"/>
 					<imageExpression><![CDATA[$F{tb_empresa_logo}]]></imageExpression>
 				</image>
 			</frame>

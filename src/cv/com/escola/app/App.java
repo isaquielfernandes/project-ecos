@@ -1,6 +1,8 @@
 package cv.com.escola.app;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -10,10 +12,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 public class App extends Application {
+    
+    private static final Logger LOG = Logger.getLogger(App.class.getName());
     
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
@@ -40,7 +43,7 @@ public class App extends Application {
             stage.setScene(cena);
             stage.show();
         } catch (IOException ex) {
-            log.debug("Erro ao inicializar aplicação!\n" + ex.getMessage());
+            LOG.log(Level.SEVERE, "Erro ao inicializar aplicacao!" , ex);
         }
     }
 

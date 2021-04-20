@@ -3,9 +3,11 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.entity.EscolaConducao;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.EmpresaDAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
-import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void create(EscolaConducao empresa) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sqlInsert = "insert into " + db + ".tb_empresa (`nome`,`cidade`,"
                     + "`nif`,`endereco`,`email`,`contato`,`descricao`,`logo`,`assinatura`) "
                     + "VALUES (?,?,?,?,?,?,?,?,?);";
@@ -38,16 +40,16 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void update(EscolaConducao empresa) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "UPDATE " + db + ".`tb_empresa` SET `nome` = ?, "
                     + "`cidade` = ?, `nif` = ?, `endereco` = ?, `email` = ?, `contato` = ?, "
                     + "`descricao` = ?, `logo` = ?, `assinatura` = ? WHERE `id_empresa` = ?";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             map(empresa);
             preparedStatement.setInt(10, empresa.getIdEmpresa());
             preparedStatement.executeUpdate();
-            conector.commit();
+            conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,12 +71,12 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void editarSemLogo(EscolaConducao empresa) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "UPDATE " + db + ".`tb_empresa` SET `razao_social` = ?, "
                     + "`nome` = ?, `nif` = ?, `cidade` = ?, `estado` = ?, `pais` = ?, "
                     + "`ano_vigencia` = ?, `descricao` = ? WHERE `id_empresa` = ?";
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, empresa.getCidade());
             preparedStatement.setString(2, empresa.getNome());
@@ -97,9 +99,9 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void delete(Integer idEmpresa) {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "DELETE FROM " + db + ".tb_empresa WHERE id_empresa=?";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, idEmpresa);
             preparedStatement.execute();
             preparedStatement.close();
@@ -111,9 +113,9 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
     @Override
     public List<EscolaConducao> findAll() {
         List<EscolaConducao> dadosEmpresa = new ArrayList<>();
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "SELECT * FROM " + db + ".tb_empresa";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 EscolaConducao ec = new EscolaConducao(rs.getInt(1), rs.getString(2), 
@@ -133,9 +135,9 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
   
     @Override
     public int total() {
-        try {
+        try (Connection conn = HikariCPDataSource.getConnection();) {
             String sql = "SELECT COUNT(*) FROM " + db + ".tb_empresa";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -143,7 +145,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar total de empresa na base de dados");
+            throw new DataAccessException("Erro ao consultar empresa na base de dados! \n", ex);
         }
         return 0;
     }

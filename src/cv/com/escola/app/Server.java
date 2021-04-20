@@ -1,5 +1,7 @@
 package cv.com.escola.app;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,10 +10,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class Server extends Application {
+
+    private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
     private static Stage palco;
     private double initX;
@@ -47,7 +49,7 @@ public class Server extends Application {
             stage.show();
 
         } catch (Exception ex) {
-            log.debug("Erro ao inicializar aplicação!" + ex);
+            LOG.log(Level.SEVERE, "Erro ao inicializar aplicacao!" , ex);
         }
     }
 

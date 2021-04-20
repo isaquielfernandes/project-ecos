@@ -1,6 +1,8 @@
 package cv.com.escola.app;
 
 import com.sun.javafx.application.LauncherImpl;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
@@ -9,11 +11,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class Configuracao extends Application {
 
+    private static final Logger LOG = Logger.getLogger(Configuracao.class.getName());
     public static Stage palco;
     private static final int COUNT_LIMIT = 10;
     
@@ -22,7 +23,6 @@ public class Configuracao extends Application {
     @SuppressWarnings("UseSpecificCatch")
     public void start(final Stage stage) {
         try {
-
             palco = stage;
             AnchorPane page = FXMLLoader.load(Configuracao.class.getResource("/cv/com/escola/view/configuracao.fxml"));
             Scene cena = new Scene(page);
@@ -34,9 +34,8 @@ public class Configuracao extends Application {
 
             stage.setScene(cena);
             stage.show();
-
         } catch (Exception ex) {
-            log.debug("Erro ao inicializar aplicação!" + ex);
+            LOG.log(Level.SEVERE, "Erro ao inicializar aplicacao!" , ex);
         }
     }
     @Override

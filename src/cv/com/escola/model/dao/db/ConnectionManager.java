@@ -2,8 +2,6 @@ package cv.com.escola.model.dao.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,37 +38,6 @@ public final class ConnectionManager extends LoadProperties {
 
     public Connection getConnection() {
         return connection;
-    }
-
-    public static void close(final Connection conector) {
-        
-    }
-
-    public static void close(final PreparedStatement stm) {
-        try {
-            stm.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public static void close(final PreparedStatement stm, final Connection conector) {
-        try {
-            stm.close();
-            //conector.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public static void close(final PreparedStatement stm, final ResultSet rs, final Connection conector) {
-        try {
-            stm.close();
-            rs.close();
-            //conector.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }

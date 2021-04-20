@@ -1,27 +1,25 @@
 package cv.com.escola.model.dao;
 
-import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.db.DBProperties;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Consumer;
-import lombok.extern.slf4j.Slf4j;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-@Slf4j
 public abstract class DAO {
-
-    protected Connection conector = ConnectionManager.getInstance().begin();
+    
+    private static final Logger LOG = Logger.getLogger(DAO.class.getName());
     protected ResultSet rs;
     protected PreparedStatement preparedStatement;
-    protected DBProperties dBProperties = new DBProperties();
-    protected String db = dBProperties.loadPropertiesFile();
-    protected String user = dBProperties.loadPropertiesFileUser();
-    protected String pass = dBProperties.loadPropertiesFilePass();
+    protected String db = DBProperties.loadPropertiesDB();
+    protected String user = DBProperties.loadPropertiesFileUser();
+    protected String pass = DBProperties.loadPropertiesFilePass();
     
-
     public DAO() {
 
     }
@@ -30,7 +28,7 @@ public abstract class DAO {
     public void transact(Consumer<Connection> callback) {
         Connection connection = null;
         try {
-            connection = ConnectionManager.getInstance().begin();
+            connection = HikariCPDataSource.getConnection();
             callback.accept(connection);
             connection.commit();
         } catch (Exception e) {
@@ -48,7 +46,7 @@ public abstract class DAO {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    log.debug(e.getMessage());
+                    LOG.log(Level.FINER, e.getMessage());
                 }
             }
         }

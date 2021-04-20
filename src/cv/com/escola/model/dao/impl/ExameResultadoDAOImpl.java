@@ -6,11 +6,12 @@ import cv.com.escola.model.entity.Exame;
 import cv.com.escola.model.entity.ExameResultado;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.ExameResultadoDAO;
-import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.util.Mensagem;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,32 +29,31 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     public ExameResultadoDAOImpl() {
         super();
-        conector = ConnectionManager.getInstance().getConnection();
     }
 
     @Override
     public void create(ExameResultado resultado) {
-        try {
+        try (Connection connection = HikariCPDataSource.getConnection();) {
             String sql = "INSERT INTO "+ db +".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, resultado.getExame().getIdExame());
             preparedStatement.setString(2, resultado.getResultado());
             preparedStatement.executeUpdate();
-            conector.commit();
+            connection.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao cadastrar exame no base de dados" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void update(ExameResultado resultado) {
-        try {
+        try(Connection connection = HikariCPDataSource.getConnection();) {
             String sql = "UPDATE "+ db +".`tb_exame_resultado` SET "
                     + "`fk_exame` = ?, `resultado` = ?"
                     + " WHERE `id_exame_resultado` = ? AND `fk_exame` = ?";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setLong(1, resultado.getExame().getIdExame());
             preparedStatement.setString(2, resultado.getResultado());
@@ -61,33 +61,33 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
             preparedStatement.setLong(3, resultado.getIdExameResultado());
             preparedStatement.setLong(4, resultado.getExame().getIdExame());
             preparedStatement.executeUpdate();
-            conector.commit();
+            connection.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
             Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao atualizar dados no base de dados" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void delete(Long idExameResultado) {
-        try {
+        try(Connection connection = HikariCPDataSource.getConnection();) {
             String sql = "DELETE FROM "+ db +".`tb_exame_resultado` WHERE id_exame_resultado =?";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, idExameResultado);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir resuldado de exame na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public List<ExameResultado> findAll() {
         List<ExameResultado> dadosExame = new ArrayList<>();
-        try {
+        try (Connection connection = HikariCPDataSource.getConnection();) {
             String sql = "SELECT * FROM "+ db +".resultado_de_exame_view order by Dia desc ";
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
             while (rs.next()) {
                 Exame marcado = new Exame(rs.getInt(2), rs.getString(3), 
@@ -101,25 +101,23 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar exame na base de dados! \n" + ex);
+            throw new DataAccessException(ex);
         }
         return dadosExame;
     }
 
     @Override
     public void reportFichaAulaPratica(Integer id, String nome) {
-        try {
+        try (Connection connection = HikariCPDataSource.getConnection();) {
             HashMap filtro = new HashMap();
             filtro.put("id", id);
             URL url = getClass().getResource("/cv/com/escola/reports/fechaAulaPratica.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, filtro, conector);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, filtro, connection);
             Print jasperViewer = new Print();
             jasperViewer.viewReport("Ficha De Aula Pratica: " + nome, jasperPrint);
-        } catch (JRException ex) {
-            Logger.getLogger(ExameResultadoDAOImpl.class
-                    .getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao imprimir ficha de aula pratica!\n");
+        } catch (JRException | SQLException ex) {
+            Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

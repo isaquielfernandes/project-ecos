@@ -13,7 +13,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -30,7 +29,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -53,8 +51,6 @@ public class Print extends AnchorPane {
 
     private final SimpleIntegerProperty currentPage;
     private int imageHeight = 0, imageWidth = 0, reportPages = 0;
-    private final Screen screen = Screen.getPrimary();
-    private final Rectangle2D windows = screen.getVisualBounds();
 
     public Print() {
         currentPage = new SimpleIntegerProperty(this, "currentPage", 1);

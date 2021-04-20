@@ -4,9 +4,11 @@ import cv.com.escola.model.entity.TipoUsuario;
 import cv.com.escola.model.entity.Usuario;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.LoginDAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Criptografia;
-import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class LoginDAOImpl extends DAO implements LoginDAO {
@@ -17,7 +19,7 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
 
     @Override
     public boolean autenticarUsername(String nome) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT login FROM "+ db +".tb_usuario WHERE login=? AND status = 1 ";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, nome);
@@ -30,7 +32,7 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao autenticar nome usuário na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao autenticar nome usuário na base de dados! \n" + ex);
         }
         return false;
     }
@@ -38,7 +40,7 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
     @Override
     public boolean autenticarSenha(String nome, String senha) {
         String chave = Criptografia.converter(senha);
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT login, senha FROM "+ db +".tb_usuario WHERE login=? AND senha=? ";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, nome);
@@ -51,7 +53,7 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao autenticar senha usuário na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao autenticar senha usuário na base de dados! \n" + ex);
         }
 
         return false;
@@ -59,8 +61,8 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
 
     @Override
     public Usuario usuarioLogado(String login) {
-        Usuario user = null;
-        try {
+        Usuario usuaruio = null;
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT usuario.id_usuario, usuario.nome, usuario.login, usuario.senha, usuario.email, usuario.status, usuario.data_criacao, usuario.descricao, tipo.id_tipo_usuario, tipo.nome "
                     + "FROM "+ db +".tb_usuario AS usuario , "+ db +".tb_tipo_usuario AS tipo "
                     + "WHERE usuario.login=? "
@@ -72,16 +74,16 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
 
             while (rs.next()) {
                 TipoUsuario tipo = new TipoUsuario(rs.getInt(9), rs.getString(10));
-                user = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), 
+                usuaruio = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), 
                         rs.getString(4), rs.getString(5), (rs.getInt(6) == 1), null, rs.getString(8), tipo);
-                user.setDataCriacao(Tempo.toDate(rs.getTimestamp(7)));
+                usuaruio.setDataCriacao(Tempo.toDate(rs.getTimestamp(7)));
             }
             preparedStatement.close();
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar usuário logado na base de dados! \n" + ex);
+            throw new DataAccessException("Erro ao consultar usuário logado na base de dados! \n" + ex);
         }
-        return user;
+        return usuaruio;
     }
 }

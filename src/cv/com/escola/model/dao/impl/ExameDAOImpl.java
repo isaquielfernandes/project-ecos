@@ -5,12 +5,14 @@ import cv.com.escola.model.entity.Categoria;
 import cv.com.escola.model.entity.Exame;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.ExameDAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.dao.exception.ReportException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -36,7 +38,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     
     @Override
     public void create(Exame marcar){
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "INSERT INTO "+ db +".tb_exame (tipo_exame, dia, hora, descricao,"
                     + "fk_categoria, fk_aluno, registroCriminal, atestadoMedico) "
                     + "VALUES(?,?,?,?,?,?,?,?)";
@@ -63,7 +65,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     
     @Override
     public void update(Exame marcar){
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "UPDATE "+ db +".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,"
                     + "fk_categoria=?, fk_aluno=? WHERE id_exame=?";
 
@@ -88,7 +90,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     
     @Override
     public void delete(Long idExame){
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM "+ db +".`tb_exame` WHERE id_exame =?";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -104,7 +106,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public List<Exame> findAll(){
         List<Exame> dadosExame = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * FROM "+ db +".exame_view order by Dia desc";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -126,7 +128,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     
     @Override
     public int total() {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT COUNT(*) FROM "+ db +".tb_exame";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
@@ -141,12 +143,11 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     
     @Override
     public void report() {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             Map parametros = new HashMap();
             parametros.put("de", Date.valueOf(LocalDate.of(2018, 10, 1)));
             parametros.put("ate",Date.valueOf(LocalDate.of(2018, 10, 31)));
             
-            URL url = getClass().getResource("/cv/com/escola/reports/Exame.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport("/cv/com/escola/reports/Exame.jrxml");
             
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, conector);
@@ -157,12 +158,14 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
         } catch (JRException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new ReportException("Erro ao imprimir Exames marcado!", ex.getCause());
+        } catch (SQLException ex) {
+            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     @Override
     public void reportListCandidadtoParaExame(String tipoExame, Date dia) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             HashMap filtro = new HashMap();
             filtro.put("tipoExame", tipoExame);
             filtro.put("dia", dia);
@@ -178,6 +181,8 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new ReportException("Erro ao imprimir lista de candidato selecionado para exame!\n",
                     ex.getCause());
+        } catch (SQLException ex) {
+            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

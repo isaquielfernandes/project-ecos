@@ -4,8 +4,10 @@ import cv.com.escola.model.entity.Auditoria;
 import cv.com.escola.model.entity.Usuario;
 import cv.com.escola.model.dao.AuditoriaDAO;
 import cv.com.escola.model.dao.DAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Tempo;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
 
     @Override
     public void inserir(Auditoria log) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "INSERT INTO "+ db +".tb_auditoria (acao, data, descricao, fk_usuario) VALUES (?, ?, ?, ?);";
             preparedStatement = conector.prepareStatement(sql);
             
@@ -35,7 +37,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
 
     @Override
     public void excluir(int id) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM "+ db +".tb_auditoria WHERE id_auditoria = ?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setInt(1, id);
@@ -49,7 +51,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     @Override
     public List<Auditoria> logsUsuario(int id) {
         List<Auditoria> dados = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT log.id_auditoria, log.acao, log.data, log.descricao, "
                     + "usuario.nome FROM "+ db +".tb_auditoria AS log, "+ db +".tb_usuario AS usuario "
                     +  "WHERE log.fk_usuario = usuario.id_usuario AND log.fk_usuario = ? ";
@@ -74,7 +76,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     @Override
     public List<Auditoria> logs() {
         List<Auditoria> dados = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT log.id_auditoria, log.acao, log.data, log.descricao , usuario.nome "
                     + "FROM "+ db +".tb_auditoria AS log, "+ db +".tb_usuario AS usuario WHERE log.fk_usuario = usuario.id_usuario ";
 

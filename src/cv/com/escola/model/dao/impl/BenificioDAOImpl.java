@@ -3,7 +3,9 @@ package cv.com.escola.model.dao.impl;
 import cv.com.escola.model.dao.BenificioDAO;
 import cv.com.escola.model.entity.Benificio;
 import cv.com.escola.model.dao.DAO;
+import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     
     @Override
     public void create(Benificio benificio){
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "insert into "+ db +".tb_benificio (nome_benificio, descricao) VALUES (?, ?)";
             preparedStatement = conector.prepareStatement(sql);           
             preparedStatement.setString(1, benificio.getNomeBenificio());
@@ -34,7 +36,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     
     @Override
     public void update(Benificio benificio){
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "UPDATE "+ db +".tb_benificio SET nome_benificio=?, descricao=? WHERE id_benificio =?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, benificio.getNomeBenificio());
@@ -53,7 +55,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     
     @Override
     public void delete(Integer idBenificio) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "DELETE FROM "+ db +".tb_benificio WHERE id_benificio=?";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -70,7 +72,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     @Override
     public List<Benificio> findAll() {
         List<Benificio> dadosBenificio = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * FROM "+ db +".tb_benificio ORDER BY nome_benificio";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -90,7 +92,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     @Override
     public List<Benificio> combo() {
         List<Benificio> dadosBenificio = new ArrayList<>();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT id_benificio, nome_benificio FROM "+ db +".tb_benificio ORDER BY nome_benificio";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);
@@ -108,7 +110,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
     
     @Override
     public boolean isBanificio(String nome, int id) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT nome_benificio FROM "+ db +".tb_benificio WHERE nome_benificio =? AND id_benificio !=? ";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, nome);

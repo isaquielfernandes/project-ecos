@@ -5,8 +5,10 @@ import cv.com.escola.model.entity.Curso;
 import cv.com.escola.model.entity.Matricula;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.MatriculaDAO;
-import cv.com.escola.model.util.Mensagem;
+import cv.com.escola.model.dao.db.ConnectionManager;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Tempo;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
 
     @Override
     public void create(Matricula incriver) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "INSERT INTO `" + db + "`.`tb_matricula` (`data`, `aluno_id`, `curso_id`, `turma`, `periodo`, `obs`) VALUES (?,?,?,?,?,?);";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -35,16 +37,15 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Inscricao feita com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(MatriculaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao registrar inscricao na base de dados" + ex);
+            throw new DataAccessException("Erro ao registrar inscricao na base de dados" + ex);
         }
     }
 
     @Override
     public void update(Matricula incriver) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "UPDATE `" + db + "`.`tb_matricula` SET `data` = ?, `aluno_id` = ?, `curso_id` = ?, `turma` = ?, `periodo` = ?, `obs` = ? WHERE `id_matricula` = ?;";
 
             preparedStatement = conector.prepareStatement(sql);
@@ -59,30 +60,29 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Inscricao atualizada com sucesso!");
         } catch (SQLException ex) {
             Logger.getLogger(MatriculaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao atualizar registrar inscricao na base de dados" + ex);
+            throw new DataAccessException("Erro ao atualizar registrar inscricao na base de dados" + ex);
         }
     }
 
     @Override
     public void delete(Long idMatricula) {
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setLong(1, idMatricula);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir inscricao na base de dados!\n" + ex);
+            throw new DataAccessException("Erro ao excluir inscricao na base de dados!\n" + ex);
         }
     }
 
     @Override
     public List<Matricula> findAll() {
         List<Matricula> inscricao = new ArrayList();
-        try {
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT m.id_matricula, m.data, a.id_aluno, a.nome, c.codigo, c.nome_curso, m.turma, m.periodo, m.obs FROM "+ db +".tb_matricula as m, "+ db +".tb_aluno as a, "+ db +".tb_curso as c where m.aluno_id = a.id_aluno and m.curso_id = c.codigo order by m.data desc;";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery(sql);

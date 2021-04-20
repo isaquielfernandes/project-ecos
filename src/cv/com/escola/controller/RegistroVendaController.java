@@ -327,7 +327,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         // rabioButton setando valor
         txtDesconto.setText("0");
         rbSituacao.setText("SIM");
-        rbSituacao.setOnMouseClicked((event) -> {
+        rbSituacao.setOnMouseClicked(event -> {
             if (rbSituacao.isSelected()) {
                 rbSituacao.setText("SIM");
             } else {
@@ -433,7 +433,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         };
         //tbVendas.hoverProperty().addListener(hoverListener);
 
-        tbVendas.setOnMouseClicked((event) -> {
+        tbVendas.setOnMouseClicked(event -> {
             if (tbVendas.getSelectionModel().getSelectedItem() != null) {
                 if (event.getClickCount() == 2) {
                     reciboPrint(event);
@@ -544,7 +544,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             fxml.load();
         } catch (IOException ex) {
             Logger.getLogger(RegistroVendaController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela registro de venda!", ex.getMessage());
+            Mensagem.alerta("Erro ao carregar tela registro de venda!");
         }
     }
 
@@ -559,7 +559,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     //Grafico de Bara (BarChart)
     protected void barChart() {
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
-        dados.entrySet().stream().map((dadosItem) -> {
+        dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
@@ -572,7 +572,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(mes, quantidade));
             }
             return series;
-        }).forEachOrdered((series) -> {
+        }).forEachOrdered(series -> {
             barChart.getData().add(series);
         });
     }
@@ -582,7 +582,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
 
-        dados.entrySet().stream().map((dadosItem) -> {
+        dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
@@ -595,7 +595,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(mes, valor));
             }
             return series;
-        }).forEachOrdered((series) -> {
+        }).forEachOrdered(series -> {
             stackedBarChart.getData().add(series);
         });
     }
@@ -605,7 +605,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         //AreaChart pra vendas por mes
         Map<Integer, ArrayList> area = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
 
-        area.entrySet().stream().map((dadosItem) -> {
+        area.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
@@ -618,7 +618,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(mes, quantidade));
             }
             return series;
-        }).forEachOrdered((series) -> {
+        }).forEachOrdered(series -> {
             areaChart.getData().add(series);
         });
     }
@@ -628,7 +628,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         ano = String.valueOf(dtRelatorio.getValue().getYear());
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes(ano);
 
-        dados.entrySet().stream().map((dadosItem) -> {
+        dados.entrySet().stream().map(dadosItem -> {
             ObservableList<PieChart.Data> pieChartObser = FXCollections.observableArrayList();
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
                 String mes;
@@ -640,7 +640,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 pieChartObser.add(new PieChart.Data(mes, valor.doubleValue()));
             }
             return pieChartObser;
-        }).forEachOrdered((pieChartObser) -> {
+        }).forEachOrdered(pieChartObser -> {
             pieChart.setData(pieChartObser);
         });
         double value = DAOFactory.daoFactury().orderDAO().totalAnual(ano).doubleValue();
@@ -651,7 +651,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     protected void stackedAreaChart() {
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
 
-        dados.entrySet().stream().map((dadosItem) -> {
+        dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<Number, BigDecimal> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
@@ -677,7 +677,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
         Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorDia(mes, anoAgora);
 
-        dados.entrySet().stream().map((dadosItem) -> {
+        dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
@@ -690,7 +690,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(dia, quantidade));
             }
             return series;
-        }).forEachOrdered((series) -> {
+        }).forEachOrdered(series -> {
             lineChartDia.getData().add(series);
         });
     }
@@ -1105,20 +1105,17 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                             items.setArtigo(tbItens.getSelectionModel().getSelectedItem().getArtigo());
                             items.setVenda(DAOFactory.daoFactury().orderDAO().buscarUltimaVenda());
                             DAOFactory.daoFactury().itemDAO().create(items);
+                            Mensagem.info("Registro de pagamento feito com sucesso!");
                         }
                     } else {
                         DAOFactory.daoFactury().orderDAO().update(vendas);
+                        Mensagem.info("Registro de pagamento foi atulizado com sucesso!");
                     }
                     telaCadastro(null);
                     sincronizarBase();
-
                     gerarNumRecibo();
-                    Runnable recibo = () -> {
-                        esperar(2000);
-                        DAOFactory.daoFactury().orderDAO().reportReciboFatura(cod);
-                    };
-                    Thread thread = new Thread(recibo);
-                    thread.start();
+                    DAOFactory.daoFactury().orderDAO().reportReciboFatura(
+                            DAOFactory.daoFactury().orderDAO().buscarUltimaVenda().getIdVenda());
                 }
             }
         } catch (NumberFormatException ex) {
@@ -1348,16 +1345,11 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         artigo.setPrefSize(200, 30);
         artigo.setValue(item.getArtigo());
 
-        //quantiadade.setText(item.getQuantidade().toString());
-        //artigo.setValue(item.getArtigo());
         quantiadade.setOnKeyReleased((event) -> {
             txtQuantia.setText(quantiadade.getText());
             onKeyReleasedQuantia(event);
         });
 
-//        artigo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            cbArtigo.setValue(newValue);
-//        });
         editor.addRow(0, new Label("Quantia"), quantiadade);
         editor.addRow(1, new Label("Artigo"), artigo);
 
