@@ -6,7 +6,6 @@ import cv.com.escola.model.dao.AlunoDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
-import cv.com.escola.model.dao.exception.NotFoundException;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
@@ -17,8 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.sf.jasperreports.engine.JRException;
@@ -27,6 +24,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
+import org.apache.log4j.Level;
 
 public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
@@ -36,19 +34,19 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void create(Aluno aluno) {
-        StringBuilder insertQuery = new StringBuilder();
-        insertQuery.append("INSERT INTO ").append(db).append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,");
-        insertQuery.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
-        insertQuery.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
-        insertQuery.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
+        StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db).append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,");
+        query.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
+        query.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
+        query.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(insertQuery.toString());
+            preparedStatement = conector.prepareStatement(query.toString());
             mapToSave(aluno, preparedStatement);
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("INSERT: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -67,7 +65,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -81,7 +79,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("DELETE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -99,7 +97,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return alunos;
     }
@@ -119,8 +117,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new NotFoundException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return listaAluno;
     }
@@ -143,7 +140,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return alunos;
     }
@@ -165,7 +162,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return total;
     }
@@ -184,7 +181,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return listData;
     }
@@ -207,7 +204,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return alunos;
     }
@@ -221,7 +218,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
             jasperViewer.setVisible(true);
         } catch (JRException | SQLException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -237,7 +234,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             Print jasperViewer = new Print();
             jasperViewer.viewReport("Requiremento", jasperPrint);
         } catch (JRException | SQLException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 

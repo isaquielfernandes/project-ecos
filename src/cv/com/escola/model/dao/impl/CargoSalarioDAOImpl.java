@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Level;
 
 public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     
@@ -33,7 +34,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
     
@@ -55,7 +56,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -72,7 +73,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
    
@@ -88,12 +89,10 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
                 CargoSalario cargoSalario = new CargoSalario(rs.getInt(1), rs.getString(2), rs.getDouble(3), rs.getString(4));
                 dadosDesignacao.add(cargoSalario);
             }
-
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return dadosDesignacao;
     }
@@ -114,7 +113,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return dadosCargoSalario;
     }
@@ -135,7 +134,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
 
         return false;
@@ -155,7 +154,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return 0;
     }

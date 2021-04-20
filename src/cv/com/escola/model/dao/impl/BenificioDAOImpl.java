@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Level;
 
 public class BenificioDAOImpl extends DAO implements BenificioDAO {
     
@@ -28,7 +29,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("CREATE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
     
@@ -47,7 +48,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
     
@@ -63,7 +64,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            throw new DataAccessException("DELETE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
     
@@ -81,9 +82,8 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             }
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return dadosBenificio;
     }
@@ -103,7 +103,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return dadosBenificio;
     }
@@ -123,7 +123,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return false;
     }

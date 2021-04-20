@@ -814,18 +814,18 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     // setando dados de item na tableView
     public void viewAll() {
-        colCodigo.setCellValueFactory((CellDataFeatures<Item, Long> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
-        colNomeArtigo.setCellValueFactory((CellDataFeatures<Item, Artigo> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
-        colDescricao.setCellValueFactory((CellDataFeatures<Item, String> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
-        colQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
-        colPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
-        colSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
+        colCodigo.setCellValueFactory((CellDataFeatures<Item, Long> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
+        colNomeArtigo.setCellValueFactory((CellDataFeatures<Item, Artigo> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
+        colDescricao.setCellValueFactory((CellDataFeatures<Item, String> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
+        colQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
+        colPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
+        colSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
         colActions.setCellFactory(actions);
     }
 
@@ -870,18 +870,18 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabelaItemsVenda() {
-        colItemsID.setCellValueFactory((CellDataFeatures<Item, Long> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
-        colItemsNomeArtigo.setCellValueFactory((CellDataFeatures<Item, String> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
-        colItemsDescricao.setCellValueFactory((CellDataFeatures<Item, String> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
-        colItemsPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
-        colItemsQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
-        colItemsSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p) -> 
-                new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
+        colItemsID.setCellValueFactory((CellDataFeatures<Item, Long> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
+        colItemsNomeArtigo.setCellValueFactory((CellDataFeatures<Item, String> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
+        colItemsDescricao.setCellValueFactory((CellDataFeatures<Item, String> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().descricaoProperty().get()));
+        colItemsPrecoUnitario.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().precoProperty().get()));
+        colItemsQuantidade.setCellValueFactory((CellDataFeatures<Item, Integer> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getQuantidade()));
+        colItemsSubTotal.setCellValueFactory((CellDataFeatures<Item, BigDecimal> p)
+                -> new ReadOnlyObjectWrapper(p.getValue().getValorUnitario()));
     }
 
     /**
@@ -1299,7 +1299,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         dialogStage.setScene(scene);
         //center stage on screen
         //dialogStage.centerOnScreen();
-        
+
         //when mouse button is pressed, save the initial position of screen
         page.setOnMousePressed((MouseEvent me) -> {
             initX = me.getScreenX() - dialogStage.getX();
@@ -1377,7 +1377,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     public void clienteSelecionadoDialog() {
         Group rootGroup = new Group();
         Scene scene = new Scene(rootGroup, 250, 340, Color.WHITESMOKE);
-        
+
         // Criando um Estágio de Diálogo (Stage Dialog)
         Stage stage = new Stage();
         stage.setTitle("Pesquisar Cliente");
@@ -1387,7 +1387,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         stage.getIcons().add(new Image(RegistrarController.class.getResourceAsStream("/cv/com/escola/view/img/avater.jpg")));
         stage.initStyle(StageStyle.DECORATED);
         stage.setScene(scene);
-        
 
         listCliente = new ListView();
         ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
@@ -1447,7 +1446,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         vBox.getChildren().addAll(text, listCliente);
 
         rootGroup.getChildren().addAll(vBox);
-        
+
         stage.showAndWait();
     }
 
@@ -1530,7 +1529,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtros(String valor, ObservableList<Artigo> listaProduto) {
-
         FilteredList<Artigo> dadosFiltrados = new FilteredList<>(listaProduto, produto -> true);
         dadosFiltrados.setPredicate(produto -> {
             if (valor == null || valor.isEmpty()) {
@@ -1538,13 +1536,10 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             } else if (produto.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase())) {
                 return true;
             }
-            return false; //To change body of generated lambdas, choose Tools | Templates.
-
+            return false;
         });
-
         SortedList<Artigo> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().get();
-
         listViewProduto.setItems(dadosOrdenados);
     }
 
@@ -1555,15 +1550,16 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     @Override
     public void removeItens(int idItem) throws ParseException {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        esperar(100);
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     private static void esperar(long milesegundos) {
         try {
             Thread.sleep(milesegundos);
         } catch (InterruptedException e) {
             log.warn("InterruptedException: ", e);
-             Thread.currentThread().interrupt();
+            Thread.currentThread().interrupt();
         }
     }
 }

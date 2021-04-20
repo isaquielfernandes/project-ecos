@@ -251,16 +251,13 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<CargoSalario> listaCargo_Salario) {
-
         FilteredList<CargoSalario> dadosFiltrados = new FilteredList<>(listaCargo_Salario, cargo -> true);
-        dadosFiltrados.setPredicate(cargo -> {
-            return cargo.getNomeCargo().toLowerCase().startsWith(valor.toLowerCase());
-        });
-
+        dadosFiltrados.setPredicate(cargo -> 
+            cargo.getNomeCargo().toLowerCase().startsWith(valor.toLowerCase())
+        );
         SortedList<CargoSalario> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbCargo_salario.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de cargos encontrados");
-
         tbCargo_salario.setItems(dadosOrdenados);
     }
 }

@@ -65,7 +65,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
     private List<Instrutor> listInstrutor;
     private int idInstrutor;
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -184,7 +184,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
     private Button btImprimir;
     @FXML
     private Label legenda;
-    
+
     private File file = null;
     private File copyFile = null;
     private FileChooser fileChooser = new FileChooser();
@@ -204,19 +204,12 @@ public class InstrutorController extends AnchorPane implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         sincronizarBase();
         combos();
         telaEdicao(null);
         colFoto.setVisible(false);
-        imgFoto.setOnDragEntered((event) -> {
-            //event.setDropCompleted(true);
-            //event.consume();
-        });
-        imgFoto.setOnMouseClicked((event) -> {
-            uploadImage();
-        });
-        
+        imgFoto.setOnMouseClicked(event -> uploadImage());
+
         colNome.setCellFactory(column -> {
             return new TableCell<Instrutor, String>() {
                 @Override
@@ -226,7 +219,6 @@ public class InstrutorController extends AnchorPane implements Initializable {
                         setText(null);
                         setStyle("");
                     } else {
-                        //setTooltip(new Tooltip());
                         setText(item);
                     }
                 }
@@ -243,7 +235,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
             fxml.load();
         } catch (IOException ex) {
             Logger.getLogger(InstrutorController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela instrutor! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela instrutor!");
         }
     }
 
@@ -264,7 +256,6 @@ public class InstrutorController extends AnchorPane implements Initializable {
         legenda.setText(msg);
         tbInstrutor.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
-
         idInstrutor = 0;
     }
 
@@ -360,6 +351,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
     @FXML
     private void anexarDocOnAction(ActionEvent event) {
+        throw new UnsupportedOperationException();
     }
 
     @FXML
@@ -391,9 +383,8 @@ public class InstrutorController extends AnchorPane implements Initializable {
         String contaCorenta = txtConta_Corente.getText();
         String observacao = taObservacao.getText();
 
-        //fileInput = new FileInputStream(filePath);
         if (emptyFields) {
-            Instrutor instrutor = new Instrutor((long)idInstrutor, nome, dataAdmisao, email, telefone, celular, copyImage(), nomePai, nomeMae,
+            Instrutor instrutor = new Instrutor((long) idInstrutor, nome, dataAdmisao, email, telefone, celular, copyImage(), nomePai, nomeMae,
                     escolaridade, tipoSanguineo, endereco, cidade, nif, naturalidade,
                     nacionalidade, datNascimento, cartaConducao, banco, agencia,
                     contaCorenta, observacao);
@@ -444,14 +435,12 @@ public class InstrutorController extends AnchorPane implements Initializable {
             txtBanco.setText(instrutor.getBanco());
             txtAgencia.setText(instrutor.getAgencia());
             txtConta_Corente.setText(instrutor.getNumDeConta());
-            //image = instrutor.getImage();
-            //imgFoto.setImage(image);
             taObservacao.setText(instrutor.getObservacao());
 
             lbTitulo.setText("Editar Instrutor");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idInstrutor = (int)instrutor.getId();
+            idInstrutor = (int) instrutor.getId();
 
         } catch (NullPointerException ex) {
             Nota.alerta("Selecione um instrutor na tabela para edição!");
@@ -468,15 +457,13 @@ public class InstrutorController extends AnchorPane implements Initializable {
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().instrutorDAO().delete(instrutor.getId());
                 File diretorios = new File("public/img/instrutor/" + sep + instrutor.getFoto());
-                //InputStream fileRemover = new FileInputStream(diretorio.getPath() + sep + artigo.getImage());
                 if (diretorios.exists()) {
-                    diretorios.delete();
+                    Logger.getAnonymousLogger().log(Level.SEVERE, String.valueOf(diretorios.delete()));
                 }
                 sincronizarBase();
                 tabela();
             }
             tbInstrutor.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione instrutor na tabela para exclusão!");
         }
@@ -484,34 +471,31 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
     @FXML
     private void imprimir(ActionEvent event) {
+        throw new UnsupportedOperationException();
     }
 
-    //copiar image relacionado com o produto para o diretorio vendas/produto
     public String copyImage() {
+        if (file != null) {
+            return "";
+        }
         try {
-            if (file != null) {
-                if (!diretorio.exists()) {
-                    diretorio.mkdirs();
-                }
-                copyFile = new File(diretorio.getPath() + sep + n + "-" + file.getName());
-            } else {
-                return null;
+            if (!diretorio.exists()) {
+                diretorio.mkdirs();
             }
+            copyFile = new File(diretorio.getPath() + sep + n + "-" + file.getName());
             Files.copy(Paths.get(file.getPath()), Paths.get(copyFile.getPath()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
             Logger.getLogger(ArtigoController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return copyFile.getName();
     }
-    
-    //caregando imagem
+
     public void uploadImage() {
         try {
             fileChooser.getExtensionFilters().addAll(extensionFilterJPG, extensionFilterPNG);
             fileChooser.setTitle("Upload Image");
             file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
-                String imagePath = file.getPath();
                 BufferedImage bufferedImage = ImageIO.read(file);
                 Image image = SwingFXUtils.toFXImage(bufferedImage, null);
                 imgFoto.setImage(image);

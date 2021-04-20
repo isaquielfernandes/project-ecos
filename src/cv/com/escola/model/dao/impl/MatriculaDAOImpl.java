@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Level;
 
 public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
 
@@ -37,7 +38,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("INSERT: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -48,7 +49,6 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             query.append("UPDATE `").append(db).append("`.`tb_matricula` SET `data` = ?, `aluno_id` = ?, `curso_id` = ?, `turma` = ?, `periodo` = ?, `obs` = ? WHERE `id_matricula` = ?;");
 
             preparedStatement = conector.prepareStatement(query.toString());
-
             preparedStatement.setTimestamp(1, Tempo.toTimestamp(incriver.getData()));
             preparedStatement.setLong(2, incriver.getAluno().getIdAluno());
             preparedStatement.setLong(3, incriver.getCursoPretendido().getCodigo());
@@ -60,7 +60,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -73,7 +73,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("DELETE: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -94,7 +94,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return inscricao;
     }

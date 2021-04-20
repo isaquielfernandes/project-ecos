@@ -104,7 +104,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
         sincronizarBase();
 
         txtPesquisar.textProperty().addListener((obs, old, novo)
-                -> filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria))
+            -> filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria))
         );
     }
 
@@ -215,14 +215,13 @@ public class CategoriaController extends AnchorPane implements Initializable {
     private void filtroPesquisa(String valor, ObservableList<Categoria> listaCategoria) {
 
         FilteredList<Categoria> dadosFiltrados = new FilteredList<>(listaCategoria, categoria -> true);
-        dadosFiltrados.setPredicate(categoria -> {
-            return categoria.getNome().toLowerCase().startsWith(valor.toLowerCase());
-        });
+        dadosFiltrados.setPredicate(categoria -> 
+            categoria.getNome().toLowerCase().startsWith(valor.toLowerCase())
+        );
 
         SortedList<Categoria> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbCategoria.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de Categoria encontrados");
-
         tbCategoria.setItems(dadosOrdenados);
     }
 

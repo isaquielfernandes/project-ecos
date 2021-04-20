@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Level;
 
 public class ItemDAOImpl extends DAO implements ItemDAO {
 
@@ -45,13 +46,12 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public void update(Item item) {
-        final StringBuilder UPDATE_QUERY = new StringBuilder();
-        UPDATE_QUERY.append("UPDATE ").append(db)
+        final StringBuilder query = new StringBuilder();
+        query.append("UPDATE ").append(db)
                 .append(".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?");
-
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    UPDATE_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
@@ -59,8 +59,8 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 pstmt.setInt(4, item.getVenda().getIdVenda());
                 pstmt.setLong(5, item.getIdItem());
                 pstmt.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataAccessException(e);
+            } catch (SQLException ex) {
+                throw new DataAccessException(Level.ERROR.toString(), ex);
             }
         });
     }
@@ -71,13 +71,11 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
             StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
             preparedStatement = conector.prepareStatement(query.toString());
-
             preparedStatement.setInt(1, idVenda);
             preparedStatement.execute();
-
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir item na base de dados! \n" + ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -113,7 +111,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 retorno.add(itemDeVenda);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -151,7 +149,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 retorno.add(itemDeVenda);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
