@@ -34,7 +34,7 @@ import org.apache.log4j.Level;
 public class OrderDAOImpl extends DAO implements OrderDAO {
 
     private List<Item> itemDeVenda;
-    private static final String SELECT__FROM = "SELECT * FROM ";
+    private static final String SELECT_FROM = "SELECT * FROM ";
     private static final String INSERT_INTO = "INSERT INTO ";
     
     public OrderDAOImpl() {
@@ -115,7 +115,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public List<Venda> findAll() {
         final StringBuilder query = new StringBuilder();
-        query.append(SELECT__FROM).append(db).append(".venda_view order by num_fatura desc;");
+        query.append(SELECT_FROM).append(db).append(".venda_view order by num_fatura desc;");
         List<Venda> retorno = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
@@ -145,7 +145,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     public ObservableList<Venda> listar(int quantidade, int pagina) {
         ObservableList retorno = FXCollections.observableArrayList();
         final StringBuilder query = new StringBuilder();
-        query.append(SELECT__FROM).append(db).append(".venda_view order by num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
+        query.append(SELECT_FROM).append(db).append(".venda_view order by num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
@@ -231,7 +231,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public Venda buscar(Venda venda) {
         final StringBuilder query = new StringBuilder();
-        query.append(SELECT__FROM).append(db).append(".venda_view where ").append(db).append(".venda_view.id_vendas=?");
+        query.append(SELECT_FROM).append(db).append(".venda_view where ").append(db).append(".venda_view.id_vendas=?");
         Venda retorno = null;
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());

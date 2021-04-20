@@ -57,7 +57,7 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     public void update(Veiculo veiculo) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             final StringBuilder query = new StringBuilder();
-            StringBuilder append = query.append("UPDATE " + db + ".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,");
+            query.append("UPDATE ").append(db).append(".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,");
             query.append("anoFabricacao=?, anoModelo=?, chassi=?, tipoCombustivel=?, nomeProprietario=?,");
             query.append("contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? ");
             query.append("WHERE  codigo =?");

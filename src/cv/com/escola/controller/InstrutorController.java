@@ -458,7 +458,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
                 DAOFactory.daoFactury().instrutorDAO().delete(instrutor.getId());
                 File diretorios = new File("public/img/instrutor/" + sep + instrutor.getFoto());
                 if (diretorios.exists()) {
-                    Logger.getAnonymousLogger().log(Level.SEVERE, String.valueOf(diretorios.delete()));
+                    Files.delete(diretorios.toPath());
                 }
                 sincronizarBase();
                 tabela();
@@ -466,6 +466,8 @@ public class InstrutorController extends AnchorPane implements Initializable {
             tbInstrutor.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione instrutor na tabela para exclusão!");
+        } catch (IOException ex) {
+            Logger.getLogger(InstrutorController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -476,7 +478,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
     public String copyImage() {
         if (file != null) {
-            return "";
+            throw new NullPointerException("erro: ");
         }
         try {
             if (!diretorio.exists()) {
