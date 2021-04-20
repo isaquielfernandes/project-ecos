@@ -21,9 +21,10 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     @Override
     public void create(Organizacao organizacao) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "INSERT INTO "+ db +".tb_organizacao(nome, sigla, email, fax, telefone, logradouro, bairro, cidade, estado, pais, descricao, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".tb_organizacao(nome, sigla, email, fax, telefone, logradouro, bairro, cidade, estado, pais, descricao, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, organizacao.getNome());
             preparedStatement.setString(2, organizacao.getSigla());
@@ -48,9 +49,10 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     @Override
     public void update(Organizacao organizacao) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "UPDATE "+ db +".tb_organizacao SET nome=?, sigla=?, email=?, fax=?, telefone=?, logradouro=?, bairro=?, cidade=?, estado=?, pais=?, descricao=? WHERE id_orgao=? ";
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".tb_organizacao SET nome=?, sigla=?, email=?, fax=?, telefone=?, logradouro=?, bairro=?, cidade=?, estado=?, pais=?, descricao=? WHERE id_orgao=? ");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, organizacao.getNome());
             preparedStatement.setString(2, organizacao.getSigla());
@@ -77,9 +79,10 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     @Override
     public void delete(Integer idOrganizacao) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM "+ db +".tb_organizacao WHERE id_orgao =?";
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_organizacao WHERE id_orgao =?");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idOrganizacao);
 
             preparedStatement.execute();
@@ -94,9 +97,10 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     public List<Organizacao> findAll() {
         List<Organizacao> dados = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * FROM "+ db +".tb_organizacao";
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".tb_organizacao");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Organizacao organizacao = new Organizacao(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), Tempo.toDate(rs.getTimestamp(13)));
                 dados.add(organizacao);
@@ -113,9 +117,10 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
     public List<Organizacao> combo() {
         List<Organizacao> dados = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT id_orgao, nome FROM "+ db +".tb_organizacao ORDER BY nome ";
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT id_orgao, nome FROM ").append(db).append(".tb_organizacao ORDER BY nome ");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 dados.add(new Organizacao(rs.getInt(1), rs.getString(2)));
             }

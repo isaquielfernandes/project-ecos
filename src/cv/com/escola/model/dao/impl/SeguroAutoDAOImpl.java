@@ -22,10 +22,11 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
     @Override
     public void create(Seguro seguro) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String inserir = "INSERT INTO "+ db +".`tb_seguro` "
-                    + "(`compania`, `veiculo_seguro`, `desde`, `ate`, `emissao`) VALUES (?,?,?,?,?)";
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".`tb_seguro` ");
+            query.append("(`compania`, `veiculo_seguro`, `desde`, `ate`, `emissao`) VALUES (?,?,?,?,?)");
 
-            preparedStatement = conector.prepareStatement(inserir);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, seguro.getCompania());
             preparedStatement.setLong(2, seguro.getVeiculo().getCodigo());
@@ -44,9 +45,10 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
     @Override
     public void update(Seguro seguro) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String update = "UPDATE "+ db +".`tb_seguro` SET `compania` = ?, `veiculo_seguro` = ?, `desde` = ?, `ate` = ?, `emissao` = ? WHERE `id` = ?";
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".`tb_seguro` SET `compania` = ?, `veiculo_seguro` = ?, `desde` = ?, `ate` = ?, `emissao` = ? WHERE `id` = ?");
 
-            preparedStatement = conector.prepareStatement(update);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, seguro.getCompania());
             preparedStatement.setLong(2, seguro.getVeiculo().getCodigo());
@@ -65,8 +67,9 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
     @Override
     public void delete(Long idSeuro) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM "+ db +".`tb_seguro` WHERE `id` = ?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".`tb_seguro` WHERE `id` = ?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setLong(1, idSeuro);
             preparedStatement.execute();
             preparedStatement.close();
@@ -79,15 +82,15 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
     public List<Seguro> findAll() {
         List<Seguro> dadosSeguro = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * FROM "+ db +".seguro_auto_view";
-
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".seguro_auto_view");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 Veiculo veiculo = new Veiculo(
                         rs.getLong(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), new Proprietario(rs.getString(8)), rs.getString(9));
-                
+
                 Seguro seguro = new Seguro(
                         rs.getLong(1), rs.getString(2), veiculo, rs.getDate(10).toLocalDate(), rs.getDate(11).toLocalDate(), rs.getDate(12).toLocalDate());
                 dadosSeguro.add(seguro);
@@ -95,7 +98,6 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException(Level.SEVERE.getName(), ex);
         }

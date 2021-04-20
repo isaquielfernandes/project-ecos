@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import cv.com.escola.model.dao.ArtigoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
@@ -64,9 +63,10 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     @Override
     public void delete(Integer idArtigo) {
-        String sql = "DELETE FROM " + db + ".tb_artigo WHERE id_artigo=?";
+        final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_artigo WHERE id_artigo=?");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idArtigo);
             preparedStatement.execute();
             preparedStatement.close();
@@ -79,26 +79,28 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
     public List<Artigo> findAll() {
         List<Artigo> artigosList = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * from " + db + ".tb_artigo;";
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * from ").append(db).append(".tb_artigo;");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 artigosList.add(mapRowToObject(rs));
             }
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar artigos na base de dados!");
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return artigosList;
     }
 
     @Override
     public Artigo buscar(Artigo artigo) {
-        String sql = "SELECT id_artigo, nomeArtigo, preco FROM " + db + ".tb_artigo WHERE id_artigo=?";
+        final StringBuilder query = new StringBuilder();
+            query.append("SELECT id_artigo, nomeArtigo, preco FROM ").append(db).append(".tb_artigo WHERE id_artigo=?");
         Artigo retorno = new Artigo();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, (int) artigo.getIdArtigo());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
@@ -107,7 +109,6 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
                 retorno.setPreco(rs.getBigDecimal("preco"));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ArtigoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException("Erro ao consultar artigos na base de dados!");
         }
         return retorno;

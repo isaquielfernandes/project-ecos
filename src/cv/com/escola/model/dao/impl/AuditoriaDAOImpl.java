@@ -20,8 +20,9 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     @Override
     public void inserir(Auditoria log) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "INSERT INTO "+ db +".tb_auditoria (acao, data, descricao, fk_usuario) VALUES (?, ?, ?, ?);";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".tb_auditoria (acao, data, descricao, fk_usuario) VALUES (?, ?, ?, ?);");
+            preparedStatement = conector.prepareStatement(query.toString());
             
             preparedStatement.setString(1, log.getAcao());
             preparedStatement.setTimestamp(2, Tempo.toTimestamp(log.getData()));
@@ -38,8 +39,9 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     @Override
     public void excluir(int id) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM "+ db +".tb_auditoria WHERE id_auditoria = ?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_auditoria WHERE id_auditoria = ?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
             preparedStatement.close();
@@ -52,13 +54,14 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     public List<Auditoria> logsUsuario(int id) {
         List<Auditoria> dados = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT log.id_auditoria, log.acao, log.data, log.descricao, "
-                    + "usuario.nome FROM "+ db +".tb_auditoria AS log, "+ db +".tb_usuario AS usuario "
-                    +  "WHERE log.fk_usuario = usuario.id_usuario AND log.fk_usuario = ? ";
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT log.id_auditoria, log.acao, log.data, log.descricao, ");
+            query.append("usuario.nome FROM ").append(db).append(".tb_auditoria AS log, ").append(db).append(".tb_usuario AS usuario ");
+            query.append("WHERE log.fk_usuario = usuario.id_usuario AND log.fk_usuario = ? ");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, id);
-            rs = preparedStatement.executeQuery(sql);
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 Auditoria logs = new Auditoria(rs.getInt(1), rs.getString(2), Tempo.toDate(rs.getTimestamp(3)), rs.getString(4), null);
@@ -77,11 +80,11 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
     public List<Auditoria> logs() {
         List<Auditoria> dados = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT log.id_auditoria, log.acao, log.data, log.descricao , usuario.nome "
-                    + "FROM "+ db +".tb_auditoria AS log, "+ db +".tb_usuario AS usuario WHERE log.fk_usuario = usuario.id_usuario ";
-
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT log.id_auditoria, log.acao, log.data, log.descricao , usuario.nome ");
+            query.append("FROM ").append(db).append(".tb_auditoria AS log, ").append(db).append(".tb_usuario AS usuario WHERE log.fk_usuario = usuario.id_usuario ");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Auditoria log = new Auditoria(rs.getInt(1), rs.getString(2), Tempo.toDate(rs.getTimestamp(3)), rs.getString(4), null);
                 log.setUser(new Usuario(rs.getInt(5), rs.getString(6)));

@@ -99,8 +99,9 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public void delete(Integer idVenda) {
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            String sql = "DELETE FROM " + db + ".tb_vendas WHERE id_vendas=?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_vendas WHERE id_vendas=?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idVenda);
             preparedStatement.execute();
             preparedStatement.close();
@@ -111,10 +112,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public List<Venda> findAll() {
-        String sql = "SELECT * FROM " + db + ".venda_view order by num_fatura desc;";
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".venda_view order by num_fatura desc;");
         List<Venda> retorno = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Cliente cliente = new Cliente(rs.getInt(8), rs.getString(9), rs.getString(10),
@@ -168,8 +170,9 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public int count() {
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            String query = "SELECT COUNT(*) FROM " + db + ".tb_vendas";
-            preparedStatement = conector.prepareStatement(query);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_vendas");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -187,9 +190,10 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     public int ultimoRegisto(int ano) {
         int j = 0;
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            String SQL = "select ifNull(count(id_vendas), 0) as max_id from " + db + ".tb_vendas where extract(year from data)=" + ano + ";";
-            preparedStatement = conector.prepareStatement(SQL);
-            rs = preparedStatement.executeQuery(SQL);
+            final StringBuilder query = new StringBuilder();
+            query.append("select ifNull(count(id_vendas), 0) as max_id from ").append(db).append(".tb_vendas where extract(year from data)=").append(ano).append(";");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 j = rs.getInt(1);
             }
@@ -202,11 +206,12 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     //Buscar Ultima venda realizada
     @Override
     public Venda buscarUltimaVenda() {
-        String sql = "SELECT max(id_vendas) as last_id FROM " + db + ".tb_vendas;";
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT max(id_vendas) as last_id FROM ").append(db).append(".tb_vendas;");
         Venda retorno = new Venda();
 
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
@@ -222,10 +227,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @SuppressWarnings("UnusedAssignment")
     @Override
     public Venda buscar(Venda venda) {
-        String sql = "SELECT * FROM " + db + ".venda_view where " + db + ".venda_view.id_vendas=?";
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".venda_view where ").append(db).append(".venda_view.id_vendas=?");
         Venda retorno = null;
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, venda.getIdVenda());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
@@ -250,10 +256,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public int ultimoRegisto() {
         int j = 0;
-        String SQL = "select max(id_vendas) from " + db + ".tb_vendas";
+        final StringBuilder query = new StringBuilder();
+        query.append("select max(id_vendas) from ").append(db).append(".tb_vendas");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(SQL);
-            rs = preparedStatement.executeQuery(SQL);
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 j = rs.getInt(1);
             }
@@ -265,10 +272,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public Map<Integer, ArrayList> listarQuantidadeVendaPorMes() {
-        String sql = "select count(id_vendas) as count, extract(year from data) as ano, extract(month from data) as mes from " + db + ".tb_vendas group by ano, mes order by ano, mes;";
+        final StringBuilder query = new StringBuilder();
+        query.append("select count(id_vendas) as count, extract(year from data) as ano, extract(month from data) as mes from ").append(db).append(".tb_vendas group by ano, mes order by ano, mes;");
         Map<Integer, ArrayList> retorno = new HashMap();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ArrayList linha = new ArrayList();
@@ -290,10 +298,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public Map<Integer, ArrayList> listarQuantidadeVendaPorDia(String mes, String ano) {
-        String sql = "select count(id_vendas) as count, extract(month from data) as mes, extract(day from data) as dia from " + db + ".tb_vendas where extract(month from data) = " + mes + " and extract(year from data) = " + ano + " group by dia order by dia;";
+        final StringBuilder query = new StringBuilder();
+        query.append("select count(id_vendas) as count, extract(month from data) as mes, extract(day from data) as dia from ").append(db).append(".tb_vendas where extract(month from data) = ").append(mes).append(" and extract(year from data) = ").append(ano).append(" group by dia order by dia;");
         Map<Integer, ArrayList> retorno = new HashMap();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ArrayList linha = new ArrayList();
@@ -315,10 +324,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public Map<Integer, ArrayList> listarValorTotalVendaPorMes() {
-        String sql = "select sum(precoTotal) as sum, extract(year from data) as ano, extract(month from data) as mes from " + db + ".tb_vendas group by ano, mes order by ano, mes;";
+        final StringBuilder query = new StringBuilder();
+        query.append("select sum(precoTotal) as sum, extract(year from data) as ano, extract(month from data) as mes from ").append(db).append(".tb_vendas group by ano, mes order by ano, mes;");
         Map<Integer, ArrayList> retorno = new HashMap();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ArrayList linha = new ArrayList();
@@ -340,10 +350,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public Map<Integer, ArrayList> listarValorTotalVendaPorMes(String ano) {
-        String sql = "select sum(precoTotal) as sum, extract(year from data) as ano, extract(month from data) as mes from " + db + ".tb_vendas where extract(year from data) = " + ano + " group by ano, mes order by ano, mes ;";
+        final StringBuilder query = new StringBuilder();
+        query.append("select sum(precoTotal) as sum, extract(year from data) as ano, extract(month from data) as mes from ").append(db).append(".tb_vendas where extract(year from data) = ").append(ano).append(" group by ano, mes order by ano, mes ;");
         Map<Integer, ArrayList> retorno = new HashMap();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ArrayList linha = new ArrayList();
@@ -367,8 +378,9 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public BigDecimal totalAnual(String ano) {
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            String sql = "select sum(precoTotal) as sum from " + db + ".tb_vendas where extract(year from data) = " + ano + ";";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("select sum(precoTotal) as sum from ").append(db).append(".tb_vendas where extract(year from data) = ").append(ano).append(";");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getBigDecimal(1);

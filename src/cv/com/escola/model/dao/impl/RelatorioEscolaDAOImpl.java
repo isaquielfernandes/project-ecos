@@ -26,8 +26,9 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
     @Override
     public int count(Year ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT count(id_exame) FROM " + db + ".`tb_exame` where extract(year from dia) = " + ano + "";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT count(id_exame) FROM ").append(db).append(".`tb_exame` where extract(year from dia) = ").append(ano).append("");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -41,8 +42,9 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
     @Override
     public int count(String tipo, Year ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT count(id_exame) FROM " + db + ".`tb_exame` where tipo_exame = '" + tipo + "' and extract(year from dia) = " + ano + "";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT count(id_exame) FROM ").append(db).append(".`tb_exame` where tipo_exame = '").append(tipo).append("' and extract(year from dia) = ").append(ano).append("");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -56,8 +58,9 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
     @Override
     public int countResultado(String resultado, String ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT count(r.`id_exame_resultado`) as Qtd FROM " + db + ".`resultado_de_exame_view` r where r.`Resultado` = '" + resultado + "' and  extract(year from r.`Dia`) = " + ano + ";";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT count(r.`id_exame_resultado`) as Qtd FROM ").append(db).append(".`resultado_de_exame_view` r where r.`Resultado` = '").append(resultado).append("' and  extract(year from r.`Dia`) = ").append(ano).append(";");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -72,8 +75,9 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
     @Override
     public int countResultadoPorTipoExame(String tipo, String resultado, String ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT count(r.`id_exame_resultado`) as Qtd FROM " + db + ".`resultado_de_exame_view` r where r.`Tipo De Exame` ='" + tipo + "' and r.`Resultado` = '" + resultado + "' and  extract(year from r.`Dia`) = " + ano + ";";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT count(r.`id_exame_resultado`) as Qtd FROM ").append(db).append(".`resultado_de_exame_view` r where r.`Tipo De Exame` ='").append(tipo).append("' and r.`Resultado` = '").append(resultado).append("' and  extract(year from r.`Dia`) = ").append(ano).append(";");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -86,10 +90,11 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
 
     @Override
     public Map<String, ArrayList> listarExamePorTipoDeExame(Year ano) {
-        String sql = "SELECT count(id_exame) as Qtd, tipo_exame, extract(year from dia) as ano FROM " + db + ".tb_exame where extract(year from dia) = " + ano + " group by tipo_exame;";
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT count(id_exame) as Qtd, tipo_exame, extract(year from dia) as ano FROM ").append(db).append(".tb_exame where extract(year from dia) = ").append(ano).append(" group by tipo_exame;");
         Map<String, ArrayList> retorno = new HashMap();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ArrayList linha = new ArrayList();

@@ -34,30 +34,30 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public void create(ExameResultado resultado) {
         try (Connection connection = HikariCPDataSource.getConnection();) {
-            String sql = "INSERT INTO "+ db +".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);";
-            preparedStatement = connection.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);");
+            preparedStatement = connection.prepareStatement(query.toString());
             preparedStatement.setLong(1, resultado.getExame().getIdExame());
             preparedStatement.setString(2, resultado.getResultado());
             preparedStatement.executeUpdate();
             connection.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
     @Override
     public void update(ExameResultado resultado) {
         try(Connection connection = HikariCPDataSource.getConnection();) {
-            String sql = "UPDATE "+ db +".`tb_exame_resultado` SET "
-                    + "`fk_exame` = ?, `resultado` = ?"
-                    + " WHERE `id_exame_resultado` = ? AND `fk_exame` = ?";
-            preparedStatement = connection.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".`tb_exame_resultado` SET ");
+            query.append("`fk_exame` = ?, `resultado` = ?");
+            query.append(" WHERE `id_exame_resultado` = ? AND `fk_exame` = ?");
+            preparedStatement = connection.prepareStatement(query.toString());
 
             preparedStatement.setLong(1, resultado.getExame().getIdExame());
             preparedStatement.setString(2, resultado.getResultado());
-
             preparedStatement.setLong(3, resultado.getIdExameResultado());
             preparedStatement.setLong(4, resultado.getExame().getIdExame());
             preparedStatement.executeUpdate();
@@ -71,8 +71,9 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public void delete(Long idExameResultado) {
         try(Connection connection = HikariCPDataSource.getConnection();) {
-            String sql = "DELETE FROM "+ db +".`tb_exame_resultado` WHERE id_exame_resultado =?";
-            preparedStatement = connection.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".`tb_exame_resultado` WHERE id_exame_resultado =?");
+            preparedStatement = connection.prepareStatement(query.toString());
             preparedStatement.setLong(1, idExameResultado);
             preparedStatement.execute();
             preparedStatement.close();
@@ -85,9 +86,10 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     public List<ExameResultado> findAll() {
         List<ExameResultado> dadosExame = new ArrayList<>();
         try (Connection connection = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT * FROM "+ db +".resultado_de_exame_view order by Dia desc ";
-            preparedStatement = connection.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".resultado_de_exame_view order by Dia desc ");
+            preparedStatement = connection.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Exame marcado = new Exame(rs.getInt(2), rs.getString(3), 
                         Tempo.toDate(rs.getTimestamp(4)), rs.getTime(5).toLocalTime(), 

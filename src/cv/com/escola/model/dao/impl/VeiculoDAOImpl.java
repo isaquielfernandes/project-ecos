@@ -23,12 +23,13 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     @Override
     public void create(Veiculo veiculo) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String inserir = "insert into " + db + ".tb_veiculo (placa, ilha, fabricante, modelo,"
-                    + "anoFabricacao, anoModelo, chassi, tipoCombustivel, nomeProprietario,"
-                    + "contatoProprietario, emailProprietario, dataCadastro, especificacao) "
-                    + "VALUES (?, ?, ?,?, ?,?,?,?,?,?,?,?,?)";
+            final StringBuilder query = new StringBuilder();
+            query.append("insert into ").append(db).append(".tb_veiculo (placa, ilha, fabricante, modelo,");
+            query.append("anoFabricacao, anoModelo, chassi, tipoCombustivel, nomeProprietario,");
+            query.append("contatoProprietario, emailProprietario, dataCadastro, especificacao) ");
+            query.append("VALUES (?, ?, ?,?, ?,?,?,?,?,?,?,?,?)");
 
-            preparedStatement = conector.prepareStatement(inserir);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, veiculo.getPlaca());
             preparedStatement.setString(2, veiculo.getCidade());
@@ -55,12 +56,13 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     @Override
     public void update(Veiculo veiculo) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String update = "UPDATE " + db + ".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,"
-                    + "anoFabricacao=?, anoModelo=?, chassi=?, tipoCombustivel=?, nomeProprietario=?,"
-                    + "contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? "
-                    + "WHERE  codigo =?";
+            final StringBuilder query = new StringBuilder();
+            StringBuilder append = query.append("UPDATE " + db + ".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,");
+            query.append("anoFabricacao=?, anoModelo=?, chassi=?, tipoCombustivel=?, nomeProprietario=?,");
+            query.append("contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? ");
+            query.append("WHERE  codigo =?");
 
-            preparedStatement = conector.prepareStatement(update);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, veiculo.getPlaca());
             preparedStatement.setString(2, veiculo.getCidade());
@@ -88,8 +90,9 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     @Override
     public void delete(Long idVeiculo) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM " + db + ".tb_veiculo WHERE codigo=?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_veiculo WHERE codigo=?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setLong(1, idVeiculo);
             preparedStatement.execute();
             preparedStatement.close();
@@ -102,10 +105,11 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     public List<Veiculo> findAll() {
         List<Veiculo> dadosVeiculo = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * FROM " + db + ".tb_veiculo";
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".tb_veiculo");
 
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 Proprietario proprietario = new Proprietario(rs.getString(10), rs.getString(11), rs.getString(12));
@@ -136,8 +140,9 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
     @Override
     public int total() {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT COUNT(*) FROM " + db + ".tb_veiculo";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_veiculo");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);

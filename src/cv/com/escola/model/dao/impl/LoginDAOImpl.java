@@ -20,8 +20,9 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
     @Override
     public boolean autenticarUsername(String nome) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT login FROM "+ db +".tb_usuario WHERE login=? AND status = 1 ";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT login FROM ").append(db).append(".tb_usuario WHERE login=? AND status = 1 ");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, nome);
             rs = preparedStatement.executeQuery();
 
@@ -30,7 +31,6 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
             }
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException("Erro ao autenticar nome usuário na base de dados! \n" + ex);
         }
@@ -41,8 +41,9 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
     public boolean autenticarSenha(String nome, String senha) {
         String chave = Criptografia.converter(senha);
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT login, senha FROM "+ db +".tb_usuario WHERE login=? AND senha=? ";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT login, senha FROM ").append(db).append(".tb_usuario WHERE login=? AND senha=? ");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, nome);
             preparedStatement.setString(2, chave);
             rs = preparedStatement.executeQuery();
@@ -63,18 +64,19 @@ public class LoginDAOImpl extends DAO implements LoginDAO {
     public Usuario usuarioLogado(String login) {
         Usuario usuaruio = null;
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT usuario.id_usuario, usuario.nome, usuario.login, usuario.senha, usuario.email, usuario.status, usuario.data_criacao, usuario.descricao, tipo.id_tipo_usuario, tipo.nome "
-                    + "FROM "+ db +".tb_usuario AS usuario , "+ db +".tb_tipo_usuario AS tipo "
-                    + "WHERE usuario.login=? "
-                    + "AND tipo.id_tipo_usuario = usuario.fk_tipo_usuario";
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT u.id_usuario, u.nome, u.login, u.senha, u.email, u.status, u.data_criacao, u.descricao, tipo.id_tipo_usuario, tipo.nome ");
+            query.append("FROM ").append(db).append(".tb_usuario AS u , ").append(db).append(".tb_tipo_usuario AS tipo ");
+            query.append("WHERE u.login=? ");
+            query.append("AND tipo.id_tipo_usuario = u.fk_tipo_usuario");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, login);
             rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 TipoUsuario tipo = new TipoUsuario(rs.getInt(9), rs.getString(10));
-                usuaruio = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), 
+                usuaruio = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3),
                         rs.getString(4), rs.getString(5), (rs.getInt(6) == 1), null, rs.getString(8), tipo);
                 usuaruio.setDataCriacao(Tempo.toDate(rs.getTimestamp(7)));
             }

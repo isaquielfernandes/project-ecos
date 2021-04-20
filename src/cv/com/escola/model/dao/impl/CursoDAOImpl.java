@@ -6,7 +6,6 @@ import cv.com.escola.model.dao.CursoDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
-import cv.com.escola.model.util.Mensagem;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,8 +20,9 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     @Override
     public void create(Curso curso) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "INSERT INTO "+ db +".tb_curso (nome_curso, duracao, descricao, fk_categoria)VALUES(?,?,?,?)";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".tb_curso (nome_curso, duracao, descricao, fk_categoria)VALUES(?,?,?,?)");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, curso.getCurso());
             preparedStatement.setInt(2, curso.getDuracao());
             preparedStatement.setString(3, curso.getDescricao());
@@ -31,7 +31,6 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Curso cadastrado com sucesso");
         } catch (SQLException ex) {
             throw new DataAccessException("INSERT: ", ex);
         }
@@ -40,7 +39,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     @Override
     public void update(Curso curso) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "UPDATE "+ db +".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?";
+            String sql = "UPDATE " + db + ".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?";
             preparedStatement = conector.prepareStatement(sql);
             preparedStatement.setString(1, curso.getCurso());
             preparedStatement.setInt(2, curso.getDuracao());
@@ -60,8 +59,9 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     @Override
     public void delete(Long IdCurso) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM "+ db +".tb_curso WHERE codigo=?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_curso WHERE codigo=?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setLong(1, IdCurso);
             preparedStatement.execute();
             preparedStatement.close();
@@ -74,9 +74,10 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     public List<Curso> findAll() {
         List<Curso> cursos = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT c.*, cat.categoria FROM "+ db +".tb_curso c INNER JOIN "
-                    + ""+ db +".tb_categoria cat ON c.fk_categoria = cat.id_categoria";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT c.*, cat.categoria FROM ").append(db).append(".tb_curso c INNER JOIN ");
+            query.append("").append(db).append(".tb_categoria cat ON c.fk_categoria = cat.id_categoria");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Categoria cat = new Categoria(rs.getInt(5), rs.getString(6));

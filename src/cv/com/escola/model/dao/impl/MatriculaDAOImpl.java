@@ -22,9 +22,10 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
     @Override
     public void create(Matricula incriver) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "INSERT INTO `" + db + "`.`tb_matricula` (`data`, `aluno_id`, `curso_id`, `turma`, `periodo`, `obs`) VALUES (?,?,?,?,?,?);";
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO `").append(db).append("`.`tb_matricula` (`data`, `aluno_id`, `curso_id`, `turma`, `periodo`, `obs`) VALUES (?,?,?,?,?,?);");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setTimestamp(1, Tempo.toTimestamp(incriver.getData()));
             preparedStatement.setLong(2, incriver.getAluno().getIdAluno());
             preparedStatement.setLong(3, incriver.getCursoPretendido().getCodigo());
@@ -43,9 +44,10 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
     @Override
     public void update(Matricula incriver) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "UPDATE `" + db + "`.`tb_matricula` SET `data` = ?, `aluno_id` = ?, `curso_id` = ?, `turma` = ?, `periodo` = ?, `obs` = ? WHERE `id_matricula` = ?;";
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE `").append(db).append("`.`tb_matricula` SET `data` = ?, `aluno_id` = ?, `curso_id` = ?, `turma` = ?, `periodo` = ?, `obs` = ? WHERE `id_matricula` = ?;");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setTimestamp(1, Tempo.toTimestamp(incriver.getData()));
             preparedStatement.setLong(2, incriver.getAluno().getIdAluno());
@@ -79,9 +81,10 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
     public List<Matricula> findAll() {
         List<Matricula> inscricao = new ArrayList();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT m.id_matricula, m.data, a.id_aluno, a.nome, c.codigo, c.nome_curso, m.turma, m.periodo, m.obs FROM "+ db +".tb_matricula as m, "+ db +".tb_aluno as a, "+ db +".tb_curso as c where m.aluno_id = a.id_aluno and m.curso_id = c.codigo order by m.data desc;";
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT m.id_matricula, m.data, a.id_aluno, a.nome, c.codigo, c.nome_curso, m.turma, m.periodo, m.obs FROM ").append(db).append(".tb_matricula as m, ").append(db).append(".tb_aluno as a, ").append(db).append(".tb_curso as c where m.aluno_id = a.id_aluno and m.curso_id = c.codigo order by m.data desc;");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Aluno aluno = new Aluno(rs.getInt(3), rs.getString(4));
                 Curso curso = new Curso(rs.getLong(5), rs.getString(6));

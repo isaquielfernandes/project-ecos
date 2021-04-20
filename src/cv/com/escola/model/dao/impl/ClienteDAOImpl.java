@@ -76,8 +76,9 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
     @Override
     public void delete(Integer idClinte) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM " + db + ".tb_clientes WHERE id_clientes=?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_clientes WHERE id_clientes=?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idClinte);
             preparedStatement.execute();
             preparedStatement.close();
@@ -90,9 +91,10 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
     public List<Cliente> findAll() {
         List<Cliente> clientes = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * from " + db + ".tb_clientes";
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * from ").append(db).append(".tb_clientes");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Cliente cliente = new Cliente(
                         rs.getInt(1), rs.getString(2), rs.getString(3),
@@ -110,10 +112,11 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
 
     @Override
     public Cliente buscar(Cliente cliente) {
-        String sql = "SELECT * FROM " + db + ".tb_clientes WHERE id_clientes=?";
+        final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".tb_clientes WHERE id_clientes=?");
         Cliente retorno = new Cliente();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, cliente.getIdCliente());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {

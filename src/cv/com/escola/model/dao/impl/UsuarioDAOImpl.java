@@ -10,7 +10,6 @@ import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,9 +23,10 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
     @Override
     public void create(Usuario usuario) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "INSERT INTO " + db + ".tb_usuario ( nome, login, senha, email, status, descricao, data_criacao, fk_tipo_usuario ) VALUES (?, ?, ?, ?, ?, ?, now(),?)";
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".tb_usuario ( nome, login, senha, email, status, descricao, data_criacao, fk_tipo_usuario ) VALUES (?, ?, ?, ?, ?, ?, now(),?)");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, usuario.getNome());
             preparedStatement.setString(2, usuario.getLogin());
@@ -46,7 +46,6 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
 
     @Override
     public void createUserAdminAndUserType() {
-        LocalDate agora = LocalDate.now();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             if (totalTipoUsuario() == 0 && totalUsuario() == 0) {
                 //Inserindo tipo de usuario na tabela
@@ -70,9 +69,9 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
     @Override
     public void update(Usuario usuario) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "UPDATE " + db + ".tb_usuario SET nome =?, login =?, senha =?, email =?, status =?, descricao =?, fk_tipo_usuario =? WHERE id_usuario =?";
-
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".tb_usuario SET nome =?, login =?, senha =?, email =?, status =?, descricao =?, fk_tipo_usuario =? WHERE id_usuario =?");
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, usuario.getNome());
             preparedStatement.setString(2, usuario.getLogin());
@@ -96,9 +95,9 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
     @Override
     public void delete(Integer idUsuario) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM " + db + ".tb_usuario WHERE id_usuario=?";
-
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_usuario WHERE id_usuario=?");
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setInt(1, idUsuario);
             preparedStatement.execute();
@@ -108,20 +107,21 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
-    
+
     @Override
     public List<Usuario> findAll() {
         List<Usuario> usuarios = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT " + db + ".tb_usuario.*, " + db + ".tb_tipo_usuario.nome FROM " + db + ".tb_usuario, " + db + ".tb_tipo_usuario "
-                    + "WHERE " + db + ".tb_usuario.fk_tipo_usuario = " + db + ".tb_tipo_usuario.id_tipo_usuario ";
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT ").append(db).append(".tb_usuario.*, ").append(db).append(".tb_tipo_usuario.nome FROM ").append(db).append(".tb_usuario, ").append(db).append(".tb_tipo_usuario ");
+            query.append("WHERE ").append(db).append(".tb_usuario.fk_tipo_usuario = ").append(db).append(".tb_tipo_usuario.id_tipo_usuario ");
 
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 TipoUsuario tipo = new TipoUsuario(rs.getInt(9), rs.getString(10));
-                Usuario usuario = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6) == 1 ? true : false, Tempo.toDate(rs.getTimestamp(8)), rs.getString(7), tipo);
+                Usuario usuario = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), (rs.getInt(6) == 1), Tempo.toDate(rs.getTimestamp(8)), rs.getString(7), tipo);
                 usuarios.add(usuario);
             }
 
@@ -138,10 +138,11 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
     public List<TipoUsuario> usuariosTipo() {
         List<TipoUsuario> tipos = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * FROM " + db + ".tb_tipo_usuario ";
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".tb_tipo_usuario ");
 
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 TipoUsuario tipo = new TipoUsuario(rs.getInt(1), rs.getString(2));
                 tipos.add(tipo);
@@ -156,20 +157,14 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
         return tipos;
     }
 
-    /**
-     * Verificar se usuário já está registrado na base de dados atravês do login
-     *
-     * @param id
-     * @param nome
-     * @return
-     */
     @Override
     public boolean isUsuario(int id, String nome) {
         String login = nome.replaceAll(" ", "").trim().toLowerCase();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT login FROM " + db + ".tb_usuario WHERE login = ? AND id_usuario != ? ";
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT login FROM ").append(db).append(".tb_usuario WHERE login = ? AND id_usuario != ? ");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, nome);
             preparedStatement.setInt(2, id);
             rs = preparedStatement.executeQuery();
@@ -178,10 +173,8 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
                 String usuario = rs.getString(1);
                 return usuario.trim().equalsIgnoreCase(login);
             }
-
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
@@ -193,8 +186,9 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
     public int totalUsuario() {
         int total = 0;
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT COUNT(id_usuario) FROM " + db + ".tb_usuario";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(id_usuario) FROM ").append(db).append(".tb_usuario");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 total = rs.getInt(1);
@@ -211,8 +205,9 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
     public int totalTipoUsuario() {
         int total = 0;
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT COUNT(id_tipo_usuario) FROM " + db + ".tb_tipo_usuario";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(id_tipo_usuario) FROM ").append(db).append(".tb_tipo_usuario");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 total = rs.getInt(1);

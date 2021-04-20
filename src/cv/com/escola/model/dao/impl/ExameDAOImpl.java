@@ -38,11 +38,12 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public void create(Exame marcar){
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "INSERT INTO "+ db +".tb_exame (tipo_exame, dia, hora, descricao,"
-                    + "fk_categoria, fk_aluno, registroCriminal, atestadoMedico) "
-                    + "VALUES(?,?,?,?,?,?,?,?)";
+            final StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db).append(".tb_exame (tipo_exame, dia, hora, descricao,");
+            query.append("fk_categoria, fk_aluno, registroCriminal, atestadoMedico) ");
+            query.append("VALUES(?,?,?,?,?,?,?,?)");
 
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, marcar.getTipoExame());
             preparedStatement.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
@@ -64,10 +65,9 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public void update(Exame marcar){
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "UPDATE "+ db +".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,"
-                    + "fk_categoria=?, fk_aluno=? WHERE id_exame=?";
-
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,fk_categoria=?, fk_aluno=? WHERE id_exame=?");
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setString(1, marcar.getTipoExame());
             preparedStatement.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
@@ -88,9 +88,9 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public void delete(Long idExame){
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM "+ db +".`tb_exame` WHERE id_exame =?";
-
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".`tb_exame` WHERE id_exame =?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setLong(1, idExame);
             preparedStatement.execute();
             preparedStatement.close();
@@ -104,9 +104,10 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     public List<Exame> findAll(){
         List<Exame> dadosExame = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT * FROM "+ db +".exame_view order by Dia desc";
-            preparedStatement = conector.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".exame_view order by Dia desc");
+            preparedStatement = conector.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 Exame marcado = new Exame(rs.getInt(1), rs.getString(2), 
@@ -126,8 +127,9 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
     @Override
     public int total() {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT COUNT(*) FROM "+ db +".tb_exame";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_exame");
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if(rs.next()) {
                 return rs.getInt(1);
