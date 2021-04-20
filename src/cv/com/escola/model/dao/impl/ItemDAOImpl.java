@@ -15,8 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ItemDAOImpl extends DAO implements ItemDAO {
 
@@ -26,13 +24,13 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public void create(Item item) {
-        final StringBuilder INSERT_QUERY = new StringBuilder();
-        INSERT_QUERY.append("INSERT INTO ").append(db)
+        final StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db)
                 .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda)VALUES(?,?,?,?)");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    INSERT_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
@@ -70,8 +68,9 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
     @Override
     public void delete(Integer idVenda) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "DELETE FROM " + db + ".tb_item_venda WHERE id_venda=?";
-            preparedStatement = conector.prepareStatement(sql);
+            StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
+            preparedStatement = conector.prepareStatement(query.toString());
 
             preparedStatement.setInt(1, idVenda);
             preparedStatement.execute();
@@ -84,10 +83,11 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public List<Item> findAll() {
-        String sql = "SELECT * FROM " + db + ".item_de_venda_view;";
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".item_de_venda_view;");
         List<Item> retorno = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Item itemDeVenda = new Item();
@@ -120,10 +120,11 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public List<Item> listarItensPorVenda(Venda venda) {
-        String sql = "SELECT * FROM " + db + ".item_de_venda_view where item_de_venda_view.id_vendas = ?;";
+        StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".item_de_venda_view where item_de_venda_view.id_vendas = ?;");
         List<Item> retorno = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, venda.getIdVenda());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {

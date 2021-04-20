@@ -7,7 +7,6 @@ import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.dao.exception.NotFoundException;
-import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
@@ -37,17 +36,17 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void create(Aluno aluno) {
-        String sql = "INSERT INTO " + db + ".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,"
-                + "naturalidade, email, contato, habilitacaoLit, nacionalidade, "
-                + "foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)";
+        StringBuilder insertQuery = new StringBuilder();
+            insertQuery.append("INSERT INTO ").append(db).append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,");
+            insertQuery.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
+            insertQuery.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
+            insertQuery.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(insertQuery.toString());
             mapToSave(aluno, preparedStatement);
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Aluno cadastrada com sucesso!");
         } catch (SQLException ex) {
             throw new DataAccessException("INSERT: ", ex);
         }

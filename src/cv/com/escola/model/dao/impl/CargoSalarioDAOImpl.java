@@ -9,9 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     
@@ -22,9 +19,11 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     @Override
     public void create(CargoSalario cargo_salario){
         try(Connection conn = HikariCPDataSource.getConnection();) {
-            String inserir = "insert into "+ db +".tb_cargo_salario (cargo, salario, descricao) VALUES (?, ?, ?)";
+            StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ").append(db)
+                    .append(".tb_cargo_salario (cargo, salario, descricao) VALUES (?, ?, ?)");
             
-            preparedStatement = conn.prepareStatement(inserir);
+            preparedStatement = conn.prepareStatement(query.toString());
             
             preparedStatement.setString(1, cargo_salario.getNomeCargo());
             preparedStatement.setDouble(2, cargo_salario.getSalario());
@@ -41,9 +40,11 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     @Override
     public void update(CargoSalario cargo_salario){
         try(Connection conn = HikariCPDataSource.getConnection();) {
-            String inserir = "UPDATE "+ db +".tb_cargo_salario SET cargo=?, salario=?, descricao=? WHERE id_cargo_salario =?";
+            StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db)
+                    .append(".tb_cargo_salario SET cargo=?, salario=?, descricao=? WHERE id_cargo_salario =?");
             
-            preparedStatement = conn.prepareStatement(inserir);
+            preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setString(1, cargo_salario.getNomeCargo());
             preparedStatement.setDouble(2, cargo_salario.getSalario());
             preparedStatement.setString(3, cargo_salario.getDescricao());
@@ -61,9 +62,10 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     @Override
     public void delete(Integer idCargo_salario) {
         try(Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "DELETE FROM "+ db +".tb_cargo_salario WHERE id_cargo_salario=?";
+            StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_cargo_salario WHERE id_cargo_salario=?");
 
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setInt(1, idCargo_salario);
 
             preparedStatement.execute();
@@ -78,9 +80,10 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     public List<CargoSalario> findAll() {
         List<CargoSalario> dadosDesignacao = new ArrayList<>();
         try(Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT * FROM "+ db +".tb_cargo_salario ORDER BY cargo";
-            preparedStatement = conn.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".tb_cargo_salario ORDER BY cargo");
+            preparedStatement = conn.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 CargoSalario cargoSalario = new CargoSalario(rs.getInt(1), rs.getString(2), rs.getDouble(3), rs.getString(4));
                 dadosDesignacao.add(cargoSalario);
@@ -99,31 +102,29 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     public List<CargoSalario> combo() {
         List<CargoSalario> dadosCargoSalario = new ArrayList<>();
         try(Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT id_cargo_salario, cargo FROM "+ db +".tb_cargo_salario ORDER BY cargo";
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT id_cargo_salario, cargo FROM ").append(db).append(".tb_cargo_salario ORDER BY cargo");
 
-            preparedStatement = conn.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            preparedStatement = conn.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 CargoSalario cargo = new CargoSalario(rs.getInt(1), rs.getString(2));
                 dadosCargoSalario.add(cargo);
             }
-
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
-
         return dadosCargoSalario;
     }
 
     @Override
     public boolean isCargo_salario(String nome, int id) {
         try(Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT cargo FROM "+ db +".tb_cargo_salario WHERE cargo =? AND id_cargo_salario !=? ";
-
-            preparedStatement = conn.prepareStatement(sql);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT cargo FROM ").append(db).append(".tb_cargo_salario WHERE cargo =? AND id_cargo_salario !=? ");
+            preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setString(1, nome);
             preparedStatement.setInt(2, id);
             rs = preparedStatement.executeQuery();
@@ -131,10 +132,8 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             if (rs.next()) {
                 return rs.getString(1).toLowerCase().trim().equals(nome.toLowerCase().trim().toLowerCase());
             }
-
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
@@ -145,18 +144,16 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     @Override
     public int count() {
         try (Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT COUNT(*) FROM "+ db +".tb_cargo_salario";
-
-            preparedStatement = conn.prepareStatement(sql);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_cargo_salario");
+            preparedStatement = conn.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
                 return rs.getInt(1);
             }
-
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
