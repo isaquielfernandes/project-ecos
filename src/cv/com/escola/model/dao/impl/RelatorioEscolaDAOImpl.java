@@ -10,6 +10,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  *
@@ -32,12 +33,11 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar na base de dados\n!" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return 0;
     }
 
-    //contar o numero de exame marcado por tipo e ano
     @Override
     public int count(String tipo, Year ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
@@ -48,39 +48,38 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar na base de dados\n!" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return 0;
     }
-    
-    //contar o numero de aprovado, reprovado, faltou por ano
+
     @Override
     public int countResultado(String resultado, String ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT count(r.`id_exame_resultado`) as Qtd FROM " + db + ".`resultado_de_exame_view` r where r.`Resultado` = '"+ resultado +"' and  extract(year from r.`Dia`) = " + ano + ";";
+            String sql = "SELECT count(r.`id_exame_resultado`) as Qtd FROM " + db + ".`resultado_de_exame_view` r where r.`Resultado` = '" + resultado + "' and  extract(year from r.`Dia`) = " + ano + ";";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar na base de dados\n!", ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return 0;
     }
-    
+
     //contar o numero de aprovado, reprovado, faltou por ano
     @Override
     public int countResultadoPorTipoExame(String tipo, String resultado, String ano) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "SELECT count(r.`id_exame_resultado`) as Qtd FROM " + db + ".`resultado_de_exame_view` r where r.`Tipo De Exame` ='" + tipo +"' and r.`Resultado` = '"+ resultado +"' and  extract(year from r.`Dia`) = " + ano + ";";
+            String sql = "SELECT count(r.`id_exame_resultado`) as Qtd FROM " + db + ".`resultado_de_exame_view` r where r.`Tipo De Exame` ='" + tipo + "' and r.`Resultado` = '" + resultado + "' and  extract(year from r.`Dia`) = " + ano + ";";
             preparedStatement = conector.prepareStatement(sql);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar na base de dados\n!", ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return 0;
     }
@@ -99,7 +98,7 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
                 retorno.put(rs.getString("tipo_exame"), linha);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro: " + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return retorno;
     }

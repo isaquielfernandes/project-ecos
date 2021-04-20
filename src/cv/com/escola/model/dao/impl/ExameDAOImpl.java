@@ -8,7 +8,6 @@ import cv.com.escola.model.dao.ExameDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.dao.exception.ReportException;
-import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
@@ -58,8 +57,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao cadastrar exame no base de dados", ex);
+            throw new DataAccessException("CREATE: ", ex);
         }
     }
     
@@ -83,8 +81,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-           throw new DataAccessException("Erro ao atualizar dados no base de dados", ex);
+           throw new DataAccessException("UPDATE: ", ex);
         }
     }
     
@@ -99,7 +96,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir exame na base de dados! \n" + ex);
+            throw new DataAccessException("DELETE: ", ex);
         }
     }
     
@@ -121,7 +118,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar exame na base de dados! \n" + ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return dadosExame;
     }
@@ -136,7 +133,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar total de exame marcado na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return 0;
     }
@@ -157,9 +154,8 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             jasperViewer.setVisible(true);
         } catch (JRException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ReportException("Erro ao imprimir Exames marcado!", ex.getCause());
         } catch (SQLException ex) {
-            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("UPDATE: ", ex);
         }
     }
     
@@ -178,11 +174,9 @@ public class ExameDAOImpl extends DAO implements ExameDAO{
             jasperViewer.viewReport("Exame", jasperPrint);
 
         } catch (JRException ex) {
-            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ReportException("Erro ao imprimir lista de candidato selecionado para exame!\n",
-                    ex.getCause());
+            throw new ReportException("IMPRIMIR: ", ex);
         } catch (SQLException ex) {
-            Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("IMPRIMIR: ", ex);
         }
     }
 }

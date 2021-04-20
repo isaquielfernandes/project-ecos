@@ -33,8 +33,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao inserir dados da empresa na base de dados! \n" + ex);
+            throw new DataAccessException("CREATE: " + ex);
         }
     }
 
@@ -52,8 +51,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao editar dados da empresa na base de dados! \n" + ex);
+            throw new DataAccessException("UPDATE: " + ex);
         }
     }
 
@@ -92,8 +90,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(EscolaConducaoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao editar dados da empresa na base de dados! \n", ex.getCause());
+            throw new DataAccessException("UPDATE: ", ex.getCause());
         }
     }
 
@@ -106,7 +103,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir emprasa na base de dados! \n", ex.getCause());
+            throw new DataAccessException("DELETE: ", ex.getCause());
         }
     }
 
@@ -128,7 +125,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar empresa na base de dados! \n", ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return dadosEmpresa;
     }

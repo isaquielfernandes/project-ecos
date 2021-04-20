@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
@@ -38,7 +36,6 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException(ex);
         }
     }
@@ -62,7 +59,6 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException(ex);
         }
     }
@@ -76,7 +72,6 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(InspecaoTecnicaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException(ex);
         }
     }

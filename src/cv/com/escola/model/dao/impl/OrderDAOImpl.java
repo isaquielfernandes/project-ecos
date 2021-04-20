@@ -41,14 +41,14 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public void create(Venda venda) {
-        final StringBuilder INSERT_QUERY = new StringBuilder();
-        INSERT_QUERY.append("INSERT INTO ").append(db).append(".`tb_vendas`(`data`, `valor_total`, ");
-        INSERT_QUERY.append("`pago`, `cliente_fk`, `id_user`, `meioDePag`, `desconto`, ");
-        INSERT_QUERY.append("`num_fatura`, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);");
+        final StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db).append(".`tb_vendas`(`data`, `valor_total`, ");
+        query.append("`pago`, `cliente_fk`, `id_user`, `meioDePag`, `desconto`, ");
+        query.append("`num_fatura`, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    INSERT_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setTimestamp(1, Tempo.toTimestamp(venda.getData()));
                 pstmt.setBigDecimal(2, venda.getValor());
@@ -69,14 +69,14 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public void update(Venda venda) {
-        final StringBuilder UPDATE_QUERY = new StringBuilder();
-        UPDATE_QUERY.append("UPDATE ").append(db).append(".`tb_vendas` SET `data` = ?,`valor_total` = ?,");
-        UPDATE_QUERY.append("`pago` = ?,`cliente_fk` = ?, `id_user` = ?, `meioDePag` = ?, ");
-        UPDATE_QUERY.append("`desconto` = ?, `num_fatura` = ?, precoTotal=? WHERE `id_vendas` = ?;");
+        final StringBuilder query = new StringBuilder();
+        query.append("UPDATE ").append(db).append(".`tb_vendas` SET `data` = ?,`valor_total` = ?,");
+        query.append("`pago` = ?,`cliente_fk` = ?, `id_user` = ?, `meioDePag` = ?, ");
+        query.append("`desconto` = ?, `num_fatura` = ?, precoTotal=? WHERE `id_vendas` = ?;");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    UPDATE_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setTimestamp(1, Tempo.toTimestamp(venda.getData()));
                 pstmt.setBigDecimal(2, venda.getValor());
@@ -214,7 +214,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 return retorno;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return retorno;
     }
@@ -242,7 +242,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 retorno = venda;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return retorno;
     }

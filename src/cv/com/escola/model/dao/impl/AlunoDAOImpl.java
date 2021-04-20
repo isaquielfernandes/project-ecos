@@ -49,7 +49,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             Mensagem.info("Aluno cadastrada com sucesso!");
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao salvar aluno na base de dados! \n", ex);
+            throw new DataAccessException("INSERT: ", ex);
         }
     }
 
@@ -67,7 +67,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao atualizar aluno na base de dados! \n" + ex);
+            throw new DataAccessException("UPDATE: ", ex);
         }
     }
 
@@ -80,7 +80,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir aluno na base de dados!");
+            throw new DataAccessException("DELETE: ", ex);
         }
     }
 
@@ -97,7 +97,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar aluno na base de dados! \n" + ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return alunos;
     }
@@ -118,7 +118,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new NotFoundException("Erro ao consultar aluno na base de dados! \n" + ex);
+            throw new NotFoundException("FIND: ", ex);
         }
         return listaAluno;
     }
@@ -140,7 +140,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar aluno na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return alunos;
     }
@@ -162,7 +162,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return total;
     }
@@ -180,7 +180,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return listData;
     }
@@ -203,7 +203,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return alunos;
     }

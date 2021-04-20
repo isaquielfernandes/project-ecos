@@ -12,8 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
 
@@ -38,8 +36,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(MatriculaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao registrar inscricao na base de dados" + ex);
+            throw new DataAccessException("INSERT: ", ex);
         }
     }
 
@@ -61,8 +58,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(MatriculaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao atualizar registrar inscricao na base de dados" + ex);
+            throw new DataAccessException("UPDATE: ", ex);
         }
     }
 
@@ -75,7 +71,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir inscricao na base de dados!\n" + ex);
+            throw new DataAccessException("DELETE: ", ex);
         }
     }
 
@@ -95,7 +91,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Logger.getLogger(MatriculaDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return inscricao;
     }

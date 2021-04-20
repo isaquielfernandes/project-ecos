@@ -22,13 +22,13 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     @Override
     public void create(Artigo artigo) {
-        final StringBuilder INSERT_QUERY = new StringBuilder();
-        INSERT_QUERY.append("INSERT INTO ").append(db).append(".tb_artigo (nomeArtigo, preco, descricao)");
-        INSERT_QUERY.append(" VALUES (?,?,?)");
+        final StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db).append(".tb_artigo (nomeArtigo, preco, descricao)");
+        query.append(" VALUES (?,?,?)");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    INSERT_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setString(1, artigo.getNomeArtigo());
                 pstmt.setBigDecimal(2, artigo.getPreco());

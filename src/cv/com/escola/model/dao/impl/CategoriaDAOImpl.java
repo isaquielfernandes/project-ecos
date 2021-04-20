@@ -70,7 +70,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             preparedStatement.setInt(1, idCategoria);
             preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir categoria na base de dados!");
+            throw new DataAccessException("DELETE: ", ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
                 categorias.add(categ);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar categoria na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return categorias;
     }

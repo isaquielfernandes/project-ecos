@@ -5,7 +5,7 @@ import cv.com.escola.model.entity.Veiculo;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.VeiculoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.util.Mensagem;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Tempo;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
@@ -48,10 +47,8 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Veiculo cadastrada com sucesso!");
         } catch (SQLException ex) {
-            Logger.getLogger(VeiculoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao inserir veiculo na base de dados! \n" + ex);
+            throw new DataAccessException("CREATE: ", ex);
         }
     }
 
@@ -83,10 +80,8 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Veiculo atualizada com sucesso!");
         } catch (SQLException ex) {
-            Logger.getLogger(VeiculoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao atualizar veiculo na base de dados! \n" + ex);
+            throw new DataAccessException("UPDATE: ", ex);
         }
     }
 
@@ -99,8 +94,7 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(VeiculoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao excluir veiculo na base de dados! \n" + ex);
+            throw new DataAccessException("DELETE: ", ex);
         }
     }
 
@@ -134,7 +128,7 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return dadosVeiculo;
     }
@@ -151,7 +145,7 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar total de veiculo na base de dados");
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return 0;
     }

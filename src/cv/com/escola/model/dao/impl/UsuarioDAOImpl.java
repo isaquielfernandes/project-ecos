@@ -5,6 +5,7 @@ import cv.com.escola.model.entity.Usuario;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.UsuarioDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Tempo;
 import java.sql.Connection;
@@ -13,8 +14,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
 
@@ -40,9 +39,8 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao inserir usuário na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -65,7 +63,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -91,7 +89,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao atualizar usuário na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -107,20 +105,13 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
 
             preparedStatement.close();
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir usuário na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
-
-    /**
-     * Consultar todos usuários cadastrados na base de dados
-     *
-     * @return
-     */
+    
     @Override
     public List<Usuario> findAll() {
-
         List<Usuario> usuarios = new ArrayList<>();
-
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT " + db + ".tb_usuario.*, " + db + ".tb_tipo_usuario.nome FROM " + db + ".tb_usuario, " + db + ".tb_tipo_usuario "
                     + "WHERE " + db + ".tb_usuario.fk_tipo_usuario = " + db + ".tb_tipo_usuario.id_tipo_usuario ";
@@ -130,15 +121,14 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
 
             while (rs.next()) {
                 TipoUsuario tipo = new TipoUsuario(rs.getInt(9), rs.getString(10));
-                Usuario user = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6) == 1 ? true : false, Tempo.toDate(rs.getTimestamp(8)), rs.getString(7), tipo);
-                usuarios.add(user);
+                Usuario usuario = new Usuario(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6) == 1 ? true : false, Tempo.toDate(rs.getTimestamp(8)), rs.getString(7), tipo);
+                usuarios.add(usuario);
             }
 
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar usuários na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
 
         return usuarios;
@@ -160,7 +150,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar usuários na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
 
         return tipos;
@@ -175,9 +165,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
      */
     @Override
     public boolean isUsuario(int id, String nome) {
-
         String login = nome.replaceAll(" ", "").trim().toLowerCase();
-
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT login FROM " + db + ".tb_usuario WHERE login = ? AND id_usuario != ? ";
 
@@ -195,7 +183,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao verificar na base de dados login usuário \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
 
         return false;
@@ -214,7 +202,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return total;
     }
@@ -232,7 +220,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return total;
     }

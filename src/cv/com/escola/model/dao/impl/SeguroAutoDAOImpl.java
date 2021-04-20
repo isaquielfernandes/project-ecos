@@ -6,13 +6,12 @@ import cv.com.escola.model.entity.Veiculo;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.SeguroAutoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.util.Mensagem;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
@@ -37,10 +36,8 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Seguro auto cadastrada com sucesso!");
         } catch (SQLException ex) {
-            Logger.getLogger(SeguroAutoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao inserir dados da seguro auto de veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -60,10 +57,8 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
             preparedStatement.setLong(6, seguro.getId());
             preparedStatement.executeUpdate();
             preparedStatement.close();
-            Mensagem.info("Seguro Auto atualizada com sucesso!");
         } catch (SQLException ex) {
-            Logger.getLogger(SeguroAutoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao atualizar seguro auto de veiculo na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -76,16 +71,13 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(SeguroAutoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao excluir seguro auto na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
     @Override
     public List<Seguro> findAll() {
-
         List<Seguro> dadosSeguro = new ArrayList<>();
-
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             String sql = "SELECT * FROM "+ db +".seguro_auto_view";
 
@@ -105,7 +97,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar da seguro auto na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
         return dadosSeguro;
     }

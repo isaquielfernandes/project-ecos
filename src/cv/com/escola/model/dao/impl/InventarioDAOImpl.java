@@ -125,8 +125,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException(ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return inventario;
     }
@@ -182,9 +181,8 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             jasperViewer.viewReport("Inventario", jasperPrint);
         } catch (JRException ex) {
             Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException(ex);
         } catch (SQLException ex) {
-            Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
     }
 }

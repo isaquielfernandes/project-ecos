@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClienteDAOImpl extends DAO implements ClienteDAO {
 
@@ -21,16 +19,15 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
 
     @Override
     public void create(Cliente cliente) {
-        
-        final StringBuilder INSERT_QUERY = new StringBuilder();
+        final StringBuilder query = new StringBuilder();
 
-        INSERT_QUERY.append("INSERT INTO ").append(db).append(".`tb_clientes` (`nomeCliente`,`nif`,");
-        INSERT_QUERY.append("`contato`,`tipoCliente`,`descricao`,`endereco`,`codigoPostal`,");
-        INSERT_QUERY.append("`localidade`) VALUES (?,?,?,?,?,?,?,?);");
+        query.append("INSERT INTO ").append(db).append(".`tb_clientes` (`nomeCliente`,`nif`,");
+        query.append("`contato`,`tipoCliente`,`descricao`,`endereco`,`codigoPostal`,");
+        query.append("`localidade`) VALUES (?,?,?,?,?,?,?,?);");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    INSERT_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setString(1, cliente.getNomeCliente());
                 pstmt.setString(2, cliente.getNif());
@@ -49,16 +46,16 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
 
     @Override
     public void update(Cliente cliente) {
-        final StringBuilder UPDATE_QUERY = new StringBuilder();
+        final StringBuilder query = new StringBuilder();
         
-        UPDATE_QUERY.append("UPDATE ").append(db)
+        query.append("UPDATE ").append(db)
                     .append(".`tb_clientes` SET `nomeCliente` = ?,`nif` = ?,");
-        UPDATE_QUERY.append("`contato` = ?,`tipoCliente` = ?,`descricao` = ?,`endereco` = ?,");
-        UPDATE_QUERY.append("`codigoPostal` = ?,`localidade` = ? WHERE `id_clientes` = ?;");
+        query.append("`contato` = ?,`tipoCliente` = ?,`descricao` = ?,`endereco` = ?,");
+        query.append("`codigoPostal` = ?,`localidade` = ? WHERE `id_clientes` = ?;");
         
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    UPDATE_QUERY.toString()
+                    query.toString()
             )) {
                 pstmt.setString(1, cliente.getNomeCliente());
                 pstmt.setString(2, cliente.getNif());
@@ -106,7 +103,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar cliente na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return clientes;
     }
@@ -127,7 +124,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
                 retorno = cliente;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ClienteDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return retorno;
     }

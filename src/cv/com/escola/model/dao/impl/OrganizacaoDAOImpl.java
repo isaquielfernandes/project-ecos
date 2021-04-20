@@ -4,12 +4,13 @@ import cv.com.escola.model.entity.Organizacao;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.OrganizacaoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
-import cv.com.escola.model.util.Mensagem;
+import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Tempo;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
 
@@ -39,9 +40,8 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao inserir organização na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -69,9 +69,8 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao atualizar organização na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -87,7 +86,7 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao excluir organização na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
     }
 
@@ -104,11 +103,9 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
             }
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar organizações na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
-
         return dados;
     }
 
@@ -124,11 +121,9 @@ public class OrganizacaoDAOImpl extends DAO implements OrganizacaoDAO {
             }
             preparedStatement.close();
             rs.close();
-
         } catch (SQLException ex) {
-            Mensagem.erro("Erro ao consultar organizações na base de dados! \n" + ex);
+            throw new DataAccessException(Level.SEVERE.getName(), ex);
         }
-
         return dados;
     }
 }

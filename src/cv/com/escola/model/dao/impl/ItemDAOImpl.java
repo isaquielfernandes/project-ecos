@@ -113,7 +113,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 retorno.add(itemDeVenda);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ItemDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return retorno;
     }
@@ -150,7 +150,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 retorno.add(itemDeVenda);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ItemDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException("FIND: ", ex);
         }
         return retorno;
     }

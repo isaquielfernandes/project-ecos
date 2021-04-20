@@ -34,7 +34,6 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(CargoSalarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException(ex);
         }
     }
@@ -55,7 +54,6 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(CargoSalarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException(ex);
         }
     }

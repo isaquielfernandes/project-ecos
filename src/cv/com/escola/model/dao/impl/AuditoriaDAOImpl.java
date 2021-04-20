@@ -31,7 +31,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao inserir logs na base de dados!");
+            throw new DataAccessException("CREATE: ", ex);
         }
     }
 
@@ -44,7 +44,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir logs na base de dados!");
+            throw new DataAccessException("DELETE: ", ex);
         }
     }
 
@@ -68,7 +68,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar logs na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return dados;
     }
@@ -90,7 +90,7 @@ public class AuditoriaDAOImpl extends DAO implements AuditoriaDAO{
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar logs na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return dados;
     }

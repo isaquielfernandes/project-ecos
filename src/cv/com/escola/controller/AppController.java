@@ -425,7 +425,7 @@ public class AppController implements Initializable {
 
     @FXML
     private void perfilDoUsuario(ActionEvent event) {
-
+        throw new UnsupportedOperationException();
     }
 
     @FXML
@@ -464,16 +464,20 @@ public class AppController implements Initializable {
 
     @FXML
     private void subRestoure(ActionEvent event) {
-
+        throw new UnsupportedOperationException();
     }
 
     @FXML
-    private void subServer(ActionEvent event) throws Exception {
+    private void subServer(ActionEvent event) {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja fazer alterar aconfiguracao do servidor?");
         if (responses == Dialogo.Resposta.YES) {
-            new Server().start(new Stage());
-            new App().stop();
-            Platform.exit();
+            try {
+                new Server().start(new Stage());
+                new App().stop();
+                Platform.exit();
+            } catch (Exception ex) {
+                Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -484,10 +488,14 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    private void terminarSeccao(ActionEvent event) throws Exception {
-        new App().stop();
-        Platform.exit();
-        new Login().start(new Stage());
+    private void terminarSeccao(ActionEvent event) {
+        try {
+            new App().stop();
+            Platform.exit();
+            new Login().start(new Stage());
+        } catch (Exception ex) {
+            Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void notificacoes() {

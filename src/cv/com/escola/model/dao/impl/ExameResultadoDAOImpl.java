@@ -64,7 +64,6 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
             connection.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ExameResultadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new DataAccessException(ex);
         }
     }

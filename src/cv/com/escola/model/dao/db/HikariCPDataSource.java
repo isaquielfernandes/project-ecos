@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class HikariCPDataSource {
     
     private static HikariCPDataSource instance = new HikariCPDataSource();
-    private final static HikariConfig CONFIG = new HikariConfig();
+    private static final HikariConfig CONFIG = new HikariConfig();
     private static final String ID_TIME_ZONE = java.util.TimeZone.getDefault().getID();
     private static final String SERVER_CONFIG = "?serverTimezone=" + ID_TIME_ZONE + "";
     private static final String USER = DBProperties.loadPropertiesFileUser();
@@ -30,7 +30,7 @@ public class HikariCPDataSource {
         CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "248");
     }
     
-    public HikariCPDataSource(){}
+    private HikariCPDataSource(){}
     
     public static Connection getConnection() {
         try {

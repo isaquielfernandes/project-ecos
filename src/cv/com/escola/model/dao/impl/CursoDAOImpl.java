@@ -11,8 +11,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CursoDAOImpl extends DAO implements CursoDAO {
 
@@ -35,8 +33,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.close();
             Mensagem.info("Curso cadastrado com sucesso");
         } catch (SQLException ex) {
-            Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao cadastrar curso na base de dados!");
+            throw new DataAccessException("INSERT: ", ex);
         }
     }
 
@@ -55,10 +52,8 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
-            Mensagem.info("Curso atualizado com sucesso");
         } catch (SQLException ex) {
-            Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao atualizar curso na base de dados! \n");
+            throw new DataAccessException("UPDATE: ", ex);
         }
     }
 
@@ -71,8 +66,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao excluir curso na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
     }
 
@@ -92,8 +86,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            Logger.getLogger(CursoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new DataAccessException("Erro ao consultar cursos na base de dados!");
+            throw new DataAccessException("FIND: ", ex);
         }
         return cursos;
     }
