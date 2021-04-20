@@ -42,8 +42,8 @@ import javafx.scene.layout.GridPane;
  */
 public class CargoSalarioController extends AnchorPane implements Initializable {
 
-    private int idCargo_Salario;
-    private List<CargoSalario> listaCargo_Salario;
+    private int idCargoSalario;
+    private List<CargoSalario> cargoSalarios;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -86,7 +86,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        txtSalario.setOnKeyReleased((event) -> {
+        txtSalario.setOnKeyReleased(event -> {
             if(event.getCode() == KeyCode.ENTER){
                 salvar(null);
             }
@@ -96,9 +96,9 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaCargo_Salario));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(cargoSalarios))
+        );
     }   
     @SuppressWarnings("LeakingThisInConstructor")
     public CargoSalarioController() {
@@ -109,7 +109,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
             fxml.load();
         } catch (IOException ex) {
             Logger.getLogger(CargoSalarioController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela despesas! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela Cargo Salario!");
         }
     }
 
@@ -117,7 +117,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaCargo_Salario = DAOFactory.daoFactury().getCargo_salarioDAO().findAll();
+        cargoSalarios = DAOFactory.daoFactury().getCargo_salarioDAO().findAll();
     }
 
     /**
@@ -131,7 +131,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
         tbCargo_salario.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
 
-        idCargo_Salario = 0;
+        idCargoSalario = 0;
     }
 
     /**
@@ -173,12 +173,12 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().getCargo_salarioDAO().isCargo_salario(cargo, idCargo_Salario)) {
+        } else if (DAOFactory.daoFactury().getCargo_salarioDAO().isCargo_salario(cargo, idCargoSalario)) {
             Nota.alerta("Cargo já cadastrada!");
         } else {
-            CargoSalario cargoSalario = new CargoSalario(idCargo_Salario, cargo, salario, descricao);
+            CargoSalario cargoSalario = new CargoSalario(idCargoSalario, cargo, salario, descricao);
 
-            if (idCargo_Salario == 0) {
+            if (idCargoSalario == 0) {
                 DAOFactory.daoFactury().getCargo_salarioDAO().create(cargoSalario);
                 Mensagem.info("Cargo cadastrada com sucesso!");
             } else {
@@ -206,7 +206,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
             lbTitulo.setText("Editar Cargo & salario");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idCargo_Salario = cargoSalario.getIdcargoSalario();
+            idCargoSalario = cargoSalario.getIdcargoSalario();
 
         } catch (NullPointerException ex) {
             Nota.alerta("Selecione uma cargo & salario na tabela para edição!");
@@ -237,7 +237,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      */
     private void tabela() {
 
-        ObservableList data = FXCollections.observableArrayList(listaCargo_Salario);
+        ObservableList data = FXCollections.observableArrayList(cargoSalarios);
 
         colId.setCellValueFactory((CellDataFeatures<CargoSalario, Integer> obj) -> obj.getValue().idCargoSalarioProperty().asObject());
         colCargo.setCellValueFactory((CellDataFeatures<CargoSalario, String> obj) -> obj.getValue().nomeCargoProperty());
@@ -254,13 +254,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
 
         FilteredList<CargoSalario> dadosFiltrados = new FilteredList<>(listaCargo_Salario, cargo -> true);
         dadosFiltrados.setPredicate(cargo -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (cargo.getNomeCargo().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } 
-            return false;
+            return cargo.getNomeCargo().toLowerCase().startsWith(valor.toLowerCase());
         });
 
         SortedList<CargoSalario> dadosOrdenados = new SortedList<>(dadosFiltrados);

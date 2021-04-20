@@ -54,7 +54,6 @@ public class ClienteDialogController implements Initializable {
     private Stage dialogStage;
     private boolean buttonConfirmarClicked = false;
     private Cliente cliente;
-    private String radioButton;
 
     /**
      * Initializes the controller class.
@@ -63,11 +62,10 @@ public class ClienteDialogController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         combos();
-        lbClose.setOnMouseClicked((event) -> {
-            dialogStage.close();
-        });
+        lbClose.setOnMouseClicked(event -> 
+            dialogStage.close()
+        );
     }
 
     public Stage getDialogStage() {

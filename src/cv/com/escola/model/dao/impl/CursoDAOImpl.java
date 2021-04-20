@@ -39,8 +39,9 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     @Override
     public void update(Curso curso) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sql = "UPDATE " + db + ".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?";
-            preparedStatement = conector.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, curso.getCurso());
             preparedStatement.setInt(2, curso.getDuracao());
             preparedStatement.setString(3, curso.getDescricao());

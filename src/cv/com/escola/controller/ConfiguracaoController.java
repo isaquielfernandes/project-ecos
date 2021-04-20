@@ -1,25 +1,13 @@
 package cv.com.escola.controller;
 
-import cv.com.escola.app.App;
-import cv.com.escola.app.Configuracao;
 import cv.com.escola.model.dao.db.DAOFactory;
 import cv.com.escola.model.entity.EscolaConducao;
 import cv.com.escola.model.util.Campo;
 import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,9 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javax.imageio.ImageIO;
 
 public class ConfiguracaoController implements Initializable {
 
@@ -43,12 +29,7 @@ public class ConfiguracaoController implements Initializable {
     private int idEmpresa = 0;
     private Image image;
     private File file;
-    private File fileLogo;
     private File fileAssinatura;
-    private OutputStream fileOutput;
-    private InputStream fileInput;
-    private byte[] userImage;
-    private String imgPath;
 
     //@FXML
     private ToggleGroup menu;
@@ -85,13 +66,8 @@ public class ConfiguracaoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         sincronizarDataBase();
 
-        logo.setOnMouseClicked((event) -> {
-            uploadLogo();
-        });
-
-        assinatura.setOnMouseClicked((event) -> {
-            uploadFileAssinatura();
-        });
+        logo.setOnMouseClicked(event -> uploadLogo());
+        assinatura.setOnMouseClicked(event -> uploadFileAssinatura());
     }
 
     private void sincronizarDataBase() {
@@ -117,16 +93,7 @@ public class ConfiguracaoController implements Initializable {
         String contato = txtContato.getText();
         String descricao = txtDescricao.getText();
         idEmpresa = Integer.valueOf(txtID.getText().trim().isEmpty() ? "0" : txtID.getText());
-
-//        if (vazio) {
-//            EscolaConducao empresa = new EscolaConducao(idEmpresa, nomeEscola, cidade, endereco,
-//                    nif, contato, email, descricao, fileLogo);
-//            empresa.setFileCarimboAssinatura(fileAssinatura);
-//            DAOFactory.daoFactury().empresaDAO().create(empresa);
-//            sincronizarDataBase();
-//            new App().start(new Stage());
-//            Configuracao.palco.close();
-//        }
+        
     }
 
     public void uploadLogo() {

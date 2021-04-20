@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+import org.apache.log4j.Level;
 
 public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
 
@@ -40,7 +40,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -62,7 +62,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             }
 
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -88,7 +88,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -104,7 +104,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
 
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -128,7 +128,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
 
         return usuarios;
@@ -151,7 +151,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
 
         return tipos;
@@ -176,7 +176,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
 
         return false;
@@ -196,7 +196,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return total;
     }
@@ -215,7 +215,7 @@ public class UsuarioDAOImpl extends DAO implements UsuarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return total;
     }

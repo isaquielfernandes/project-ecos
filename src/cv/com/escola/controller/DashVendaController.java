@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DashVendaController extends AnchorPane implements Initializable {
 
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
     @FXML
     private Label lbVendasNoAno;
     @FXML

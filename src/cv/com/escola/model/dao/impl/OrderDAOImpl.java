@@ -10,6 +10,7 @@ import cv.com.escola.model.dao.OrderDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
+import cv.com.escola.model.dao.exception.ReportException;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.math.BigDecimal;
@@ -21,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.sf.jasperreports.engine.JRException;
@@ -30,6 +29,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.log4j.Level;
 
 public class OrderDAOImpl extends DAO implements OrderDAO {
 
@@ -61,8 +61,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 pstmt.setBigDecimal(9, venda.getValorTotal());
 
                 pstmt.execute();
-            } catch (SQLException e) {
-                throw new DataAccessException(e);
+            } catch (SQLException ex) {
+                throw new DataAccessException(Level.ERROR.toString(), ex);
             }
         });
     }
@@ -90,8 +90,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 pstmt.setInt(10, venda.getIdVenda());
 
                 pstmt.execute();
-            } catch (SQLException e) {
-                throw new DataAccessException(e);
+            } catch (SQLException ex) {
+                throw new DataAccessException(Level.ERROR.toString(), ex);
             }
         });
     }
@@ -106,7 +106,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir venda na base de dados! \n" + ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -134,7 +134,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 retorno.add(vendas);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -142,9 +142,10 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public ObservableList<Venda> listar(int quantidade, int pagina) {
         ObservableList retorno = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM " + db + ".venda_view order by num_fatura desc limit " + quantidade * pagina + "," + quantidade + ";";
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".venda_view order by num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
         try (Connection conector = HikariCPDataSource.getConnection();) {
-            preparedStatement = conector.prepareStatement(sql);
+            preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Cliente cliente = new Cliente(rs.getInt(8), rs.getString(9), rs.getString(10),
@@ -162,7 +163,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 retorno.add(vendas);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -180,7 +181,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar total de vendas na base de dados", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return 0;
     }
@@ -198,7 +199,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 j = rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar registro na base de dados!", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return j;
     }
@@ -219,7 +220,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 return retorno;
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -248,7 +249,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 retorno = venda;
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+           throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -265,7 +266,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 j = rs.getInt(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar registro na base de dados!", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return j;
     }
@@ -291,7 +292,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -317,7 +318,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -343,7 +344,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -369,7 +370,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -386,7 +387,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 return rs.getBigDecimal(1);
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar na base de dados\n!" + ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return BigDecimal.ZERO;
     }
@@ -405,9 +406,9 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             jasperViewer.viewReport("Recibo/Fatura", jasperPrint);
 
         } catch (JRException ex) {
-            Logger.getLogger(AlunoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ReportException(Level.ERROR.toString(), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(OrderDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 }

@@ -108,7 +108,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
             fxml.load();
         } catch (IOException ex) {
             Logger.getLogger(ArtigoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela artigo! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela artigo!");
         }
     }
 
@@ -264,7 +264,6 @@ public class ArtigoController extends AnchorPane implements Initializable {
         telaCadastro(null);
         Grupo.notEmpty(menu);
         sincronizarBase();
-        combos();
 
         txtPesquisar.textProperty().addListener((obs, old, novo) -> {
             filtro(novo, FXCollections.observableArrayList(listaArtigo));
@@ -291,11 +290,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
             };
         });
     }
-
-    private void combos() {
-
-    }
-
+    
     private void filtro(String valor, ObservableList<Artigo> listaArtigo) {
         FilteredList<Artigo> dadosFiltrados = new FilteredList<>(listaArtigo, artigo -> true);
         dadosFiltrados.setPredicate(artigo -> {
@@ -318,7 +313,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
     @FXML
     private void imprimir(ActionEvent event) {
-
+        throw new UnsupportedOperationException();
     }
 
     Callback<TableColumn<Artigo, String>, TableCell<Artigo, String>> actions = (TableColumn<Artigo, String> param) -> {
@@ -337,7 +332,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
                         @Override
                         protected void deleteButton(ActionEvent actionEvent) {
-                            param.getColumns().remove(this);
+                            param.getColumns().remove(this.idProperty().get());
                         }
                     };
                     setGraphic(action);

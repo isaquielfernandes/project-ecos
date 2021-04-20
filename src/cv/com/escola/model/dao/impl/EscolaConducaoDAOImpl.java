@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Level;
 
 public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
@@ -21,35 +22,37 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
     @Override
     public void create(EscolaConducao empresa) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            String sqlInsert = "insert into " + db + ".tb_empresa (`nome`,`cidade`,"
-                    + "`nif`,`endereco`,`email`,`contato`,`descricao`,`logo`,`assinatura`) "
-                    + "VALUES (?,?,?,?,?,?,?,?,?);";
+            final StringBuilder query = new StringBuilder();
+            query.append("insert into ").append(db).append(".tb_empresa (`nome`,`cidade`,");
+            query.append("`nif`,`endereco`,`email`,`contato`,`descricao`,`logo`,`assinatura`) ");
+            query.append("VALUES (?,?,?,?,?,?,?,?,?);");
 
-            preparedStatement = conector.prepareStatement(sqlInsert);
+            preparedStatement = conector.prepareStatement(query.toString());
             map(empresa);
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("CREATE: " + ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
     @Override
     public void update(EscolaConducao empresa) {
         try (Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "UPDATE " + db + ".`tb_empresa` SET `nome` = ?, "
-                    + "`cidade` = ?, `nif` = ?, `endereco` = ?, `email` = ?, `contato` = ?, "
-                    + "`descricao` = ?, `logo` = ?, `assinatura` = ? WHERE `id_empresa` = ?";
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".`tb_empresa` SET `nome` = ?, ");
+            query.append("`cidade` = ?, `nif` = ?, `endereco` = ?, `email` = ?, `contato` = ?, ");
+            query.append("`descricao` = ?, `logo` = ?, `assinatura` = ? WHERE `id_empresa` = ?");
 
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(query.toString());
             map(empresa);
             preparedStatement.setInt(10, empresa.getIdEmpresa());
             preparedStatement.executeUpdate();
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: " + ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -68,11 +71,12 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
     @Override
     public void editarSemLogo(EscolaConducao empresa) {
         try (Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "UPDATE " + db + ".`tb_empresa` SET `razao_social` = ?, "
-                    + "`nome` = ?, `nif` = ?, `cidade` = ?, `estado` = ?, `pais` = ?, "
-                    + "`ano_vigencia` = ?, `descricao` = ? WHERE `id_empresa` = ?";
+            final StringBuilder query = new StringBuilder();
+            query.append("UPDATE ").append(db).append(".`tb_empresa` SET `razao_social` = ?, ");
+            query.append("`nome` = ?, `nif` = ?, `cidade` = ?, `estado` = ?, `pais` = ?, ");
+            query.append("`ano_vigencia` = ?, `descricao` = ? WHERE `id_empresa` = ?");
 
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement(query.toString());
 
             preparedStatement.setString(1, empresa.getCidade());
             preparedStatement.setString(2, empresa.getNome());
@@ -88,20 +92,21 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex.getCause());
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
     @Override
     public void delete(Integer idEmpresa) {
         try (Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "DELETE FROM " + db + ".tb_empresa WHERE id_empresa=?";
-            preparedStatement = conn.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("DELETE FROM ").append(db).append(".tb_empresa WHERE id_empresa=?");
+            preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setInt(1, idEmpresa);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("DELETE: ", ex.getCause());
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -109,9 +114,10 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
     public List<EscolaConducao> findAll() {
         List<EscolaConducao> dadosEmpresa = new ArrayList<>();
         try (Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT * FROM " + db + ".tb_empresa";
-            preparedStatement = conn.prepareStatement(sql);
-            rs = preparedStatement.executeQuery(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM ").append(db).append(".tb_empresa");
+            preparedStatement = conn.prepareStatement(query.toString());
+            rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 EscolaConducao ec = new EscolaConducao(rs.getInt(1), rs.getString(2), 
                         rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), 
@@ -123,7 +129,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return dadosEmpresa;
     }
@@ -131,8 +137,9 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
     @Override
     public int total() {
         try (Connection conn = HikariCPDataSource.getConnection();) {
-            String sql = "SELECT COUNT(*) FROM " + db + ".tb_empresa";
-            preparedStatement = conn.prepareStatement(sql);
+            final StringBuilder query = new StringBuilder();
+            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_empresa");
+            preparedStatement = conn.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -140,7 +147,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar empresa na base de dados! \n", ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return 0;
     }

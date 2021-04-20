@@ -187,7 +187,6 @@ public class AppController implements Initializable {
         lbUser.setText(LoginController.usuarioLogado.getNome().toUpperCase());
         notificacoes();
         aniversarioNoMes();
-        //alertaAuto();
     }
 
     public VBox boxNotas() {

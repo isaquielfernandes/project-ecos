@@ -11,7 +11,6 @@ import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
 import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
-import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -37,7 +36,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -48,7 +46,6 @@ public class ClienteController extends AnchorPane implements Initializable {
 
     private List<Cliente> listaCliente;
     private int idCliente = 0;
-    private Desktop desktop = Desktop.getDesktop();
 
     @FXML
     private Label lbTitulo;
@@ -104,7 +101,6 @@ public class ClienteController extends AnchorPane implements Initializable {
     private TableColumn<Cliente, String> colDescricao;
     @FXML
     private TableColumn<Cliente, Button> colAction;
-    private TableColumn<Cliente, Button> colEditar;
     @FXML
     private Button btSalvar;
     @FXML
@@ -207,7 +203,6 @@ public class ClienteController extends AnchorPane implements Initializable {
             txtCodigoPostal.setText(cliente.getCodigoPostal());
             txtLocalidade.setText(cliente.getLocalidade());
             txtEndereco.setText(cliente.getEndereco());
-            //txtID.setText(cliente.getIdDoCliente());
 
             lbTitulo.setText("Editar Cliente");
             menu.selectToggle(menu.getToggles().get(1));
@@ -222,9 +217,7 @@ public class ClienteController extends AnchorPane implements Initializable {
     private void excluir(ActionEvent event) {
         try {
             Cliente cliente = tbCliente.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Cliente:: " + cliente.getNomeCliente()+ "?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().clienteDAO().delete(cliente.getIdCliente());
                 sincronizarBase();
@@ -240,18 +233,13 @@ public class ClienteController extends AnchorPane implements Initializable {
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabela() {
-
         ObservableList data = FXCollections.observableArrayList(listaCliente);
-
         colCodigo.setCellValueFactory((CellDataFeatures<Cliente, Integer> obj) -> obj.getValue().idClienteProperty().asObject());
         colNome.setCellValueFactory((CellDataFeatures<Cliente, String> obj) -> obj.getValue().nomeClienteProperty());
         colContato.setCellValueFactory((CellDataFeatures<Cliente, String> obj) -> obj.getValue().contatoProperty());
         colTipoCliente.setCellValueFactory((CellDataFeatures<Cliente, String> obj) -> obj.getValue().tipoClienteProperty());
         colCNI.setCellValueFactory((CellDataFeatures<Cliente, String> obj) -> obj.getValue().numCNIProperty());
         colDescricao.setCellValueFactory((CellDataFeatures<Cliente, String> obj) -> obj.getValue().descricaoProperty());
-        //colAction.setCellValueFactory(new PropertyValueFactory<>("remove"));
-        //colEditar.setCellValueFactory(new PropertyValueFactory<>("editar"));
-
         tbCliente.setItems(data);
     }
 
@@ -291,15 +279,15 @@ public class ClienteController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         sincronizarBase();
         combos();
-        
+        TableColumn<Cliente, Button> colEditar;
         colEditar = new TableColumn();
         colEditar.setMinWidth(100);
         colEditar.setMaxWidth(100);
         tbCliente.getColumns().add(colEditar);
         
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaCliente));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaCliente))
+        );
         btAtualizar.setTooltip(new Tooltip("Atualizar registros"));
         btAdcionar.setTooltip(new Tooltip("Adicionar registros"));
         btApagar.setTooltip(new Tooltip("Apagar registros"));
@@ -321,17 +309,13 @@ public class ClienteController extends AnchorPane implements Initializable {
 
         FilteredList<Cliente> dadosFiltrados = new FilteredList<>(listaAluno, cliente -> true);
         dadosFiltrados.setPredicate(cliente -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (cliente.getNomeCliente().toLowerCase().startsWith(valor.toLowerCase())) {
+            if (cliente.getNomeCliente().toLowerCase().startsWith(valor.toLowerCase())) {
                 return true;
             } else if (cliente.getNif().toLowerCase().startsWith(valor.toLowerCase())) {
                 return true;
             } else if (cliente.getContato().toLowerCase().startsWith(valor.toLowerCase())) {
                 return true;
             }
-
             return false;
         });
 
@@ -344,18 +328,7 @@ public class ClienteController extends AnchorPane implements Initializable {
 
     @FXML
     private void imprimir(ActionEvent event) throws JRException {
-
-        try {
-            Cliente cliente = tbCliente.getSelectionModel().getSelectedItem();
-            Dialogo.Resposta response = Mensagem.confirmar("Imprimir Requiremento para:: " + cliente.getNomeCliente()+ " ?");
-            if (response == Dialogo.Resposta.YES) {
-                //ControleDAO.getBanco().getClienteDAO().reportRequiremento(cliente.getNumBI());
-            }
-            tbCliente.getSelectionModel().clearSelection();
-
-        } catch (NullPointerException ex) {
-            Nota.alerta("Selecione aluno na tabela para imprimir o requiremento!");
-        }
+        throw new UnsupportedOperationException();
     }
 
 }

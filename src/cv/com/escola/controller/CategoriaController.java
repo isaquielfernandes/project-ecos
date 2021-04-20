@@ -41,7 +41,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
     private List<Categoria> listaCategoria;
     private int idCategoria = 0;
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -82,7 +82,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
             fxml.load();
         } catch (IOException ex) {
             Logger.getLogger(CategoriaController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela categoria! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela categoria!");
         }
     }
 
@@ -103,8 +103,8 @@ public class CategoriaController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
-            filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria))
+        txtPesquisar.textProperty().addListener((obs, old, novo)
+                -> filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria))
         );
     }
 
@@ -216,14 +216,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
 
         FilteredList<Categoria> dadosFiltrados = new FilteredList<>(listaCategoria, categoria -> true);
         dadosFiltrados.setPredicate(categoria -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (categoria.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-
-            return false;
+            return categoria.getNome().toLowerCase().startsWith(valor.toLowerCase());
         });
 
         SortedList<Categoria> dadosOrdenados = new SortedList<>(dadosFiltrados);

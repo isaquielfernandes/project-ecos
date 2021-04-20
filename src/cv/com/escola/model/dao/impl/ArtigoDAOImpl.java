@@ -5,13 +5,13 @@ import cv.com.escola.model.dao.DAO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import cv.com.escola.model.dao.ArtigoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import org.apache.log4j.Level;
 
 public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
@@ -33,8 +33,8 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
                 pstmt.setBigDecimal(2, artigo.getPreco());
                 pstmt.setString(3, artigo.getDescricao());
                 pstmt.executeUpdate();
-            } catch (SQLException e) {
-                throw new DataAccessException(e);
+            } catch (SQLException ex) {
+                throw new DataAccessException(Level.ERROR.toString(), ex);
             }
         });
     }
@@ -71,7 +71,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir artigo na base de dados! \n" + ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
     }
 
@@ -89,7 +89,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return artigosList;
     }
@@ -109,7 +109,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
                 retorno.setPreco(rs.getBigDecimal("preco"));
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao consultar artigos na base de dados!");
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }

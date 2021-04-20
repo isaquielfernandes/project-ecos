@@ -219,6 +219,8 @@ public class AlunoController extends AnchorPane implements Initializable {
     private Pagination pagination;
 
     private static final int QUANTIDADE_POR_PAGINA = 20;
+    private static final String MENSAGEM = "Voce precisa Selecionar um Aluno na Tabela!";
+
     private boolean studantDefault = true;
     int totalAluno;
     int totalBuscarAluno;
@@ -235,7 +237,7 @@ public class AlunoController extends AnchorPane implements Initializable {
             fxml.load();
         } catch (IOException ex) {
             Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela aluno! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela aluno! \n");
         }
     }
 
@@ -375,7 +377,7 @@ public class AlunoController extends AnchorPane implements Initializable {
             image = new Image(file.getAbsoluteFile().toURI().toString());
             imgView.setImage(image);
         } else {
-            Nota.alerta("Voce precisa Selecionar um Aluno na Tabela!");
+            Nota.alerta(MENSAGEM);
         }
     }
 
@@ -445,7 +447,7 @@ public class AlunoController extends AnchorPane implements Initializable {
             }
             tbAluno.getSelectionModel().clearSelection();
         } else {
-            Nota.alerta("Voce precisa Selecionar um Aluno na Tabela!");
+            Nota.alerta(MENSAGEM);
         }
     }
 
@@ -505,13 +507,15 @@ public class AlunoController extends AnchorPane implements Initializable {
         });
 
         imgView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2)
+            if (event.getClickCount() == 2) {
                 adcionarFoto(null);
+            }
         });
 
         hlAnexarFoto.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1)
+            if (event.getClickCount() == 1) {
                 adcionarFoto(null);
+            }
         });
 
         Grupo.notEmpty(menu);
@@ -524,10 +528,8 @@ public class AlunoController extends AnchorPane implements Initializable {
         tooltip();
 
         tbAluno.setOnMouseClicked(event -> {
-            if (tbAluno.getSelectionModel().getSelectedItem() != null) {
-                if (event.getClickCount() == 2) {
-                    imprimir(null);
-                }
+            if (tbAluno.getSelectionModel().getSelectedItem() != null || event.getClickCount() == 2) {
+                imprimir(null);
             }
         });
 
@@ -633,7 +635,7 @@ public class AlunoController extends AnchorPane implements Initializable {
             }
             tbAluno.getSelectionModel().clearSelection();
         } else {
-            Nota.alerta("Voce precisa Selecionar um Aluno na Tabela!");
+            Nota.alerta(MENSAGEM);
         }
     }
 
@@ -713,9 +715,9 @@ public class AlunoController extends AnchorPane implements Initializable {
         listaAluno.stream()
                 .filter(aluno -> aluno.getNome().startsWith(query))
                 .forEach(aluno -> {
-            AnchorPane card = new AlunoCard(aluno);
-            flowPane.getChildren().add(card);
-        });
+                    AnchorPane card = new AlunoCard(aluno);
+                    flowPane.getChildren().add(card);
+                });
     }
 
     private void atualizarGrade(int pagina) {
