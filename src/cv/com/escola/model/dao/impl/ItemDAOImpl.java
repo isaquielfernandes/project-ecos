@@ -12,6 +12,7 @@ import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +20,22 @@ import org.apache.log4j.Level;
 
 public class ItemDAOImpl extends DAO implements ItemDAO {
 
+    private static final StringBuilder INSERT_QUERY = new StringBuilder();
+    private static final StringBuilder UPDATE_QUERY = new StringBuilder();
+    private static final StringBuilder DELETE_QUERY = new StringBuilder();
+
     public ItemDAOImpl() {
         super();
     }
 
     @Override
     public void create(Item item) {
-        final StringBuilder query = new StringBuilder();
-        query.append("INSERT INTO ").append(db)
-                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda)VALUES(?,?,?,?)");
+        INSERT_QUERY.append("INSERT INTO ").append(db)
+                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?)");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    INSERT_QUERY.toString()
             )) {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
@@ -46,12 +50,12 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public void update(Item item) {
-        final StringBuilder query = new StringBuilder();
-        query.append("UPDATE ").append(db)
+        UPDATE_QUERY.append("UPDATE ").append(db)
                 .append(".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?");
+
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    UPDATE_QUERY.toString()
             )) {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
@@ -67,10 +71,9 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public void delete(Integer idVenda) {
+        DELETE_QUERY.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
-            preparedStatement = conector.prepareStatement(query.toString());
+            preparedStatement = conector.prepareStatement(DELETE_QUERY.toString());
             preparedStatement.setInt(1, idVenda);
             preparedStatement.execute();
             preparedStatement.close();
@@ -83,74 +86,57 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
     public List<Item> findAll() {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".item_de_venda_view;");
-        List<Item> retorno = new ArrayList<>();
+        List<Item> itens = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                Item itemDeVenda = new Item();
-                Artigo artigos = new Artigo(rs.getLong(2), rs.getString(3), rs.getBigDecimal(5),
-                        rs.getString(4));
-
-                Cliente cliente = new Cliente(rs.getInt(15), rs.getString(16), rs.getString(17),
-                        rs.getString(18), rs.getString(19), rs.getString(20), rs.getString(21),
-                        rs.getString(22));
-
-                Usuario usuario = new Usuario(rs.getInt(23), rs.getString(24));
-
-                Venda vendas = new Venda(rs.getInt(8), rs.getDate(10).toLocalDate(),
-                        rs.getBigDecimal(13), rs.getBoolean(11), rs.getString(12),
-                        rs.getBigDecimal(14), rs.getString(9), cliente, usuario, rs.getBigDecimal(25));
-
-                itemDeVenda.setIdItem(rs.getLong(1));
-                itemDeVenda.setQuantidade(rs.getInt(6));
-                itemDeVenda.setValorUnitario(rs.getBigDecimal(7));
-                itemDeVenda.setArtigo(artigos);
-                itemDeVenda.setVenda(vendas);
-
-                retorno.add(itemDeVenda);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    mapResultSet(itens, resultSet);
+                }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
-        return retorno;
+        return itens;
     }
 
     @Override
-    public List<Item> listarItensPorVenda(Venda venda) {
+    public List<Item> listarItensPorVenda(Venda idVenda) {
         StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM ").append(db).append(".item_de_venda_view where item_de_venda_view.id_vendas = ?;");
-        List<Item> retorno = new ArrayList<>();
-        try (Connection conector = HikariCPDataSource.getConnection();) {
+        query.append("SELECT * FROM ").append(db).append(".item_de_venda_view where item_de_venda_view.id_vendas = ?;");
+        List<Item> itens = new ArrayList<>();
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, venda.getIdVenda());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                Item itemDeVenda = new Item();
-                Artigo artigos = new Artigo(rs.getLong(2), rs.getString(3), rs.getBigDecimal(5),
-                        rs.getString(4));
-
-                Cliente cliente = new Cliente(rs.getInt(15), rs.getString(16), rs.getString(17),
-                        rs.getString(18), rs.getString(19), rs.getString(20), rs.getString(21),
-                        rs.getString(22));
-
-                Usuario usuario = new Usuario(rs.getInt(23), rs.getString(24));
-
-                Venda vendas = new Venda(rs.getInt(8), rs.getDate(10).toLocalDate(),
-                        rs.getBigDecimal(13), rs.getBoolean(11), rs.getString(12),
-                        rs.getBigDecimal(14), rs.getString(9), cliente, usuario, rs.getBigDecimal(25));
-
-                itemDeVenda.setIdItem(rs.getLong(1));
-                itemDeVenda.setQuantidade(rs.getInt(6));
-                itemDeVenda.setValorUnitario(rs.getBigDecimal(7));
-                itemDeVenda.setArtigo(artigos);
-                itemDeVenda.setVenda(vendas);
-
-                retorno.add(itemDeVenda);
+            preparedStatement.setInt(1, idVenda.getIdVenda());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    mapResultSet(itens, resultSet);
+                }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
-        return retorno;
+        return itens;
     }
+
+    private void mapResultSet(List<Item> itens, ResultSet set) throws SQLException {
+        Artigo artigo = new Artigo(set.getLong(2), set.getString(3), set.getBigDecimal(5),
+                set.getString(4));
+
+        Cliente cliente = new Cliente(set.getInt(15), set.getString(16), set.getString(17),
+                set.getString(18), set.getString(19), set.getString(20), set.getString(21),
+                set.getString(22));
+
+        Usuario usuario = new Usuario(set.getInt(23), set.getString(24));
+
+        Venda venda = new Venda(set.getInt(8), set.getDate(10).toLocalDate(),
+                set.getBigDecimal(13), set.getBoolean(11), set.getString(12),
+                set.getBigDecimal(14), set.getString(9), cliente, usuario, set.getBigDecimal(25));
+
+        Item item = new Item(set.getLong(1), artigo, set.getInt(6), set.getBigDecimal(7), venda);
+        itens.add(item);
+    }
+
 }

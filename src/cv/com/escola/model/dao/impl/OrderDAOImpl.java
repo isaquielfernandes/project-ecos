@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,10 +34,10 @@ import org.apache.log4j.Level;
 
 public class OrderDAOImpl extends DAO implements OrderDAO {
 
-    private List<Item> itemDeVenda;
+    private List<Item> itemDeVenda = new ArrayList<>();
     private static final String SELECT_FROM = "SELECT * FROM ";
     private static final String INSERT_INTO = "INSERT INTO ";
-    
+
     public OrderDAOImpl() {
         super();
     }
@@ -116,58 +117,55 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     public List<Venda> findAll() {
         final StringBuilder query = new StringBuilder();
         query.append(SELECT_FROM).append(db).append(".venda_view order by num_fatura desc;");
-        List<Venda> retorno = new ArrayList<>();
+        List<Venda> vendas = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                Cliente cliente = new Cliente(rs.getInt(8), rs.getString(9), rs.getString(10),
-                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14),
-                        rs.getString(15), rs.getString(16));
-
-                Usuario usuario = new Usuario(rs.getInt(17), rs.getString(18));
-
-                Venda vendas = new Venda(rs.getInt(1), rs.getDate(2).toLocalDate(),
-                        rs.getBigDecimal(3), rs.getBoolean(4), rs.getString(5),
-                        rs.getBigDecimal(6), rs.getString(7), cliente, usuario, rs.getBigDecimal(19));
-
-                itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(vendas);
-                vendas.setItens(FXCollections.observableArrayList(itemDeVenda));
-                retorno.add(vendas);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    mapResultSet(resultSet, vendas);
+                }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
-        return retorno;
+        return vendas;
     }
 
     @Override
     public ObservableList<Venda> listar(int quantidade, int pagina) {
-        ObservableList retorno = FXCollections.observableArrayList();
+        List<Venda> vendas = FXCollections.observableArrayList();
         final StringBuilder query = new StringBuilder();
-        query.append(SELECT_FROM).append(db).append(".venda_view order by num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
+        query.append(SELECT_FROM).append(db).append(".venda_view ORDER BY data desc, num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                Cliente cliente = new Cliente(rs.getInt(8), rs.getString(9), rs.getString(10),
-                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14),
-                        rs.getString(15), rs.getString(16));
-
-                Usuario usuario = new Usuario(rs.getInt(17), rs.getString(18));
-
-                Venda vendas = new Venda(rs.getInt(1), rs.getDate(2).toLocalDate(),
-                        rs.getBigDecimal(3), rs.getBoolean(4), rs.getString(5),
-                        rs.getBigDecimal(6), rs.getString(7), cliente, usuario, rs.getBigDecimal(19));
-
-                itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(vendas);
-                vendas.setItens(FXCollections.observableArrayList(itemDeVenda));
-                retorno.add(vendas);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    mapResultSet(resultSet, vendas);
+                }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
-        return retorno;
+        return FXCollections.observableArrayList(vendas);
+    }
+
+    private void mapResultSet(ResultSet resultSet, List<Venda> vendas) throws SQLException {
+        Cliente cliente = new Cliente(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10),
+                resultSet.getString(11), resultSet.getString(12), resultSet.getString(13), resultSet.getString(14),
+                resultSet.getString(15), resultSet.getString(16));
+
+        Usuario usuario = new Usuario(resultSet.getInt(17), resultSet.getString(18));
+
+        Venda venda = new Venda(resultSet.getInt(1), resultSet.getDate(2).toLocalDate(),
+                resultSet.getBigDecimal(3), resultSet.getBoolean(4), resultSet.getString(5),
+                resultSet.getBigDecimal(6), resultSet.getString(7), cliente, usuario, resultSet.getBigDecimal(19));
+        if (itemDeVenda.isEmpty()) {
+            itemDeVenda = DAOFactory.daoFactury().itemDAO().listarItensPorVenda(venda);
+        }
+        venda.setItens(FXCollections.observableArrayList(itemDeVenda));
+        vendas.add(venda);
     }
 
     @Override
@@ -180,8 +178,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             if (rs.next()) {
                 return rs.getInt(1);
             }
-            preparedStatement.close();
             rs.close();
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
@@ -200,6 +198,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             if (rs.next()) {
                 j = rs.getInt(1);
             }
+            rs.close();
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
@@ -215,12 +215,12 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-
-            if (rs.next()) {
-                retorno.setIdVenda(rs.getInt("last_id"));
-                return retorno;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    retorno.setIdVenda(resultSet.getInt("last_id"));
+                }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
@@ -236,22 +236,24 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, venda.getIdVenda());
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                Cliente cliente = new Cliente(rs.getInt(8), rs.getString(9), rs.getString(10),
-                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14),
-                        rs.getString(15), rs.getString(16));
-
-                Usuario usuario = new Usuario(rs.getInt(17), rs.getString(18));
-
-                retorno = new Venda(rs.getInt(1), rs.getDate(2).toLocalDate(),
-                        rs.getBigDecimal(3), rs.getBoolean(4), rs.getString(5),
-                        rs.getBigDecimal(6), rs.getString(7), cliente, usuario, rs.getBigDecimal(19));
-
-                retorno = venda;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Cliente cliente = new Cliente(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10),
+                            resultSet.getString(11), resultSet.getString(12), resultSet.getString(13), resultSet.getString(14),
+                            resultSet.getString(15), resultSet.getString(16));
+                    
+                    Usuario usuario = new Usuario(resultSet.getInt(17), resultSet.getString(18));
+                    
+                    retorno = new Venda(resultSet.getInt(1), resultSet.getDate(2).toLocalDate(),
+                            resultSet.getBigDecimal(3), resultSet.getBoolean(4), resultSet.getString(5),
+                            resultSet.getBigDecimal(6), resultSet.getString(7), cliente, usuario, resultSet.getBigDecimal(19));
+                    
+                    retorno = venda;
+                }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-           throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(Level.ERROR.toString(), ex);
         }
         return retorno;
     }
@@ -267,6 +269,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             if (rs.next()) {
                 j = rs.getInt(1);
             }
+            rs.close();
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
@@ -280,19 +284,21 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         Map<Integer, ArrayList> retorno = new HashMap();
         try (Connection conector = HikariCPDataSource.getConnection();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                ArrayList linha = new ArrayList();
-                if (!retorno.containsKey(rs.getInt("ano"))) {
-                    linha.add(rs.getInt("mes"));
-                    linha.add(rs.getInt("count"));
-                    retorno.put(rs.getInt("ano"), linha);
-                } else {
-                    ArrayList linhaNova = retorno.get(rs.getInt("ano"));
-                    linhaNova.add(rs.getInt("mes"));
-                    linhaNova.add(rs.getInt("count"));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    ArrayList linha = new ArrayList();
+                    if (!retorno.containsKey(resultSet.getInt("ano"))) {
+                        linha.add(resultSet.getInt("mes"));
+                        linha.add(resultSet.getInt("count"));
+                        retorno.put(resultSet.getInt("ano"), linha);
+                    } else {
+                        ArrayList linhaNova = retorno.get(resultSet.getInt("ano"));
+                        linhaNova.add(resultSet.getInt("mes"));
+                        linhaNova.add(resultSet.getInt("count"));
+                    }
                 }
             }
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }
@@ -345,6 +351,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                     linhaNova.add(rs.getBigDecimal("sum"));
                 }
             }
+            rs.close();
+            preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(Level.ERROR.toString(), ex);
         }

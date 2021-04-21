@@ -30,11 +30,9 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.InvalidationListener;
@@ -50,7 +48,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
@@ -92,7 +89,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
@@ -108,19 +104,17 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private List<Artigo> listaProduto;
     private Item item;
     private List<Cliente> listaCliente;
-    private Set<Item> collectionItem = new HashSet<>();
     private int idVenda;
     private int idItens;
     private int idItemVenda = 0;
     private int quantity;
     private int cod;
-    private ObservableList<Item> observableListItensDeVenda = FXCollections.observableArrayList();
     private ObservableList observableListDeVenda;
     private int totalDeVendas;
     private final int QUANTIDADE_PAGINA = 50;
 
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
     @FXML
     private AnchorPane telaRelatorio;
     @FXML
@@ -272,10 +266,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     @FXML
     private TextField pesquisarProduto;
 
-    private final Screen screen = Screen.getPrimary();
-    private final Rectangle2D windows = screen.getVisualBounds();
-    private TableColumn<Item, Boolean> colSelect;
-
     private ObservableList<String> observableListMeses = FXCollections.observableArrayList();
     private ObservableList<Item> dadoItemVenda = FXCollections.observableArrayList();
     private String ano;
@@ -293,7 +283,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         tabela();
         viewAll();
         tabelaItemsVenda();
@@ -309,22 +298,20 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         Mascara.decimal(txtDesconto);
         Animacao.fade(tbVendas);
         Animacao.fade(pagination);
-        //pagination.setPageFactory(this::createPage);
+        
         dataVenda.setValue(LocalDate.now());
-        //dataPickerAnoMes.setValue(LocalDate.now());
+        
         txtUser.setText(LoginController.usuarioLogado.getNome());
         dataPickerAnoMes.valueProperty().addListener((observable, oldValue, newValue) -> {
             atualizarGrade(0);
             filtro(newValue, FXCollections.observableArrayList(listVendas));
         });
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtrosEmVendas(novo, FXCollections.observableArrayList(listVendas));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtrosEmVendas(novo, FXCollections.observableArrayList(listVendas)));
 
         telaCadastro(null);
         Grupo.notEmpty(menu);
-        // rabioButton setando valor
         txtDesconto.setText("0");
         rbSituacao.setText("SIM");
         rbSituacao.setOnMouseClicked(event -> {
@@ -335,7 +322,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             }
         });
 
-        cbArtigo.setOnMouseClicked((event) -> {
+        cbArtigo.setOnMouseClicked(event -> {
             ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
             cbArtigo.setItems(dadoArtigo);
         });
@@ -357,16 +344,9 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         listViewProduto.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> listViewProdutoSelected(newValue));
 
-        pesquisarProduto.textProperty().addListener((obs, old, novo) -> {
-            filtros(novo, FXCollections.observableArrayList(listaProduto));
-        });
-        // Limpando a exibição dos detalhes da venda
-//        selecionarItemTableViewVendas(null);
-//
-//        // Listen acionado diante de quaisquer alterações na seleção de itens do TableView
-//        tbVendas.getSelectionModel().selectedItemProperty().addListener(
-//                (observable, oldValue, newValue) -> selecionarItemTableViewVendas(newValue));
-
+        pesquisarProduto.textProperty().addListener((obs, old, novo) -> 
+            filtros(novo, FXCollections.observableArrayList(listaProduto)));
+ 
         //TableView Editavel
         tbItens.setEditable(true);
         colQuantidade.setEditable(true);
@@ -374,9 +354,9 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colNomeArtigo.setEditable(true);
         colNomeArtigo.setCellFactory(
                 ComboBoxTableCell.forTableColumn());
-        colNomeArtigo.setOnEditCommit((TableColumn.CellEditEvent<Item, Artigo> event) -> {
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setArtigo(event.getNewValue());
-        });
+        colNomeArtigo.setOnEditCommit((TableColumn.CellEditEvent<Item, Artigo> event) -> 
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setArtigo(event.getNewValue())
+        );
 
         colQuantidade.setCellFactory(
                 TextFieldTableCell.forTableColumn(new StringConverter<Integer>() {
@@ -420,7 +400,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         dtRelatorio.valueProperty().addListener((observable, oldValue, newValue) -> {
             createPieChart();
         });
-        //createPieChart();
+        
+        createPieChart();
         stackedAreaChart();
         //ChangeListener on the tbvendas
         final InvalidationListener hoverListener = (Observable observable) -> {
@@ -431,7 +412,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 }
             }
         };
-        //tbVendas.hoverProperty().addListener(hoverListener);
 
         tbVendas.setOnMouseClicked(event -> {
             if (tbVendas.getSelectionModel().getSelectedItem() != null) {
@@ -532,7 +512,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             return tbVendas;
         });
 
-        atualizarGrade(0);
+        //atualizarGrade(0);
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
@@ -604,7 +584,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     protected void areaChart() {
         //AreaChart pra vendas por mes
         Map<Integer, ArrayList> area = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
-
         area.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());

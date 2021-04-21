@@ -5,9 +5,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 public class HikariCPDataSource {
     
@@ -18,14 +19,21 @@ public class HikariCPDataSource {
     private static final String USER = DBProperties.loadPropertiesFileUser();
     private static final  String PWD = DBProperties.loadPropertiesFilePass();
     
+    protected final ExecutorService executorService = Executors.newSingleThreadExecutor( r -> {
+        Thread thread = new Thread(r);
+        thread.setName("DB");
+        return thread;
+    });
+    
     static {
+        int cpuCores = Runtime.getRuntime().availableProcessors();
         CONFIG.setDriverClassName("com.mysql.cj.jdbc.Driver");
         CONFIG.setJdbcUrl("jdbc:mysql://localhost:3306/dbescola" + SERVER_CONFIG);
         CONFIG.setUsername(USER);
         CONFIG.setPassword(PWD);
         CONFIG.addDataSourceProperty("cachePrepStmts", "true");
         CONFIG.setAutoCommit(false);
-        CONFIG.setMaximumPoolSize(18);
+        CONFIG.setMaximumPoolSize(cpuCores * 4);
         CONFIG.addDataSourceProperty("prepStmtCacheSize", "150");
         CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "248");
     }
