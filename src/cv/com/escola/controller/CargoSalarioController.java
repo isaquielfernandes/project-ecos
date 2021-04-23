@@ -21,7 +21,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -103,10 +102,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
     @SuppressWarnings("LeakingThisInConstructor")
     public CargoSalarioController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/cargo_salario.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "cargosalario");
         } catch (IOException ex) {
             Logger.getLogger(CargoSalarioController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela Cargo Salario!");
@@ -168,7 +164,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
         boolean vazio = Campo.noEmpty(this.txtNome_cargo, this.txtSalario);
 
         String cargo = txtNome_cargo.getText();
-        double salario = Double.valueOf(txtSalario.getText());
+        double salario = Double.parseDouble(txtSalario.getText());
         String descricao = txtDescricao.getText();
 
         if (vazio) {
@@ -217,17 +213,13 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
     private void excluir(ActionEvent event) {
         try {
             CargoSalario cargo = tbCargo_salario.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir cargo " + cargo.getNomeCargo()+ " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().getCargo_salarioDAO().delete(cargo.getIdcargoSalario());
                 sincronizarBase();
                 tabela();
             }
-
             tbCargo_salario.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione cargo na tabela para exclusão!");
         }
@@ -236,22 +228,20 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabela() {
-
         ObservableList data = FXCollections.observableArrayList(cargoSalarios);
 
         colId.setCellValueFactory((CellDataFeatures<CargoSalario, Integer> obj) -> obj.getValue().idCargoSalarioProperty().asObject());
         colCargo.setCellValueFactory((CellDataFeatures<CargoSalario, String> obj) -> obj.getValue().nomeCargoProperty());
         colSalario.setCellValueFactory((CellDataFeatures<CargoSalario, Double> obj) -> obj.getValue().salarioProperty().asObject());
         colDescricao.setCellValueFactory((CellDataFeatures<CargoSalario, String> obj) -> obj.getValue().descricaoProperty());
-
         tbCargo_salario.setItems(data);
     }
 
     /**
      * Campo de pesquisar para filtrar dados na tabela
      */
-    private void filtro(String valor, ObservableList<CargoSalario> listaCargo_Salario) {
-        FilteredList<CargoSalario> dadosFiltrados = new FilteredList<>(listaCargo_Salario, cargo -> true);
+    private void filtro(String valor, ObservableList<CargoSalario> cargoSalarios) {
+        FilteredList<CargoSalario> dadosFiltrados = new FilteredList<>(cargoSalarios, cargo -> true);
         dadosFiltrados.setPredicate(cargo -> 
             cargo.getNomeCargo().toLowerCase().startsWith(valor.toLowerCase())
         );

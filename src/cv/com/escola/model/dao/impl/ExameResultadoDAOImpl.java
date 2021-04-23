@@ -33,7 +33,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     @Override
     public void create(ExameResultado resultado) {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("INSERT INTO ").append(db).append(".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);");
             preparedStatement = connection.prepareStatement(query.toString());
@@ -49,7 +49,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     @Override
     public void update(ExameResultado resultado) {
-        try(Connection connection = HikariCPDataSource.getConnection();) {
+        try(Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db).append(".`tb_exame_resultado` SET ");
             query.append("`fk_exame` = ?, `resultado` = ?");
@@ -70,7 +70,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     @Override
     public void delete(Long idExameResultado) {
-        try(Connection connection = HikariCPDataSource.getConnection();) {
+        try(Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".`tb_exame_resultado` WHERE id_exame_resultado =?");
             preparedStatement = connection.prepareStatement(query.toString());
@@ -85,7 +85,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public List<ExameResultado> findAll() {
         List<ExameResultado> dadosExame = new ArrayList<>();
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM ").append(db).append(".resultado_de_exame_view order by Dia desc ");
             preparedStatement = connection.prepareStatement(query.toString());
@@ -109,7 +109,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     @Override
     public void reportFichaAulaPratica(Integer id, String nome) {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             HashMap filtro = new HashMap();
             filtro.put("id", id);
             URL url = getClass().getResource("/cv/com/escola/reports/fechaAulaPratica.jasper");

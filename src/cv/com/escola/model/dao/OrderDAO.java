@@ -15,9 +15,9 @@ public interface OrderDAO extends CrudDAO<Venda, Integer>{
     int ultimoRegisto(int ano);
     int ultimoRegisto();
     ObservableList<Venda> listar(int quantidade, int pagina);
-    Map<Integer, ArrayList> listarQuantidadeVendaPorDia(String mes, String ano);
-    Map<Integer, ArrayList> listarQuantidadeVendaPorMes();
-    Map<Integer, ArrayList> listarValorTotalVendaPorMes();
-    Map<Integer, ArrayList> listarValorTotalVendaPorMes(String ano);
+    Map<Integer, ArrayList<Number>> listarQuantidadeVendaPorDia(String mes, String ano);
+    Map<Integer, ArrayList<Number>> listarQuantidadeVendaPorMes();
+    Map<Integer, ArrayList<Number>> listarValorTotalVendaPorMes();
+    Map<Integer, ArrayList<Number>> listarValorTotalVendaPorMes(String ano);
     
 }

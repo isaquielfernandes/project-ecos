@@ -18,9 +18,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginController implements Initializable {
-
+    
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LoginController.class);
+    
     public static Usuario usuarioLogado = null;
     @FXML
     private PasswordField psSenha;
@@ -95,7 +99,7 @@ public class LoginController implements Initializable {
     private void createTypeUser() {
         if (DAOFactory.daoFactury().usuarioDAO().totalTipoUsuario() == 0) {
             DAOFactory.daoFactury().usuarioDAO().createUserAdminAndUserType();
-            System.out.println(" Tipo de User criado com sucesso!");
+            LOGGER.info(" Tipo de User criado com sucesso!");
         }
     }
 

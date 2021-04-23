@@ -7,7 +7,6 @@ import cv.com.escola.model.entity.Usuario;
 import cv.com.escola.model.entity.Venda;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.ItemDAO;
-import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
@@ -72,7 +71,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
     @Override
     public void delete(Integer idVenda) {
         DELETE_QUERY.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
+        try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
             preparedStatement = conector.prepareStatement(DELETE_QUERY.toString());
             preparedStatement.setInt(1, idVenda);
             preparedStatement.execute();
@@ -87,7 +86,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".item_de_venda_view;");
         List<Item> itens = new ArrayList<>();
-        try (Connection conector = HikariCPDataSource.getConnection();) {
+        try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -106,7 +105,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".item_de_venda_view where item_de_venda_view.id_vendas = ?;");
         List<Item> itens = new ArrayList<>();
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
+        try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idVenda.getIdVenda());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

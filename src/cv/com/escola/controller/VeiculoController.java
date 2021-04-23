@@ -26,7 +26,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -131,21 +130,18 @@ public class VeiculoController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         sincronizaBase();
         combos();
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaVeiculo));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaVeiculo))
+        );
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public VeiculoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/veiculo.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "veiculo");
         } catch (IOException ex) {
             Logger.getLogger(VeiculoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela veiculo" + ex);
+            Mensagem.erro("Erro ao carregar tela veiculo");
         }
     }
 
@@ -221,11 +217,11 @@ public class VeiculoController extends AnchorPane implements Initializable {
                     Nota.alerta("Veiculo já cadastrada!");
                 } else {
                     DAOFactory.daoFactury().veiculoDAO().create(veiculo);
-                    //Mensagem.info("Veiculo cadastrada com sucesso!"); 
+                    Mensagem.info("Veiculo cadastrada com sucesso!"); 
                 }
             } else {
                 DAOFactory.daoFactury().veiculoDAO().update(veiculo);
-                //Mensagem.info("Veiculo atualizada com sucesso!");
+                Mensagem.info("Veiculo atualizada com sucesso!");
             }
 
             telaCadastro(null);

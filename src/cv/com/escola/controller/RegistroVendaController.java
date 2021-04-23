@@ -35,8 +35,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -99,6 +97,7 @@ import org.controlsfx.control.table.TableRowExpanderColumn;
 @Slf4j
 public class RegistroVendaController extends AnchorPane implements Initializable, Itens {
 
+    private static final String NOT_SUPPORTED_YET = "Not supported yet.";
     private List<Venda> listVendas;
     private List<Item> listaDeItem;
     private List<Artigo> listaProduto;
@@ -109,9 +108,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private int idItemVenda = 0;
     private int quantity;
     private int cod;
-    private ObservableList observableListDeVenda;
-    private int totalDeVendas;
-    private final int QUANTIDADE_PAGINA = 50;
+    private static final int QUANTIDADE_PAGINA = 50;
 
     @FXML
     private AnchorPane anchorPane;
@@ -298,17 +295,17 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         Mascara.decimal(txtDesconto);
         Animacao.fade(tbVendas);
         Animacao.fade(pagination);
-        
+
         dataVenda.setValue(LocalDate.now());
-        
+
         txtUser.setText(LoginController.usuarioLogado.getNome());
         dataPickerAnoMes.valueProperty().addListener((observable, oldValue, newValue) -> {
             atualizarGrade(0);
             filtro(newValue, FXCollections.observableArrayList(listVendas));
         });
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
-            filtrosEmVendas(novo, FXCollections.observableArrayList(listVendas)));
+        txtPesquisar.textProperty().addListener((obs, old, novo)
+                -> filtrosEmVendas(novo, FXCollections.observableArrayList(listVendas)));
 
         telaCadastro(null);
         Grupo.notEmpty(menu);
@@ -334,7 +331,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
         cbCliente.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showClienteSelected(newValue));
-        cbCliente.setOnMouseClicked((event) -> {
+
+        cbCliente.setOnMouseClicked(event -> {
             ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
             cbCliente.setItems(dadoCliente);
         });
@@ -344,9 +342,9 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         listViewProduto.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> listViewProdutoSelected(newValue));
 
-        pesquisarProduto.textProperty().addListener((obs, old, novo) -> 
-            filtros(novo, FXCollections.observableArrayList(listaProduto)));
- 
+        pesquisarProduto.textProperty().addListener((obs, old, novo)
+                -> filtros(novo, FXCollections.observableArrayList(listaProduto)));
+
         //TableView Editavel
         tbItens.setEditable(true);
         colQuantidade.setEditable(true);
@@ -354,8 +352,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colNomeArtigo.setEditable(true);
         colNomeArtigo.setCellFactory(
                 ComboBoxTableCell.forTableColumn());
-        colNomeArtigo.setOnEditCommit((TableColumn.CellEditEvent<Item, Artigo> event) -> 
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setArtigo(event.getNewValue())
+        colNomeArtigo.setOnEditCommit((TableColumn.CellEditEvent<Item, Artigo> event)
+                -> event.getTableView().getItems().get(event.getTablePosition().getRow()).setArtigo(event.getNewValue())
         );
 
         colQuantidade.setCellFactory(
@@ -371,9 +369,9 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                     }
                 }));
 
-        colQuantidade.setOnEditCommit((TableColumn.CellEditEvent<Item, Integer> event) -> {
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setQuantidade(event.getNewValue());
-        });
+        colQuantidade.setOnEditCommit((TableColumn.CellEditEvent<Item, Integer> event) -> 
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setQuantidade(event.getNewValue())
+        );
 
         inserir(txtQuantia);
         realizarVenda(txtDesconto);
@@ -394,117 +392,101 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         // chamado a funçao lineChart
         dateTextFieldMes.setValue(LocalDate.now());
         lineChart(dateTextFieldMes.getValue());
-        dateTextFieldMes.valueProperty().addListener((observable, oldValue, newValue) -> {
-            lineChart(newValue);
-        });
-        dtRelatorio.valueProperty().addListener((observable, oldValue, newValue) -> {
-            createPieChart();
-        });
-        
+
+        dateTextFieldMes.valueProperty().addListener((observable, oldValue, newValue)
+                -> lineChart(newValue));
+
+        dtRelatorio.valueProperty().addListener((observable, oldValue, newValue)
+                -> createPieChart());
+
         createPieChart();
         stackedAreaChart();
         //ChangeListener on the tbvendas
-        final InvalidationListener hoverListener = (Observable observable) -> {
-            if (tbVendas.isHover()) {
-                Venda venda = tbVendas.getSelectionModel().getSelectedItem();
-                if (venda != null) {
-                    tbVendas.setTooltip(new Tooltip(venda.getCliente().getNomeCliente()));
-                }
+
+        if (tbVendas.isHover()) {
+            Venda venda = tbVendas.getSelectionModel().getSelectedItem();
+            if (venda != null) {
+                tbVendas.setTooltip(new Tooltip(venda.getCliente().getNomeCliente()));
             }
-        };
+        }
 
         tbVendas.setOnMouseClicked(event -> {
-            if (tbVendas.getSelectionModel().getSelectedItem() != null) {
-                if (event.getClickCount() == 2) {
-                    reciboPrint(event);
+            if (tbVendas.getSelectionModel().getSelectedItem() != null && event.getClickCount() == 2) {
+                reciboPrint(event);
+            }
+        });
+
+        colPrecoUnitario.setCellFactory(column -> new TableCell<Item, BigDecimal>() {
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
+                    setText(item + " $00");
                 }
             }
         });
 
-        colPrecoUnitario.setCellFactory(column -> {
-            return new TableCell<Item, BigDecimal>() {
-                @Override
-                protected void updateItem(BigDecimal item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
-                        setText(item + " $00");
-                    }
-                }
-            };
-        });
-
-        colSubTotal.setCellFactory(column -> {
-            return new TableCell<Item, BigDecimal>() {
-                @Override
-                protected void updateItem(BigDecimal item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
-                        setText(item + " $00");
-                    }
-                }
-            };
-        });
-
-        colQuantidade.setCellFactory(column -> {
-            return new TableCell<Item, Integer>() {
-                @Override
-                protected void updateItem(Integer item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        setStyle("-fx-alignment: center-right;");
-                        setText(item + "");
-                    }
-                }
-            };
-        });
-
-        colSituacao.setCellFactory(column -> {
-            return new TableCell<Venda, Boolean>() {
-                @Override
-                protected void updateItem(Boolean item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        //setStyle("-fx-alignment: center-right;");
-                        if (item == true) {
-                            setText("SIM");
-                        } else {
-                            setText("NAO");
-                        }
-                    }
-                }
-            };
-        });
-
-        listViewProduto.setCellFactory((ListView<Artigo> param) -> {
-            ListCell<Artigo> cell = new ListCell() {
-                @Override
-                protected void updateItem(Object item, boolean empty) {
+        colSubTotal.setCellFactory(column -> new TableCell<Item, BigDecimal>() {
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
                     setText(null);
-                    setGraphic(null);
-                    super.updateItem(item, empty);
-                    Artigo produts = ((Artigo) item);
-                    if (produts != null) {
-                        setText("N: " + produts.getNomeArtigo() + "\n" + "P: " + produts.getPreco() + " $00");
-                        //setGraphic(produts.getImageView());
-                        setMaxSize(48, 48);
+                    setStyle("");
+                } else {
+                    setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
+                    setText(item + " $00");
+                }
+            }
+        });
+
+        colQuantidade.setCellFactory(column -> new TableCell<Item, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setStyle("-fx-alignment: center-right;");
+                    setText(item + "");
+                }
+            }
+        });
+
+        colSituacao.setCellFactory(column -> new TableCell<Venda, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    if (item == true) {
+                        setText("SIM");
+                    } else {
+                        setText("NAO");
                     }
                 }
-            };
-            return cell;
+            }
+        });
+
+        listViewProduto.setCellFactory((ListView<Artigo> param) -> new ListCell() {
+            @Override
+            protected void updateItem(Object item, boolean empty) {
+                setText(null);
+                setGraphic(null);
+                super.updateItem(item, empty);
+                Artigo produts = (Artigo) item;
+                if (produts != null) {
+                    setText("N: " + produts.getNomeArtigo() + "\n" + "P: " + produts.getPreco() + " $00");
+                    setMaxSize(48, 48);
+                }
+            }
         });
 
         pagination.setPageFactory((Integer pagina) -> {
@@ -512,33 +494,29 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             return tbVendas;
         });
 
-        //atualizarGrade(0);
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public RegistroVendaController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/registroVenda.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "registroVenda");
         } catch (IOException ex) {
             Logger.getLogger(RegistroVendaController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.alerta("Erro ao carregar tela registro de venda!");
+            Mensagem.alerta("Erro ao carregar tela registro de venda");
         }
     }
 
     //paginação da tabela venda
     private void atualizarGrade(int pagina) {
-        totalDeVendas = DAOFactory.daoFactury().orderDAO().count();
-        pagination.setPageCount((int) Math.ceil(((double) totalDeVendas)) / QUANTIDADE_PAGINA);
-        observableListDeVenda = DAOFactory.daoFactury().orderDAO().listar(QUANTIDADE_PAGINA, pagina);
+        int totalDeVendas;totalDeVendas = DAOFactory.daoFactury().orderDAO().count();
+        pagination.setPageCount(totalDeVendas/ QUANTIDADE_PAGINA);
+        ObservableList observableListDeVenda = DAOFactory.daoFactury().orderDAO().listar(QUANTIDADE_PAGINA, pagina);
         tbVendas.setItems(observableListDeVenda);
     }
 
     //Grafico de Bara (BarChart)
     protected void barChart() {
-        Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -552,16 +530,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(mes, quantidade));
             }
             return series;
-        }).forEachOrdered(series -> {
-            barChart.getData().add(series);
-        });
+        }).forEachOrdered(series -> barChart.getData().add(series));
     }
 
     //Grafico de Bara (StackedBarChart)
     protected void stackedBarChart() {
-
-        Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
-
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -575,77 +549,59 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(mes, valor));
             }
             return series;
-        }).forEachOrdered(series -> {
-            stackedBarChart.getData().add(series);
-        });
+        }).forEachOrdered(series -> stackedBarChart.getData().add(series));
     }
 
     //Grafico de area (AreaChart)
     protected void areaChart() {
         //AreaChart pra vendas por mes
-        Map<Integer, ArrayList> area = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
+        Map<Integer, ArrayList<Number>> area = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
         area.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
                 String mes;
-                Number quantidade;
 
                 mes = retornaNomeMes((int) dadosItem.getValue().get(i));
-                quantidade = (Number) dadosItem.getValue().get(i + 1);
+                Number quantidade = dadosItem.getValue().get(i + 1);
 
                 series.getData().add(new XYChart.Data<>(mes, quantidade));
             }
             return series;
-        }).forEachOrdered(series -> {
-            areaChart.getData().add(series);
-        });
+        }).forEachOrdered(series -> areaChart.getData().add(series));
     }
 
     //Creando PieChart
     protected void createPieChart() {
         ano = String.valueOf(dtRelatorio.getValue().getYear());
-        Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes(ano);
-
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes(ano);
         dados.entrySet().stream().map(dadosItem -> {
             ObservableList<PieChart.Data> pieChartObser = FXCollections.observableArrayList();
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
-                String mes;
-                BigDecimal valor;
-
-                mes = retornaNomeMes((int) dadosItem.getValue().get(i));
-                valor = (BigDecimal) dadosItem.getValue().get(i + 1);
-
-                pieChartObser.add(new PieChart.Data(mes, valor.doubleValue()));
+                String mes = retornaNomeMes((int) dadosItem.getValue().get(i));
+                pieChartObser.add(new PieChart.Data(mes, dadosItem.getValue().get(i + 1).doubleValue()));
             }
             return pieChartObser;
-        }).forEachOrdered(pieChartObser -> {
-            pieChart.setData(pieChartObser);
-        });
+        }).forEachOrdered(pieChartObser -> pieChart.setData(pieChartObser));
         double value = DAOFactory.daoFactury().orderDAO().totalAnual(ano).doubleValue();
         GraficoPie.info(pieChart, value);
     }
 
     //Grafico de Bara (StackedAreaChart)
     protected void stackedAreaChart() {
-        Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
-
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<Number, BigDecimal> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
                 Number mes;
                 BigDecimal valor;
-
-                mes = (int) dadosItem.getValue().get(i);
+                mes = dadosItem.getValue().get(i);
                 valor = (BigDecimal) dadosItem.getValue().get(i + 1);
-
                 series.getData().add(new XYChart.Data<>(mes, valor));
             }
             return series;
-        }).forEachOrdered((series) -> {
-            stackedAreaChart.getData().add(series);
-        });
+        }).forEachOrdered(series -> stackedAreaChart.getData().add(series));
     }
 
     //Grafico de linha (LineChart)
@@ -654,7 +610,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         String anoAgora = String.valueOf(dataAgora.getYear());
         lineChartDia.getData().clear();
 
-        Map<Integer, ArrayList> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorDia(mes, anoAgora);
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorDia(mes, anoAgora);
 
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
@@ -669,9 +625,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 series.getData().add(new XYChart.Data<>(dia, quantidade));
             }
             return series;
-        }).forEachOrdered(series -> {
-            lineChartDia.getData().add(series);
-        });
+        }).forEachOrdered(series -> lineChartDia.getData().add(series));
     }
 
     /**
@@ -841,7 +795,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colSubTotalV.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValor()));
         colValorTotal.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValorTotal()));
         colDesconto.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getDesconto()));
-        //tbVendas.setItems(dadoVenda);
 
     }
 
@@ -883,25 +836,13 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtrosEmVendas(String valor, ObservableList<Venda> listVendas) {
-
         FilteredList<Venda> dadosFiltrados = new FilteredList<>(listVendas, venda -> true);
-        dadosFiltrados.setPredicate(venda -> {
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (venda.getCliente().getNomeCliente().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (venda.getNumFatura().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (venda.getUsuario().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (venda.getMeioDePagamento().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (venda.getData().toString().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false; //To change body of generated lambdas, choose Tools | Templates.
-
-        });
+        dadosFiltrados.setPredicate(venda -> venda.getCliente().getNomeCliente().toLowerCase().startsWith(valor.toLowerCase())
+                || venda.getNumFatura().toLowerCase().startsWith(valor.toLowerCase())
+                || venda.getUsuario().getNome().toLowerCase().startsWith(valor.toLowerCase())
+                || venda.getMeioDePagamento().toLowerCase().startsWith(valor.toLowerCase())
+                || venda.getData().toString().toLowerCase().startsWith(valor.toLowerCase())
+        );
 
         SortedList<Venda> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbVendas.comparatorProperty());
@@ -913,16 +854,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     //Filtrar dados de venda com por data
     private void filtro(LocalDate valor, ObservableList<Venda> listVendas) {
         FilteredList<Venda> dadosFiltrados = new FilteredList<>(listVendas, venda -> true);
-        dadosFiltrados.setPredicate(venda -> {
-
-            if (valor == null || valor.toString().isEmpty()) {
-                return true;
-            } else if (venda.getData().toString().toLowerCase().startsWith(valor.toString().toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
-
+        dadosFiltrados.setPredicate(venda -> venda.getData().toString().toLowerCase().startsWith(valor.toString().toLowerCase()));
         SortedList<Venda> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbVendas.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de vendas encontradas");
@@ -984,7 +916,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         stackedBarChart.getData().clear();
         stackedBarChart();
 
-        //pieChart.getData().clear();
+        pieChart.getData().clear();
         createPieChart();
 
         stackedAreaChart.getData().clear();
@@ -1061,7 +993,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Cliente cliente = cbCliente.getValue();
             String formaDePagamento = cbFormaPag.getValue();
             boolean pago = rbSituacao.isSelected();
-            LocalDate dataVendas = dataVenda.getValue();//LocalDate.now();
+            LocalDate dataVendas = dataVenda.getValue();
             BigDecimal valorSubTotal = new BigDecimal(txtValorSubTotal.getText().trim().isEmpty() ? "0.00" : txtValorSubTotal.getText());
             BigDecimal descontos = new BigDecimal(txtDesconto.getText().trim().isEmpty() ? "0.00" : txtDesconto.getText());
             BigDecimal total = new BigDecimal(txtValorTotal.getText().trim().isEmpty() ? valorSubTotal.toString() : txtValorTotal.getText());
@@ -1104,13 +1036,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     @FXML
     private void onKeyReleasedQuantia(KeyEvent event) {
-
         if (!txtQuantia.getText().isEmpty()) {
             quantity = Integer.parseInt(txtQuantia.getText().trim().isEmpty() ? "0" : txtQuantia.getText());
             float precoVenda = Float.parseFloat(txtPrecoDeVenda.getText().trim().isEmpty() ? "0.00" : txtPrecoDeVenda.getText());
             float netPreco = precoVenda * quantity;
             DecimalFormat myFormatter = new DecimalFormat("###,###.##");
-            String output = myFormatter.format(netPreco);
+            myFormatter.format(netPreco);
             txtCustoItem.setText(String.valueOf(netPreco));
         } else {
             txtCustoItem.setText("0.00");
@@ -1277,7 +1208,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         Scene scene = new Scene(page);
         dialogStage.setScene(scene);
         //center stage on screen
-        //dialogStage.centerOnScreen();
 
         //when mouse button is pressed, save the initial position of screen
         page.setOnMousePressed((MouseEvent me) -> {
@@ -1333,7 +1263,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         editor.addRow(1, new Label("Artigo"), artigo);
 
         Button adcionar = new Button("Adcionar");
-        adcionar.setOnAction((event) -> {
+        adcionar.setOnAction(event -> {
             item.setQuantidade(quantity);
             item.setArtigo(artigo.getValue());
             onMouseClickedAdcionarItem(null);
@@ -1345,9 +1275,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
         });
         Button cancelar = new Button("Cancelar");
-        cancelar.setOnAction((event) -> {
-            p.toggleExpanded();
-        });
+        cancelar.setOnAction(event -> p.toggleExpanded());
 
         editor.addRow(2, adcionar, cancelar);
         return editor;
@@ -1355,14 +1283,14 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     public void clienteSelecionadoDialog() {
         Group rootGroup = new Group();
-        Scene scene = new Scene(rootGroup, 250, 340, Color.WHITESMOKE);
+        Scene scene = new Scene(rootGroup, 520, 420, Color.GOLD);
 
         // Criando um Estágio de Diálogo (Stage Dialog)
         Stage stage = new Stage();
         stage.setTitle("Pesquisar Cliente");
         //Especifica a modalidade para esta fase . Isso deve ser feito antes de fazer o estágio visível. A modalidade pode ser: Modality.NONE , Modality.WINDOW_MODAL , ou Modality.APPLICATION_MODAL
         stage.initModality(Modality.APPLICATION_MODAL);//WINDOW_MODAL (possibilita minimizar)
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.getIcons().add(new Image(RegistrarController.class.getResourceAsStream("/cv/com/escola/view/img/avater.jpg")));
         stage.initStyle(StageStyle.DECORATED);
         stage.setScene(scene);
@@ -1371,28 +1299,24 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
         listCliente.setItems(dadoCliente);
 
-        listCliente.setCellFactory((ListView<Cliente> param) -> {
-            ListCell<Cliente> cell = new ListCell() {
-                @Override
-                protected void updateItem(Object item, boolean empty) {
-                    setText(null);
-                    setGraphic(null);
-                    super.updateItem(item, empty);
-                    Cliente cliente = ((Cliente) item);
-                    if (cliente != null) {
-                        setText(cliente.getNomeCliente() + "\n" + cliente.getNif());
-                    }
+        listCliente.setCellFactory((ListView<Cliente> param) -> new ListCell() {
+            @Override
+            protected void updateItem(Object item, boolean empty) {
+                setText(null);
+                setGraphic(null);
+                super.updateItem(item, empty);
+                Cliente cliente = ((Cliente) item);
+                if (cliente != null) {
+                    setText(cliente.getNomeCliente() + "\n" + cliente.getNif());
                 }
-            };
-            return cell;
-        });
+            }
+        }
+        );
 
         listCliente.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> clienteSelectedListView(newValue));
 
-        listCliente.setOnMouseClicked((event) -> {
-            stage.close();
-        });
+        listCliente.setOnMouseClicked(event -> stage.close());
 
         //when mouse button is pressed, save the initial position of screen
         rootGroup.setOnMousePressed((MouseEvent me) -> {
@@ -1412,18 +1336,17 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         text.setFocusTraversable(false);
         text.setPromptText("Buscar cliente");
         text.setFont(Font.font(Font.getDefault().getFamily(), 12));
-        text.textProperty().addListener((obs, old, novo) -> {
-            filtrosCliente(novo, FXCollections.observableArrayList(dadoCliente));
-        });
+        text.textProperty()
+                .addListener((obs, old, novo) -> filtrosCliente(novo, FXCollections.observableArrayList(dadoCliente)));
 
         // USE A LAYOUT VBOX FOR EASIER POSITIONING OF THE VISUAL NODES ON SCENE
         VBox vBox = new VBox();
         vBox.setSpacing(8);
-        vBox.setPadding(new Insets(5, 0, 5, 5));
-        vBox.setPrefSize(250, 350);
+        vBox.setPadding(new Insets(8, 8, 8, 8));
+        vBox.setPrefSize(520, 420);
         vBox.setAlignment(Pos.TOP_CENTER);
         vBox.getChildren().addAll(text, listCliente);
-
+        rootGroup.setOpacity(0.8);
         rootGroup.getChildren().addAll(vBox);
 
         stage.showAndWait();
@@ -1443,49 +1366,37 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      */
     private void filtrosCliente(String valor, ObservableList<Cliente> listaCliente) {
         FilteredList<Cliente> dadosFiltrados = new FilteredList<>(listaCliente, clientes -> true);
-        dadosFiltrados.setPredicate(clientes -> {
-            if (clientes == null || valor.isEmpty()) {
-                return true;
-            } else if (clientes.getNomeCliente().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false; //To change body of generated lambdas, choose Tools | Templates.
-
-        });
+        dadosFiltrados.setPredicate(clientes -> clientes.getNomeCliente().toLowerCase().startsWith(valor.toLowerCase()));
 
         SortedList<Cliente> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().get();
         listCliente.setItems(dadosOrdenados);
     }
 
-    Callback<TableColumn<Item, String>, TableCell<Item, String>> actions = (param) -> {
-        final TableCell<Item, String> cell = new TableCell<Item, String>() {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    Actions action = new Actions() {
+    Callback<TableColumn<Item, String>, TableCell<Item, String>> actions = param -> new TableCell<Item, String>() {
+        @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+            } else {
+                setGraphic(new Actions() {
+                    @Override
+                    protected void editButton(ActionEvent actionEvent) {
+                        throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
+                    }
 
-                        @Override
-                        protected void editButton(ActionEvent actionEvent) {
-
-                        }
-
-                        @Override
-                        protected void deleteButton(ActionEvent actionEvent) {
-                            tbItens.getItems().remove(getIndex());
-                            viewAll();
-                            tbItens.getSelectionModel().clearSelection();
-                            sumTotalCost();
-                        }
-                    };
-                    setGraphic(action);
+                    @Override
+                    protected void deleteButton(ActionEvent actionEvent) {
+                        tbItens.getItems().remove(getIndex());
+                        viewAll();
+                        tbItens.getSelectionModel().clearSelection();
+                        sumTotalCost();
+                    }
                 }
+                );
             }
-        };
-        return cell; //To change body of generated lambdas, choose Tools | Templates.
+        }
     };
 
     // Setando dados do listview no caixa de texto
@@ -1509,14 +1420,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      */
     private void filtros(String valor, ObservableList<Artigo> listaProduto) {
         FilteredList<Artigo> dadosFiltrados = new FilteredList<>(listaProduto, produto -> true);
-        dadosFiltrados.setPredicate(produto -> {
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (produto.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate(produto -> produto.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase()));
         SortedList<Artigo> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().get();
         listViewProduto.setItems(dadosOrdenados);
@@ -1524,21 +1428,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     @Override
     public void addItens() throws ParseException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
     }
 
     @Override
     public void removeItens(int idItem) throws ParseException {
-        esperar(100);
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
     }
 
-    private static void esperar(long milesegundos) {
-        try {
-            Thread.sleep(milesegundos);
-        } catch (InterruptedException e) {
-            log.warn("InterruptedException: ", e);
-            Thread.currentThread().interrupt();
-        }
-    }
 }

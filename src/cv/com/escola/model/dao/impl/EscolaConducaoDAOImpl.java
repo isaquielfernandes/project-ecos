@@ -39,7 +39,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void update(EscolaConducao empresa) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db).append(".`tb_empresa` SET `nome` = ?, ");
             query.append("`cidade` = ?, `nif` = ?, `endereco` = ?, `email` = ?, `contato` = ?, ");
@@ -70,7 +70,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void editarSemLogo(EscolaConducao empresa) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db).append(".`tb_empresa` SET `razao_social` = ?, ");
             query.append("`nome` = ?, `nif` = ?, `cidade` = ?, `estado` = ?, `pais` = ?, ");
@@ -98,7 +98,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
 
     @Override
     public void delete(Integer idEmpresa) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".tb_empresa WHERE id_empresa=?");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -113,7 +113,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
     @Override
     public List<EscolaConducao> findAll() {
         List<EscolaConducao> dadosEmpresa = new ArrayList<>();
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM ").append(db).append(".tb_empresa");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -136,7 +136,7 @@ public class EscolaConducaoDAOImpl extends DAO implements EmpresaDAO {
   
     @Override
     public int total() {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_empresa");
             preparedStatement = conn.prepareStatement(query.toString());

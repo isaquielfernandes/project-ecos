@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
@@ -20,7 +15,6 @@ import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -54,7 +48,7 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
     private List<Veiculo> listaVeiculo;
     private int idInspecaoTecnica;
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -120,17 +114,16 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         sincronizaBase();
         telaCadastro(null);
         Grupo.notEmpty(menu);
         combos();
         Mascara.numerico(txtDuracao);
-        cbVeiculo.setOnMouseClicked((event) -> {
+        cbVeiculo.setOnMouseClicked(event -> {
             sincronizaBase();
             combos();
         });
-        txtDuracao.setOnKeyReleased((event) -> {
+        txtDuracao.setOnKeyReleased(event -> {
             if(!txtDuracao.getText().trim().isEmpty()){
                 lbValidade.setText(dataDeInspeccao.getValue().plusMonths(Long.parseLong(txtDuracao.getText())) + "");
             }else {
@@ -257,7 +250,6 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
         Campo.limpar(txtDuracao, txtInspeccao);
         Campo.limpar(dataDeInspeccao);
         Campo.limpar(cbResultado, cbVeiculo);
-        //Campo.limpar(lbValidade);
         lbValidade.setText(null);
     }
 

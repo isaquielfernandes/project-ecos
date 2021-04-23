@@ -8,10 +8,12 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.springframework.data.annotation.Id;
 
 
 public class Artigo {
     
+    @Id
     private LongProperty idArtigo;
     private StringProperty nomeArtigo;
     private ObjectProperty<BigDecimal> preco;
@@ -104,10 +106,7 @@ public class Artigo {
             return false;
         }
         final Artigo other = (Artigo) obj;
-        if (!Objects.equals(this.idArtigo, other.idArtigo)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.idArtigo, other.idArtigo);
     }
 
     @Override

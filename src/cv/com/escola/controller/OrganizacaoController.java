@@ -16,7 +16,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -100,16 +99,12 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
     @FXML
     private TextField txtBairro;
 
+    @SuppressWarnings("LeakingThisInConstructor")
     public OrganizacaoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/organisacao.fxml"));
-
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
-
+            GenericFXXMLLoader.loadFXML(this, "organisacao");
         } catch (IOException ex) {
-            Mensagem.erro("Erro ao carregar tela pesquisar organizacao da organização! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela pesquisar organizacao da organização");
         }
     }
 
@@ -202,17 +197,13 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
     void excluir(ActionEvent event) {
         try {
             Organizacao orgao = tbOrganizacao.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir organização " + orgao.getNome() + " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().organizacaoDAO().delete(orgao.getId());
                 sincronizarBase();
                 tabela();
             }
-
             tbOrganizacao.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione organização na tabela para exclusão!");
         }
@@ -225,9 +216,9 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaOrganizacao));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaOrganizacao))
+        );
     }
 
     /**

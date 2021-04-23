@@ -19,7 +19,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     
     @Override
     public void create(CargoSalario cargo_salario){
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("INSERT INTO ").append(db)
                     .append(".tb_cargo_salario (cargo, salario, descricao) VALUES (?, ?, ?)");
@@ -40,7 +40,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     
     @Override
     public void update(CargoSalario cargo_salario){
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db)
                     .append(".tb_cargo_salario SET cargo=?, salario=?, descricao=? WHERE id_cargo_salario =?");
@@ -62,7 +62,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
 
     @Override
     public void delete(Integer idCargo_salario) {
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".tb_cargo_salario WHERE id_cargo_salario=?");
 
@@ -80,7 +80,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     @Override
     public List<CargoSalario> findAll() {
         List<CargoSalario> dadosDesignacao = new ArrayList<>();
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM ").append(db).append(".tb_cargo_salario ORDER BY cargo");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -100,7 +100,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     @Override
     public List<CargoSalario> combo() {
         List<CargoSalario> dadosCargoSalario = new ArrayList<>();
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT id_cargo_salario, cargo FROM ").append(db).append(".tb_cargo_salario ORDER BY cargo");
 
@@ -120,7 +120,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
 
     @Override
     public boolean isCargo_salario(String nome, int id) {
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT cargo FROM ").append(db).append(".tb_cargo_salario WHERE cargo =? AND id_cargo_salario !=? ");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -142,7 +142,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
 
     @Override
     public int count() {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_cargo_salario");
             preparedStatement = conn.prepareStatement(query.toString());

@@ -477,9 +477,6 @@ public class InstrutorController extends AnchorPane implements Initializable {
     }
 
     public String copyImage() {
-        if (file != null) {
-            throw new NullPointerException("erro: ");
-        }
         try {
             if (!diretorio.exists()) {
                 diretorio.mkdirs();

@@ -37,7 +37,6 @@ import javafx.collections.transformation.SortedList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
@@ -72,6 +71,7 @@ import javax.imageio.ImageIO;
 
 public class AlunoController extends AnchorPane implements Initializable {
 
+    private static final String QUANTIDADE_DE_ALUNOS_ENCONTRADOS = "Quantidade de alunos encontrados";
     private List<Aluno> listaAluno;
     private int idAluno = 0;
 
@@ -231,13 +231,10 @@ public class AlunoController extends AnchorPane implements Initializable {
     @SuppressWarnings("LeakingThisInConstructor")
     public AlunoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/aluno.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "aluno");
         } catch (IOException ex) {
-            Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela aluno! \n");
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            Mensagem.erro("Erro ao carregar tela aluno!");
         }
     }
 
@@ -250,7 +247,7 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaEdicao(ActionEvent event) {
-        configTela("Editar Aluno", "Quantidade de alunos encontrados", 2);
+        configTela("Editar Aluno", QUANTIDADE_DE_ALUNOS_ENCONTRADOS, 2);
         Modulo.visualizacao(true, telaEdicao, btEditar, txtPesquisar);
         mapTableAluno();
         atualizarGrade(0);
@@ -258,7 +255,7 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaExcluir(ActionEvent event) {
-        configTela("Excluir aluno", "Quantidade de alunos encontrados", 3);
+        configTela("Excluir aluno", QUANTIDADE_DE_ALUNOS_ENCONTRADOS, 3);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar);
     }
 
@@ -275,7 +272,7 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaVisualizacao(MouseEvent event) {
-        configTela("Alunos", "Quantidade de alunos encontrados", 0);
+        configTela("Alunos", QUANTIDADE_DE_ALUNOS_ENCONTRADOS, 0);
         Modulo.visualizacao(true, telaView);
     }
 
@@ -521,40 +518,38 @@ public class AlunoController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         combos();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaAluno));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaAluno))
+        );
 
         tooltip();
 
         tbAluno.setOnMouseClicked(event -> {
-            if (tbAluno.getSelectionModel().getSelectedItem() != null || event.getClickCount() == 2) {
+            if (event.getClickCount() == 2) {
                 imprimir(null);
             }
         });
 
         DateTimeFormatter myDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        colDataNacimento.setCellFactory(column -> {
-            return new TableCell<Aluno, LocalDate>() {
-                @Override
-                protected void updateItem(LocalDate item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
+        colDataNacimento.setCellFactory(column -> new TableCell<Aluno, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(myDateFormatter.format(item));
+                    if (item.getMonthValue() == LocalDate.now().getMonthValue()) {
+                        setTextFill(Color.CHOCOLATE);
+                        setStyle("-fx-background-color: yellow;");
                     } else {
-                        setText(myDateFormatter.format(item));
-                        if (item.getMonthValue() == LocalDate.now().getMonthValue()) {
-                            setTextFill(Color.CHOCOLATE);
-                            setStyle("-fx-background-color: yellow;");
-                        } else {
-                            setTextFill(Color.BLACK);
-                            setStyle("");
-                        }
+                        setTextFill(Color.BLACK);
+                        setStyle("");
                     }
                 }
-            };
+            }
         });
 
         atualizarGrade(0);
@@ -606,18 +601,10 @@ public class AlunoController extends AnchorPane implements Initializable {
 
     private void filtro(String valor, ObservableList<Aluno> listaAluno) {
         FilteredList<Aluno> dadosFiltrados = new FilteredList<>(listaAluno, aluno -> true);
-        dadosFiltrados.setPredicate(aluno -> {
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (aluno.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (aluno.getEmail().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (aluno.getNumBI().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate(aluno -> aluno.getNome().toLowerCase().startsWith(valor.toLowerCase()) ||
+            aluno.getEmail().toLowerCase().startsWith(valor.toLowerCase()) || 
+            aluno.getNumBI().toLowerCase().startsWith(valor.toLowerCase())
+        );
         SortedList<Aluno> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbAluno.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de aluno encontradas");

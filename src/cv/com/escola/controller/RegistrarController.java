@@ -256,9 +256,7 @@ public class RegistrarController implements Initializable{
     private void excluir(ActionEvent event) {
         try {
             Usuario usuario = tbUsuario.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir usuário " + usuario.getNome() + " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().usuarioDAO().delete(usuario.getId());
                 sincronizarBase();
@@ -266,7 +264,6 @@ public class RegistrarController implements Initializable{
             }
 
             tbUsuario.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione usuário na tabela para exclusão!");
         }

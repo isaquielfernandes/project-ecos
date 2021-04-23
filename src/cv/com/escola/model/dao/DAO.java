@@ -37,7 +37,7 @@ public abstract class DAO {
     protected void transact(Consumer<Connection> callback) {
         Connection connection = null;
         try {
-            connection = HikariCPDataSource.getConnection();
+            connection = HikariCPDataSource.getInstance().getConnection();
             callback.accept(connection);
             connection.commit();
         } catch (Exception e) {
@@ -79,7 +79,7 @@ public abstract class DAO {
     }
     
     protected boolean delete(String sql, Object id) {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setQueryTimeout(1);
                 statement.setObject(1, id);

@@ -6,6 +6,7 @@ import cv.com.escola.model.entity.ExameResultado;
 import cv.com.escola.model.util.Campo;
 import cv.com.escola.model.util.Combo;
 import cv.com.escola.model.util.Dialogo;
+import cv.com.escola.model.util.Filtro;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
@@ -22,7 +23,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -39,6 +39,7 @@ import javafx.scene.layout.GridPane;
 
 public class ExameResultadoController extends AnchorPane implements Initializable {
 
+    private static final String QUANTIDADE_DE_RESULTDO_DE_EXAME_ENCONTRAD = "Quantidade de resultdo de exame encontrados";
     private List<Exame> listaExame;
     private List<ExameResultado> listaExameResultado;
     private long idResultado;
@@ -120,7 +121,7 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
         sincronizarBase();
         telaCadastro(null);
         combos();
-        btTelaCadastroOnMouseCliker.setOnMouseClicked((event) -> {
+        btTelaCadastroOnMouseCliker.setOnMouseClicked(event -> {
             sincronizarBase();
             tabela();
         });
@@ -128,11 +129,10 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
         selectedTableAluno(null);
         // Detecta mudanças de seleção e mostra os detalhes do aluno quando houver mudança.
         tbExame.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> selectedTableAluno(newValue));
+            (observable, oldValue, newValue) -> selectedTableAluno(newValue));
 
-        txtBuscarAluno.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaExame));
-        });
+        txtBuscarAluno.textProperty().addListener((obs, old, novo)
+            -> filtro(novo, FXCollections.observableArrayList(listaExame)));
 
     }
 
@@ -145,21 +145,21 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
 
     @FXML
     private void telaEdicao(ActionEvent event) {
-        configTela("Editar Resultado de Exame", "Quantidade de resultdo de exame encontrados", 1);
+        configTela("Editar Resultado de Exame", QUANTIDADE_DE_RESULTDO_DE_EXAME_ENCONTRAD, 1);
         Modulo.visualizacao(true, telaEdicao, btEditar, txtPesquisar);
         tabelaResultadoDeExame();
     }
 
     @FXML
     private void telaExcluir(ActionEvent event) {
-        configTela("Excluir Resultado de Exame", "Quantidade de resultdo de exame encontrados", 2);
+        configTela("Excluir Resultado de Exame", QUANTIDADE_DE_RESULTDO_DE_EXAME_ENCONTRAD, 2);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar);
         tabelaResultadoDeExame();
     }
 
     @FXML
     private void telaImprimir(ActionEvent event) {
-        configTela("Imprimsão", "Quantidade de resultdo de exame encontrados", 3);
+        configTela("Imprimsão", QUANTIDADE_DE_RESULTDO_DE_EXAME_ENCONTRAD, 3);
         Modulo.visualizacao(true, telaEdicao, btImprimir, txtPesquisar);
         tabelaResultadoDeExame();
     }
@@ -178,10 +178,10 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
 
             if (idResultado == 0) {
                 DAOFactory.daoFactury().exameResultadoDAO().create(exameResultado);
-                //Mensagem.info("Exame marcada com sucesso!");
+                Mensagem.info("Exame marcada com sucesso!");
             } else {
                 DAOFactory.daoFactury().exameResultadoDAO().update(exameResultado);
-                //Mensagem.info("Exame atualizada com sucesso!");
+                Mensagem.info("Exame atualizada com sucesso!");
             }
 
             telaCadastro(null);
@@ -215,9 +215,7 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
     private void excluir(ActionEvent event) {
         try {
             ExameResultado resultado = tbExameResultado.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Resultado de exame do aluno " + resultado.getExame().getAluno().getNome() + " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().exameResultadoDAO().delete(resultado.getIdExameResultado());
                 Mensagem.info("Resultado de exame apagado com sucesso!");
@@ -244,7 +242,6 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
             }
             tbExameResultado.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
-            System.out.println(ex.getMessage());
             Nota.alerta("Selecione aluno na tabela para imprimir a ficha da aula pratica! ");
         }
     }
@@ -252,13 +249,10 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
     @SuppressWarnings("LeakingThisInConstructor")
     public ExameResultadoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/exameResultado.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "exameResultado");
         } catch (IOException ex) {
             Logger.getLogger(ExameResultadoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("erro ao caregar a tela resultado de exame, \n" + ex);
+            Mensagem.erro("erro ao caregar a tela resultado de exame");
         }
     }
 
@@ -330,27 +324,14 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Exame> listaExame) {
-
         FilteredList<Exame> dadosFiltrados = new FilteredList<>(listaExame, exame -> true);
-        dadosFiltrados.setPredicate(exame -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (exame.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (exame.getTipoExame().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (exame.getDataExame().toString().toLowerCase().startsWith(valor.toUpperCase())) {
-                return true;
-            }
-
-            return false;
-        });
-
+        dadosFiltrados.setPredicate(exame -> exame.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase()) ||
+            exame.getTipoExame().toLowerCase().startsWith(valor.toLowerCase()) ||
+            exame.getDataExame().toString().toLowerCase().startsWith(valor.toUpperCase())
+        );
         SortedList<Exame> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbExame.comparatorProperty());
-        //Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de exame marcado encontradas");
-
+        Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de exame marcado encontradas");
         tbExame.setItems(dadosOrdenados);
     }
 

@@ -1,14 +1,14 @@
 package cv.com.escola.model.dao.db;
 
-import cv.com.escola.model.util.Mensagem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,15 +16,15 @@ import java.util.Properties;
  */
 public class DBMigration {
 
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DBMigration.class);
     private static final Properties PROPERTIES = new Properties();
     private static File arq;
     private static InputStream inputStream;
-    private static String db = "dbescola";
+    private static final String DB = "dbescola";
     private static String user;
     private static String pwd;
     private static String msg = "";
     private static PreparedStatement pst;
-    private Connection conect;
 
     public static void loadPropertiesFile() {
         try {
@@ -32,19 +32,17 @@ public class DBMigration {
             if (arq.exists()) {
                 inputStream = new FileInputStream(arq);
                 PROPERTIES.load(inputStream);
-                //db = PROPERTIES.getProperty("db");
                 user = PROPERTIES.getProperty("user");
                 pwd = PROPERTIES.getProperty("password");
             } else {
                 DBProperties.mkDbProperties();
                 inputStream = new FileInputStream(arq);
                 PROPERTIES.load(inputStream);
-                //db = PROPERTIES.getProperty("db");
                 user = PROPERTIES.getProperty("user");
                 pwd = PROPERTIES.getProperty("password");
             }
         } catch (IOException e) {
-            System.out.println("error\n" + e.getMessage());
+            LOGGER.error("error\n" + e.getMessage());
         }
     }
 
@@ -58,14 +56,14 @@ public class DBMigration {
             msg += "\n******************************************";
 
             // View exame
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`exame_view`;");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`exame_view`;");
             pst.execute();
-            
+
             pst = con.begin().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
                     + "    DEFINER = `root`@`localhost` \n"
                     + "    SQL SECURITY DEFINER\n"
-                    + "VIEW `" + db + "`.`exame_view` AS\n"
+                    + "VIEW `" + DB + "`.`exame_view` AS\n"
                     + "    SELECT \n"
                     + "        `e`.`id_exame` AS `Codigo`,\n"
                     + "        `e`.`tipo_exame` AS `Tipo de Exame`,\n"
@@ -78,13 +76,13 @@ public class DBMigration {
                     + "        `a`.`nome` AS `Nome Do Aluno`,\n"
                     + "        `a`.`foto` AS `Fotografia`\n"
                     + "    FROM\n"
-                    + "        ((`" + db + "`.`tb_exame` `e`\n"
-                    + "        JOIN `" + db + "`.`tb_categoria` `c` ON ((`c`.`id_categoria` = `e`.`fk_categoria`)))\n"
-                    + "        JOIN `" + db + "`.`tb_aluno` `a` ON ((`a`.`id_aluno` = `e`.`fk_aluno`)));");
+                    + "        ((`" + DB + "`.`tb_exame` `e`\n"
+                    + "        JOIN `" + DB + "`.`tb_categoria` `c` ON ((`c`.`id_categoria` = `e`.`fk_categoria`)))\n"
+                    + "        JOIN `" + DB + "`.`tb_aluno` `a` ON ((`a`.`id_aluno` = `e`.`fk_aluno`)));");
             pst.execute();
 
             //View Empresa Config
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`empresa_config_view;`");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`empresa_config_view;`");
             pst.execute();
             /*pst = con.mkDataBase().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
@@ -105,16 +103,16 @@ public class DBMigration {
                     + "    FROM\n"
                     + "        `" + db +"`.`tb_empresa` as emp;");
             pst.execute();*/
-            
+
             //View Inspecao Tecnica
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`inspecao_tecnica_view`;");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`inspecao_tecnica_view`;");
             pst.execute();
-            
+
             pst = con.begin().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
                     + "    DEFINER = `root`@`localhost` \n"
                     + "    SQL SECURITY DEFINER\n"
-                    + "VIEW `" + db + "`.`inspecao_tecnica_view` AS\n"
+                    + "VIEW `" + DB + "`.`inspecao_tecnica_view` AS\n"
                     + "    SELECT \n"
                     + "        `i`.`id` AS `ID`,\n"
                     + "        `v`.`codigo` AS `Codigo`,\n"
@@ -129,19 +127,19 @@ public class DBMigration {
                     + "        `i`.`resultado` AS `Resultado`,\n"
                     + "        `i`.`validade` AS `Válidade`\n"
                     + "    FROM\n"
-                    + "        (`" + db + "`.`tb_inspecao_tecnica` `i`\n"
-                    + "        JOIN `" + db + "`.`tb_veiculo` `v` ON ((`v`.`codigo` = `i`.`veiculo`)));");
+                    + "        (`" + DB + "`.`tb_inspecao_tecnica` `i`\n"
+                    + "        JOIN `" + DB + "`.`tb_veiculo` `v` ON ((`v`.`codigo` = `i`.`veiculo`)));");
             pst.execute();
 
             //View seguro auto
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`seguro_auto_view`;");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`seguro_auto_view`;");
             pst.execute();
 
             pst = con.begin().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
                     + "    DEFINER = `root`@`localhost` \n"
                     + "    SQL SECURITY DEFINER\n"
-                    + "VIEW `" + db + "`.`seguro_auto_view` AS\n"
+                    + "VIEW `" + DB + "`.`seguro_auto_view` AS\n"
                     + "    SELECT \n"
                     + "        `s`.`id` AS `ID`,\n"
                     + "        `s`.`compania` AS `Compania de Seguro`,\n"
@@ -156,18 +154,18 @@ public class DBMigration {
                     + "        `s`.`ate` AS `Ate`,\n"
                     + "        `s`.`emissao` AS `Data Emissao`\n"
                     + "    FROM\n"
-                    + "        (`" + db + "`.`tb_seguro` `s`\n"
-                    + "        JOIN `" + db + "`.`tb_veiculo` `v` ON ((`v`.`codigo` = `s`.`veiculo_seguro`)));");
+                    + "        (`" + DB + "`.`tb_seguro` `s`\n"
+                    + "        JOIN `" + DB + "`.`tb_veiculo` `v` ON ((`v`.`codigo` = `s`.`veiculo_seguro`)));");
             pst.execute();
 
             //View Venda
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`venda_view`;");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`venda_view`;");
             pst.execute();
             pst = con.begin().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
                     + "    DEFINER = `root`@`localhost` \n"
                     + "    SQL SECURITY DEFINER\n"
-                    + "VIEW `" + db + "`.`venda_view` AS\n"
+                    + "VIEW `" + DB + "`.`venda_view` AS\n"
                     + "    SELECT \n"
                     + "        `v`.`id_vendas` AS `id_vendas`,\n"
                     + "        `v`.`data` AS `data`,\n"
@@ -189,22 +187,22 @@ public class DBMigration {
                     + "        `u`.`nome` AS `nome`,\n"
                     + "        `v`.`precoTotal` AS `precoTotal`\n"
                     + "    FROM\n"
-                    + "        ((`" + db + "`.`tb_vendas` `v`\n"
-                    + "        JOIN `" + db + "`.`tb_clientes` `c` ON ((`c`.`id_clientes` = `v`.`cliente_fk`)))\n"
-                    + "        JOIN `" + db + "`.`tb_usuario` `u` ON ((`u`.`id_usuario` = `v`.`id_user`)));");
+                    + "        ((`" + DB + "`.`tb_vendas` `v`\n"
+                    + "        JOIN `" + DB + "`.`tb_clientes` `c` ON ((`c`.`id_clientes` = `v`.`cliente_fk`)))\n"
+                    + "        JOIN `" + DB + "`.`tb_usuario` `u` ON ((`u`.`id_usuario` = `v`.`id_user`)));");
             pst.execute();
 
             //View resultado de exame
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`resultado_de_exame_view`;");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`resultado_de_exame_view`;");
             pst.execute();
 
             pst = con.begin().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
                     + "    DEFINER = `root`@`localhost` \n"
                     + "    SQL SECURITY DEFINER\n"
-                    + "VIEW `" + db + "`.`resultado_de_exame_view` AS\n"
+                    + "VIEW `" + DB + "`.`resultado_de_exame_view` AS\n"
                     + "    SELECT \n"
-                    + "        `" + db + "`.`tb_exame_resultado`.`id_exame_resultado` AS `id_exame_resultado`,\n"
+                    + "        `" + DB + "`.`tb_exame_resultado`.`id_exame_resultado` AS `id_exame_resultado`,\n"
                     + "        `exame_view`.`Codigo` AS `Codigo`,\n"
                     + "        `exame_view`.`Tipo de Exame` AS `Tipo de Exame`,\n"
                     + "        `exame_view`.`Dia` AS `Dia`,\n"
@@ -214,21 +212,21 @@ public class DBMigration {
                     + "        `exame_view`.`Categoria` AS `Categoria`,\n"
                     + "        `exame_view`.`Codigo Do Aluno` AS `Codigo Do Aluno`,\n"
                     + "        `exame_view`.`Nome Do Aluno` AS `Nome Do Aluno`,\n"
-                    + "        `" + db + "`.`tb_exame_resultado`.`resultado` AS `Resultado`\n"
+                    + "        `" + DB + "`.`tb_exame_resultado`.`resultado` AS `Resultado`\n"
                     + "    FROM\n"
-                    + "        (`" + db + "`.`tb_exame_resultado`\n"
-                    + "        JOIN `" + db + "`.`exame_view` ON ((`" + db + "`.`tb_exame_resultado`.`fk_exame` = `exame_view`.`Codigo`)));");
+                    + "        (`" + DB + "`.`tb_exame_resultado`\n"
+                    + "        JOIN `" + DB + "`.`exame_view` ON ((`" + DB + "`.`tb_exame_resultado`.`fk_exame` = `exame_view`.`Codigo`)));");
             pst.execute();
 
             //View Item de Venda
-            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + db + "`.`item_de_venda_view`;");
+            pst = con.begin().prepareStatement("DROP VIEW IF EXISTS `" + DB + "`.`item_de_venda_view`;");
             pst.execute();
 
             pst = con.begin().prepareStatement("CREATE \n"
                     + "    ALGORITHM = UNDEFINED \n"
                     + "    DEFINER = `root`@`localhost` \n"
                     + "    SQL SECURITY DEFINER\n"
-                    + "VIEW `" + db + "`.`item_de_venda_view` AS\n"
+                    + "VIEW `" + DB + "`.`item_de_venda_view` AS\n"
                     + "    SELECT \n"
                     + "        `iv`.`id_item_venda` AS `id_item_venda`,\n"
                     + "        `ar`.`id_artigo` AS `id_artigo`,\n"
@@ -256,17 +254,17 @@ public class DBMigration {
                     + "        `u`.`nome` AS `nome`,\n"
                     + "        `v`.`precoTotal` AS `precoTotal`\n"
                     + "    FROM\n"
-                    + "        ((((`" + db + "`.`tb_item_venda` `iv`\n"
-                    + "        JOIN `" + db + "`.`tb_artigo` `ar` ON ((`ar`.`id_artigo` = `iv`.`id_artigo`)))\n"
-                    + "        JOIN `" + db + "`.`tb_vendas` `v` ON ((`v`.`id_vendas` = `iv`.`id_venda`)))\n"
-                    + "        JOIN `" + db + "`.`tb_clientes` `c` ON ((`c`.`id_clientes` = `v`.`cliente_fk`)))\n"
-                    + "        JOIN `" + db + "`.`tb_usuario` `u` ON ((`u`.`id_usuario` = `v`.`id_user`)));");
+                    + "        ((((`" + DB + "`.`tb_item_venda` `iv`\n"
+                    + "        JOIN `" + DB + "`.`tb_artigo` `ar` ON ((`ar`.`id_artigo` = `iv`.`id_artigo`)))\n"
+                    + "        JOIN `" + DB + "`.`tb_vendas` `v` ON ((`v`.`id_vendas` = `iv`.`id_venda`)))\n"
+                    + "        JOIN `" + DB + "`.`tb_clientes` `c` ON ((`c`.`id_clientes` = `v`.`cliente_fk`)))\n"
+                    + "        JOIN `" + DB + "`.`tb_usuario` `u` ON ((`u`.`id_usuario` = `v`.`id_user`)));");
             pst.execute();
-            
+
             msg += "\nViews criado com sucesso";
-            System.out.println(msg);
+            LOGGER.error(msg);
         } catch (SQLException ex) {
-            Mensagem.erro("ERROR:\nNao foi possivel criar as views...");
+            LOGGER.error("error\n" + ex.getMessage());
         }
     }
 
@@ -277,17 +275,17 @@ public class DBMigration {
 
         try {
             msg += "\nCriando base de dado....";
-            pst = con.begin().prepareStatement("create database if not exists " + db + " DEFAULT CHARACTER SET utf8 \n"
+            pst = con.begin().prepareStatement("create database if not exists " + DB + " DEFAULT CHARACTER SET utf8 \n"
                     + "  DEFAULT COLLATE utf8_general_ci;");
             pst.execute();
 
             // Tornando db como banco deflaut
-            pst = con.begin().prepareStatement("use " + db + ";");
+            pst = con.begin().prepareStatement("use " + DB + ";");
             pst.execute();
             msg += "\nBase de dado a ser criado.\nCriando tabelas ...";
 
             // Tabela tipo de usuario
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_tipo_usuario` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_tipo_usuario` (\n"
                     + "  `id_tipo_usuario` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome` varchar(150) NOT NULL,\n"
                     + "  PRIMARY KEY (`id_tipo_usuario`)\n"
@@ -295,7 +293,7 @@ public class DBMigration {
             pst.execute();
 
             // Criando tabela de usuario 
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_usuario` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_usuario` (\n"
                     + "  `id_usuario` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome` varchar(200) NOT NULL,\n"
                     + "  `login` varchar(150) NOT NULL,\n"
@@ -312,7 +310,7 @@ public class DBMigration {
             pst.execute();
 
             //criar tabela empresa
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_empresa` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_empresa` (\n"
                     + "  `id_empresa` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome` varchar(200) NOT NULL,\n"
                     + "  `cidade` varchar(200) NOT NULL,\n"
@@ -328,7 +326,7 @@ public class DBMigration {
             pst.execute();
 
             // criar tabela cliente
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_clientes` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_clientes` (\n"
                     + "  `id_clientes` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nomeCliente` varchar(145) NOT NULL,\n"
                     + "  `nif` varchar(95) DEFAULT NULL,\n"
@@ -343,7 +341,7 @@ public class DBMigration {
             pst.execute();
 
             // Tabela Artigo
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_artigo` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_artigo` (\n"
                     + "  `id_artigo` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nomeArtigo` varchar(150) NOT NULL,\n"
                     + "  `preco` decimal(9,2) NOT NULL,\n"
@@ -354,7 +352,7 @@ public class DBMigration {
             pst.execute();
 
             // criar tabela forma de pagmento
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_forma_de_pagamento` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_forma_de_pagamento` (\n"
                     + "  `id_forma_pagamento` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `froma_de_pag` varchar(150) NOT NULL,\n"
                     + "  `descricao` text,\n"
@@ -363,7 +361,7 @@ public class DBMigration {
             pst.execute();
 
             // criar tabela organizacao
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_organizacao` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_organizacao` (\n"
                     + "  `id` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome` varchar(200) NOT NULL,\n"
                     + "  `bairro` varchar(100) DEFAULT NULL,\n"
@@ -381,7 +379,7 @@ public class DBMigration {
             pst.execute();
 
             // criar tabela benificio
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_benificio` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_benificio` (\n"
                     + "  `id_benificio` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome_benificio` varchar(100) NOT NULL,\n"
                     + "  `descricao` text,\n"
@@ -390,7 +388,7 @@ public class DBMigration {
             pst.execute();
 
             // Tabela Cargo
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_cargo` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_cargo` (\n"
                     + "  `id_cargo` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome_cargo` varchar(45) NOT NULL,\n"
                     + "  PRIMARY KEY (`id_cargo`)\n"
@@ -398,7 +396,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Cargo e Salario
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_cargo_salario` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_cargo_salario` (\n"
                     + "  `id_cargo_salario` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `cargo` varchar(100) NOT NULL,\n"
                     + "  `salario` double NOT NULL,\n"
@@ -408,7 +406,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Categoria de Carta de conducao
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_categoria` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_categoria` (\n"
                     + "  `id_categoria` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `categoria` varchar(50) NOT NULL,\n"
                     + "  `descricao` text NOT NULL,\n"
@@ -418,7 +416,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Aluno
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_aluno` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_aluno` (\n"
                     + "  `id_aluno` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome` text NOT NULL,\n"
                     + "  `dataNascimento` date NOT NULL,\n"
@@ -447,7 +445,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Instrutor
-            pst = con.begin().prepareStatement("CREATE TABLE IF NOT EXISTS " + db + ".`tb_instrutor` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE IF NOT EXISTS " + DB + ".`tb_instrutor` (\n"
                     + "  `id` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome` varchar(255) NOT NULL,\n"
                     + "  `admissao` date DEFAULT NULL,\n"
@@ -475,7 +473,7 @@ public class DBMigration {
             pst.execute();
 
             // Tabela Curso
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_curso` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_curso` (\n"
                     + "  `codigo` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome_curso` varchar(150) NOT NULL,\n"
                     + "  `duracao` int(11) NOT NULL,\n"
@@ -488,7 +486,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Exame
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_exame` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_exame` (\n"
                     + "  `id_exame` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `tipo_exame` varchar(80) NOT NULL,\n"
                     + "  `dia` date NOT NULL,\n"
@@ -507,7 +505,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Resultado de Exame
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_exame_resultado` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_exame_resultado` (\n"
                     + "  `id_exame_resultado` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `fk_exame` int(11) NOT NULL,\n"
                     + "  `resultado` varchar(45) NOT NULL,\n"
@@ -518,7 +516,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Propretario
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_proprietario` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_proprietario` (\n"
                     + "  `id_Proprietario` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome_Proprietario` varchar(155) DEFAULT NULL,\n"
                     + "  `bi_Proprietario` varchar(45) NOT NULL,\n"
@@ -530,7 +528,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Veiculo
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_veiculo` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_veiculo` (\n"
                     + "  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,\n"
                     + "  `placa` varchar(50) NOT NULL,\n"
                     + "  `ilha` varchar(100) NOT NULL,\n"
@@ -552,7 +550,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Seguro Auto
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_seguro` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_seguro` (\n"
                     + "  `id` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `compania` varchar(95) DEFAULT NULL,\n"
                     + "  `veiculo_seguro` bigint(20) NOT NULL,\n"
@@ -567,7 +565,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Inspecao Tecnica
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_inspecao_tecnica` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_inspecao_tecnica` (\n"
                     + "  `id` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `veiculo` bigint(20) NOT NULL,\n"
                     + "  `tipoInspecao` varchar(65) NOT NULL,\n"
@@ -582,7 +580,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Tipo de telefone
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_tipo_telefone` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_tipo_telefone` (\n"
                     + "  `id_tipo_telefone` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `tipo_telefone` varchar(45) NOT NULL,\n"
                     + "  PRIMARY KEY (`id_tipo_telefone`)\n"
@@ -590,7 +588,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Turma
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_turma` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_turma` (\n"
                     + "  `id_turma` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `fk_curso` int(11) NOT NULL,\n"
                     + "  `periodo` varchar(45) NOT NULL,\n"
@@ -604,7 +602,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Matricula
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_matricula` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_matricula` (\n"
                     + "  `id_matricula` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `data` date NOT NULL,\n"
                     + "  `aluno_id` int(11) NOT NULL,\n"
@@ -617,7 +615,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Doc
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_doc` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_doc` (\n"
                     + "  `numero_Doc` varchar(50) NOT NULL,\n"
                     + "  `data_Emisso` date NOT NULL,\n"
                     + "  `local_Emissao` varchar(160) NOT NULL,\n"
@@ -628,7 +626,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Categoria de Bens Da Empresa
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_categoria_bens_pratemoniais` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_categoria_bens_pratemoniais` (\n"
                     + "  `id_categoria_bens` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `categoria_bens` int(11) NOT NULL,\n"
                     + "  `descricao` text,\n"
@@ -637,7 +635,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Departamento
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_departamento` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_departamento` (\n"
                     + "  `id_departamento` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `nome_departamento` varchar(45) NOT NULL,\n"
                     + "  `descricao` longtext,\n"
@@ -646,7 +644,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Contrato
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_contrato` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_contrato` (\n"
                     + "  `id_contrato` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `dataAssinatura` date NOT NULL,\n"
                     + "  `valor` double NOT NULL,\n"
@@ -668,7 +666,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Venda
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_vendas` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_vendas` (\n"
                     + "  `id_vendas` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `data` date NOT NULL,\n"
                     + "  `valor_total` decimal(9,2) NOT NULL,\n"
@@ -690,7 +688,7 @@ public class DBMigration {
             pst.execute();
 
             //Tabela Item de Venda
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_item_venda` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_item_venda` (\n"
                     + "  `id_item_venda` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `quantidade` varchar(45) NOT NULL,\n"
                     + "  `valor` float(9,2) NOT NULL,\n"
@@ -705,7 +703,7 @@ public class DBMigration {
             pst.execute();
 
             //tabela Inscricao
-            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + db + ".`tb_matricula` (\n"
+            pst = con.begin().prepareStatement("CREATE TABLE if not exists " + DB + ".`tb_matricula` (\n"
                     + "  `id_matricula` int(11) NOT NULL AUTO_INCREMENT,\n"
                     + "  `data` date NOT NULL,\n"
                     + "  `aluno_id` int(11) NOT NULL,\n"
@@ -716,22 +714,21 @@ public class DBMigration {
                     + "  PRIMARY KEY (`id_matricula`)\n"
                     + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
             pst.execute();
-            
 
             msg += "\nTabelas criado com sucesso";
-            
-            System.out.println(msg);
-            
+
+            LOGGER.error(msg);
+
             esperar(100);
-            
+
             msg += "\nAlterando Tabelas ......";
             //Alterando a estrutura da coluna
-            pst = con.begin().prepareStatement("ALTER TABLE `" + db + "`.`tb_matricula` \n"
+            pst = con.begin().prepareStatement("ALTER TABLE `" + DB + "`.`tb_matricula` \n"
                     + "DROP FOREIGN KEY `fk_turma`,\n"
                     + "DROP FOREIGN KEY `fk_aluno`;");
             pst.execute();
 
-            pst = con.begin().prepareStatement("ALTER TABLE `" + db + "`.`tb_matricula` \n"
+            pst = con.begin().prepareStatement("ALTER TABLE `" + DB + "`.`tb_matricula` \n"
                     + "CHANGE COLUMN `data_matricula` `data` DATE NOT NULL ,\n"
                     + "CHANGE COLUMN `cod_aluno` `curso_id` INT(11) NOT NULL ,\n"
                     + "CHANGE COLUMN `cod_turma` `aluno_id` INT(11) NOT NULL ,\n"
@@ -741,9 +738,9 @@ public class DBMigration {
                     + "DROP INDEX `fk_turma_idx` ,\n"
                     + "DROP INDEX `fk_aluno_idx` ;");
             pst.execute();
-            
+
             // Fazendo alteracao na tabela empresa
-            pst = con.begin().prepareStatement("ALTER TABLE `" + db +"`.`tb_empresa` \n"
+            pst = con.begin().prepareStatement("ALTER TABLE `" + DB + "`.`tb_empresa` \n"
                     + "DROP COLUMN `ano_vigencia`,\n"
                     + "ADD COLUMN `assinatura` LONGBLOB NULL AFTER `logo`,\n"
                     + "CHANGE COLUMN `razao_social` `nome` VARCHAR(200) NOT NULL ,\n"
@@ -752,17 +749,20 @@ public class DBMigration {
                     + "CHANGE COLUMN `estado` `email` VARCHAR(250) NULL DEFAULT NULL ,\n"
                     + "CHANGE COLUMN `pais` `contato` VARCHAR(150) NOT NULL ;");
             pst.execute();
-            
+
             esperar(200);
-            
+
         } catch (SQLException ex) {
             System.err.println(ex);
         }
     }
-    
+
     private static void esperar(long milesegundos) {
         try {
             Thread.sleep(milesegundos);
-        } catch (Exception e) {}
+        } catch (InterruptedException e) {
+            LOGGER.error("error\n" + e.getMessage());
+            Thread.currentThread().interrupt();
+        }
     }
 }

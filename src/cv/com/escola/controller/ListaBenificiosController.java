@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
-import cv.com.escola.model.entity.Aluno;
 import cv.com.escola.model.entity.Benificio;
 import cv.com.escola.model.util.Campo;
 import cv.com.escola.model.util.Dialogo;
@@ -27,7 +21,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -37,7 +30,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
@@ -83,12 +75,6 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
     @FXML
     private Label legenda;
 
-    /**
-     * Initializes the controller class.
-     *
-     * @param url
-     * @param rb
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         telaCadastro(null);
@@ -96,18 +82,15 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaBenificios));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaBenificios))
+        );
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public ListaBenificiosController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/listaBenificios.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "listaBenificios");
         } catch (IOException ex) {
             Logger.getLogger(ListaBenificiosController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela Benificio! \n" + ex);
@@ -227,16 +210,12 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
             }
 
             tbBenificios.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione benificio na tabela para exclusão!");
         }
     }
-        /**
-         * Mapear dados objetos para inserção dos dados na tabela
-         */
-    private void tabela() {
 
+    private void tabela() {
         ObservableList data = FXCollections.observableArrayList(listaBenificios);
 
         colId.setCellValueFactory((TableColumn.CellDataFeatures<Benificio, Integer> obj) -> obj.getValue().idBenificioProperty().asObject());
@@ -245,10 +224,9 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
 
         tbBenificios.setItems(data);
     }
+    
     private void listView() {
-
         ObservableList data = FXCollections.observableArrayList(DAOFactory.daoFactury().benificioDAO().combo());
-
         listaBenificio.setItems(data);
     }
 
@@ -256,7 +234,6 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Benificio> listaBenificios) {
-
         FilteredList<Benificio> dadosFiltrados = new FilteredList<>(listaBenificios, benificio -> true);
         dadosFiltrados.setPredicate(benificio -> {
 

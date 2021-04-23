@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -96,13 +95,10 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
     @SuppressWarnings("LeakingThisInConstructor")
     public RelatorioEscolarController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/relatorioEscolar.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "relatorioEscolar");
         } catch (IOException ex) {
             Logger.getLogger(RelatorioEscolarController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela relatorio! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela relatorio");
         }
     }
 

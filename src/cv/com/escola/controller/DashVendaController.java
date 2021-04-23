@@ -7,7 +7,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Isaquiel Fernandes
  */
- @Slf4j
+@Slf4j
 public class DashVendaController extends AnchorPane implements Initializable {
 
     @FXML
@@ -50,6 +49,7 @@ public class DashVendaController extends AnchorPane implements Initializable {
 
     /**
      * Initializes the controller class.
+     *
      * @param url
      * @param rb
      */
@@ -57,19 +57,15 @@ public class DashVendaController extends AnchorPane implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         String ano = String.valueOf(LocalDate.now().getYear());
         lbVendasNoAno.setText(DAOFactory.daoFactury().orderDAO().totalAnual(ano) + "$00");
-    }    
+    }
+
     @SuppressWarnings({"LeakingThisInConstructor", "CallToPrintStackTrace"})
     public DashVendaController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/dashVenda.fxml"));
-
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
-
+            GenericFXXMLLoader.loadFXML(this, "dashVenda");
         } catch (IOException ex) {
-            log.error(ex.getMessage()); 
-            Mensagem.erro("Erro ao carregar tela dashboard venda! \n" + ex);
+            log.error(ex.getMessage());
+            Mensagem.erro("Erro ao carregar tela dashboard venda!");
         }
     }
 }

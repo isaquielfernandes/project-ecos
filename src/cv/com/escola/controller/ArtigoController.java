@@ -11,7 +11,6 @@ import static cv.com.escola.model.util.Mascara.decimal;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -25,7 +24,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -45,6 +43,7 @@ import javafx.util.Callback;
 
 public class ArtigoController extends AnchorPane implements Initializable {
 
+    private static final String NOT_SUPPORTED_YET = "Not supported yet.";
     private List<Artigo> listaArtigo;
     private long idArtigo = 0;
 
@@ -102,10 +101,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     @SuppressWarnings("LeakingThisInConstructor")
     public ArtigoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/artigo.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "artigo");
         } catch (IOException ex) {
             Logger.getLogger(ArtigoController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela artigo!");
@@ -148,7 +144,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
     @FXML
     @SuppressWarnings("element-type-mismatch")
-    private void salvar(ActionEvent event) throws FileNotFoundException {
+    private void salvar(ActionEvent event) {
         boolean vazio = Campo.noEmpty(txtNome, txtPreco);
 
         String nome = txtNome.getText();
@@ -201,15 +197,19 @@ public class ArtigoController extends AnchorPane implements Initializable {
     private void excluir(ActionEvent event) {
         try {
             Artigo artigo = tbArtigo.getSelectionModel().getSelectedItem();
-            Dialogo.Resposta response = Mensagem.confirmar("Excluir Artigo:: " + artigo.getNomeArtigo() + " ?");
-            if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().artigoDAO().delete((int) artigo.getIdArtigo());
-                sincronizarBase();
-                tabela();
-            }
+            removeObject(artigo);
             tbArtigo.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione artigo na tabela para exclusão!");
+        }
+    }
+
+    private void removeObject(Artigo artigo) {
+        Dialogo.Resposta response = Mensagem.confirmar("Excluir Artigo:: " + artigo.getNomeArtigo() + " ?");
+        if (response == Dialogo.Resposta.YES) {
+            DAOFactory.daoFactury().artigoDAO().delete((int) artigo.getIdArtigo());
+            sincronizarBase();
+            tabela();
         }
     }
 
@@ -252,11 +252,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
         decimal(txtPreco);
         txtPreco.setOnKeyReleased(key -> {
             if (key.getCode() == KeyCode.ENTER) {
-                try {
-                    salvar(null);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(ArtigoController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                salvar(null);
             }
         });
 
@@ -265,17 +261,17 @@ public class ArtigoController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaArtigo));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaArtigo))
+        );
+        
         btAtualizar.setTooltip(new Tooltip("Atualizar registros"));
         btAdcionar.setTooltip(new Tooltip("Adicionar registros"));
         btApagar.setTooltip(new Tooltip("Apagar registros"));
         btImpr.setTooltip(new Tooltip("Imprimir"));
         btEdit.setTooltip(new Tooltip("Editar registros"));
 
-        colPreco.setCellFactory(column -> {
-            return new TableCell<Artigo, BigDecimal>() {
+        colPreco.setCellFactory(column -> new TableCell<Artigo, BigDecimal>() {
                 @Override
                 protected void updateItem(BigDecimal item, boolean empty) {
                     super.updateItem(item, empty);
@@ -287,33 +283,24 @@ public class ArtigoController extends AnchorPane implements Initializable {
                         setText(item + " $00");
                     }
                 }
-            };
-        });
+            }
+        );
     }
     
     private void filtro(String valor, ObservableList<Artigo> listaArtigo) {
         FilteredList<Artigo> dadosFiltrados = new FilteredList<>(listaArtigo, artigo -> true);
-        dadosFiltrados.setPredicate(artigo -> {
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (artigo.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (artigo.getPreco().toString().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate(artigo -> artigo.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase()) ||
+            artigo.getPreco().toString().toLowerCase().startsWith(valor.toLowerCase()));
 
         SortedList<Artigo> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbArtigo.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de artigos encontradas");
-
         tbArtigo.setItems(dadosOrdenados);
     }
 
     @FXML
     private void imprimir(ActionEvent event) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
     }
 
     Callback<TableColumn<Artigo, String>, TableCell<Artigo, String>> actions = (TableColumn<Artigo, String> param) -> {
@@ -323,7 +310,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
             public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty) {
-                    Actions action = new Actions() {
+                    setGraphic(new Actions() {
 
                         @Override
                         protected void editButton(ActionEvent actionEvent) {
@@ -332,10 +319,9 @@ public class ArtigoController extends AnchorPane implements Initializable {
 
                         @Override
                         protected void deleteButton(ActionEvent actionEvent) {
-                            param.getColumns().remove(this.idProperty().get());
+                            throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
                         }
-                    };
-                    setGraphic(action);
+                    });
                 }
             }
         };

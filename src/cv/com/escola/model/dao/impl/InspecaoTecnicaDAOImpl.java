@@ -19,7 +19,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
     @Override
     public void create(InspecaoTecnica inspecao) {
-        try(Connection conn = HikariCPDataSource.getConnection();) {
+        try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("INSERT INTO ").append(db).append(".`tb_inspecao_tecnica` ");
             query.append("(`veiculo`, `tipoInspecao`, `dataInspecao`, `duracao`, `resultado`, `validade`) VALUES (?,?,?,?,?,?)");
@@ -47,7 +47,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
     @Override
     public void update(InspecaoTecnica inspecao) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db).append(".`tb_inspecao_tecnica` SET `veiculo` = ?, `tipoInspecao` = ?, `dataInspecao` = ?, `duracao` = ?, `resultado` = ?, `validade` = ? WHERE `id` = ?");
 
@@ -66,7 +66,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
 
     @Override
     public void delete(Long idInspecao) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".`tb_inspecao_tecnica` WHERE id=?");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -81,7 +81,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
     @Override
     public List<InspecaoTecnica> findAll() {
         List<InspecaoTecnica> dadosInspecao = new ArrayList<>();
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM ").append(db).append(".inspecao_tecnica_view");
 

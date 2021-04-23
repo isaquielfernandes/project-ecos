@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
@@ -36,16 +35,14 @@ public class ConfigEmpresaController extends AnchorPane implements Initializable
     public void initialize(URL url, ResourceBundle rb) {
         menuConfigEmpresa(null);
     }  
+    
     @SuppressWarnings("LeakingThisInConstructor")
     public ConfigEmpresaController(){
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/configEmpresa.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "configEmpresa");
         } catch (IOException ex) {
             Logger.getLogger(ConfigEmpresaController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela config empresa! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela config empresa!");
         }
     }
 

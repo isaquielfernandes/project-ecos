@@ -20,8 +20,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,16 +28,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
-@Slf4j
+
 public class ServerController implements Initializable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerController.class);
+    
     @FXML
     private TextField tfHost;
     @FXML
@@ -129,9 +125,9 @@ public class ServerController implements Initializable {
             thPort.setText(properties.getProperty("port"));
             inputStream.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         } catch (IOException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
     }
 
@@ -157,9 +153,9 @@ public class ServerController implements Initializable {
                 Mensagem.erro("Tente novamente", "Erro: de Coneção com o Servidor");
             }
         } catch (FileNotFoundException | SQLException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         } catch (IOException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
     }
 
@@ -175,9 +171,9 @@ public class ServerController implements Initializable {
             properties.store(output, null);
             output.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         } catch (IOException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
     }
 
@@ -199,9 +195,9 @@ public class ServerController implements Initializable {
                 Mensagem.erro("Nao foi possivel conectar com o servidor na port: " + port, "Erro de conexao");
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         } catch (IOException ex) {
-            Logger.getLogger(ServerController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
     }
 
@@ -211,7 +207,7 @@ public class ServerController implements Initializable {
                 lablServerStatus.setText("Server is running on port: " + port);
             }
         } catch (ConnectException ex) {
-            log.error("porta nao encontrada: ", ex);
+            LOGGER.error("porta nao encontrada: ", ex);
         }
     }
 
@@ -223,7 +219,7 @@ public class ServerController implements Initializable {
             user = properties.getProperty("user");
             pass = properties.getProperty("password");
         } catch (IOException ex) {
-            log.error("erro ao caregar arquivo de configuracao!", ex);
+            LOGGER.error("erro ao caregar arquivo de configuracao!", ex);
         }
     }
 
@@ -234,7 +230,7 @@ public class ServerController implements Initializable {
             con = DriverManager.getConnection(url + unicode, user, pass);
             return true;
         } catch (ClassNotFoundException | SQLException ex) {
-            log.error(ex.getMessage());
+            LOGGER.error(ex.getMessage());
         }
         return false;
     }
@@ -243,7 +239,7 @@ public class ServerController implements Initializable {
         try {
             Thread.sleep(milesegundos);
         } catch (InterruptedException e) {
-            log.warn("Interrupted!: ", e);
+            LOGGER.warn("Interrupted!: ", e);
             Thread.currentThread().interrupt();
         }
     }

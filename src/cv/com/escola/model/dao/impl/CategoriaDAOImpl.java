@@ -27,7 +27,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
 
     @Override
     public void create(Categoria categoria) {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder(); 
             query.append("INSERT INTO ")
                     .append(db)
@@ -44,7 +44,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
 
     @Override
     public void update(Categoria categoria) {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("UPDATE ")
                     .append(db)
@@ -62,7 +62,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
 
     @Override
     public void delete(Integer idCategoria) {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db)
                     .append(".tb_categoria WHERE id_categoria=?");
@@ -77,7 +77,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
     @Override
     public List<Categoria> findAll() {
         List<Categoria> categorias = new ArrayList<>();
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_categoria");
             preparedStatement = connection.prepareStatement(query.toString());
@@ -94,7 +94,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
 
     @Override
     public void report() {
-        try (Connection connection = HikariCPDataSource.getConnection();) {
+        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
             URL url = getClass().getResource("/cv/com/escola/reports/Categoria.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, connection);

@@ -5,6 +5,7 @@ import cv.com.escola.model.entity.Pagina;
 import cv.com.escola.model.dao.AlunoDAO;
 import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
+import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
@@ -25,11 +26,16 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import org.apache.log4j.Level;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
+    private final JdbcTemplate jdbcTemplate;
+    
     public AlunoDAOImpl() {
         super();
+        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.getInstance().dataSource());
     }
 
     @Override
@@ -71,8 +77,8 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void delete(Integer idAluno) {
+        final StringBuilder query = new StringBuilder();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".tb_aluno WHERE id_aluno=?");
             preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idAluno);
@@ -85,21 +91,9 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public List<Aluno> findAll() {
-        List<Aluno> alunos = new ArrayList<>();
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT * from ").append(db).append(".tb_aluno order by nome");
-            preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                alunos.add(mapRowToObject(rs));
-            }
-            preparedStatement.close();
-            rs.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
-        }
-        return alunos;
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".tb_aluno order by nome");
+        return jdbcTemplate.query(query.toString(), new AlunoMapper());
     }
 
     @Override
@@ -110,7 +104,6 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             query.append("SELECT * from ").append(db).append(".tb_aluno limit ").append(quantidade * pagina).append(",").append(quantidade).append("");
             preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
                 listaAluno.add(mapRowToObject(rs));
             }
@@ -267,7 +260,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         aluno.setNome(resultSet.getString("nome"));
         aluno.setDataNascimento(Tempo.toDate(resultSet.getTimestamp("dataNascimento")));
         aluno.setNumBI(resultSet.getString("numBI"));
-        aluno.setDataEmisao(Tempo.toDate(rs.getTimestamp("dataEmisao")));
+        aluno.setDataEmisao(Tempo.toDate(resultSet.getTimestamp("dataEmisao")));
         aluno.setResidencia(resultSet.getString("resedencia"));
         aluno.setConselho(resultSet.getString("conselho"));
         aluno.setNatural(resultSet.getString("naturalidade"));
@@ -279,7 +272,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         aluno.setFotocopiaBI(resultSet.getBinaryStream("fotocopiaBI"));
         aluno.setDescricao(resultSet.getString("descricao"));
         aluno.setNomeDaMae(resultSet.getString("nomeDaMae"));
-        aluno.setNomeDoPai(rs.getString("nomeDoPai"));
+        aluno.setNomeDoPai(resultSet.getString("nomeDoPai"));
         aluno.setProfessao(resultSet.getString("professao"));
         aluno.setEstadoCivil(resultSet.getString("estadoCivil"));
         aluno.setLocalDeEmisao(resultSet.getString("localDeEmisao"));
@@ -287,4 +280,13 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         aluno.setDataCadastro(Tempo.toDate(resultSet.getTimestamp("data_cadastro")));
         return aluno;
     }
+
+    private class AlunoMapper implements RowMapper<Aluno> {
+
+        @Override
+        public Aluno mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return mapRowToObject(rs);
+        }
+    }
+
 }

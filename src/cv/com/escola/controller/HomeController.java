@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.util.Mensagem;
@@ -24,7 +19,7 @@ import javafx.scene.layout.AnchorPane;
 public class HomeController extends AnchorPane implements Initializable {
 
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
 
     /**
      * Initializes the controller class.
@@ -35,15 +30,13 @@ public class HomeController extends AnchorPane implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+    @SuppressWarnings("LeakingThisInConstructor")
     public HomeController(){
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/home.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+           GenericFXXMLLoader.loadFXML(this, "home");
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("erro ao caregar tela home" + ex);
+            Mensagem.erro("erro ao caregar tela home");
         }
     }
 }

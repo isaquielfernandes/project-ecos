@@ -76,10 +76,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
     @SuppressWarnings("LeakingThisInConstructor")
     public CategoriaController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/categoria.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "categoria");
         } catch (IOException ex) {
             Logger.getLogger(CategoriaController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela categoria!");
@@ -103,9 +100,8 @@ public class CategoriaController extends AnchorPane implements Initializable {
         Grupo.notEmpty(menu);
         sincronizarBase();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo)
-            -> filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria))
-        );
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+                filtroPesquisa(novo, FXCollections.observableArrayList(listaCategoria)));
     }
 
     @FXML

@@ -29,7 +29,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
 
     @Override
     public void create(Instrutor instrutor) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("INSERT INTO ").append(db).append(".`tb_instrutor` (`nome`, `admissao`, `email`, `telefone`, `movel`, `foto`, `pai`, `mae`, `grauAcademico`, `tipoSanguineo`, `morada`, `cidadeIlha`, `numeroDeIndentificacao`, `naturalidade`, `nacionalidade`, `nascimento`, `cartaConducao`, `banco`, `agencia`,`numDeConta`, `obsercacao`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 
@@ -71,7 +71,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
 
     @Override
     public void update(Instrutor instrutor) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db).append(".`tb_instrutor` SET `nome` = ?, `admissao` = ?, `email` = ?, `telefone` = ?, `movel` = ?, `foto` = ?, `pai` = ?, `mae` = ?, `grauAcademico` = ?, `tipoSanguineo` = ?, `morada` = ?, `cidadeIlha` = ?, `numeroDeIndentificacao` = ?, `naturalidade` = ?, `nacionalidade` = ?, `nascimento` = ?, `cartaConducao` = ?, `banco` = ?, `agencia` = ?, `numDeConta` = ?, `obsercacao` = ? WHERE `id` = ?;");
 
@@ -90,7 +90,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
 
     @Override
     public void delete(Long idInstrutor) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".tb_instrutor WHERE id=?");
 
@@ -108,7 +108,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
     public List<Instrutor> findAll() {
         List<Instrutor> instrutores = new ArrayList<>();
         ImageView img;
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_instrutor");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -156,7 +156,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
         final StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".tb_instrutor WHERE id=?");
         Instrutor retorno = new Instrutor();
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setLong(1, instrutor.getId());
             rs = preparedStatement.executeQuery();

@@ -24,7 +24,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -90,13 +89,10 @@ public class CursoController extends AnchorPane implements Initializable {
     @SuppressWarnings("LeakingThisInConstructor")
     public CursoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/curso.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "curso");
         } catch (IOException ex) {
             Logger.getLogger(CursoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("erro ao caregar tela curso! \n" + ex);
+            Mensagem.erro("erro ao caregar tela curso!");
         }
     }
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
@@ -22,8 +17,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,7 +24,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -119,30 +111,23 @@ public class UsuarioController extends AnchorPane implements Initializable{
     //@Override
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         telaCadastro(null);
 
         Grupo.notEmpty(menu);
         sincronizarBase();
         combos();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaUsuario));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaUsuario))
+        );
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public UsuarioController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/usuario.fxml"));
-
-            fxml.setRoot(this);
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
-
+            GenericFXXMLLoader.loadFXML(this, "usuario");
         } catch (IOException ex) {
-            Mensagem.erro("Erro ao carregar tela do usuário! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela do usuário!");
         }
     }
 
@@ -236,17 +221,13 @@ public class UsuarioController extends AnchorPane implements Initializable{
     private void excluir(ActionEvent event) {
         try {
             Usuario usuario = tbUsuario.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir usuário " + usuario.getNome() + " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().usuarioDAO().delete(usuario.getId());
                 sincronizarBase();
                 tabela();
             }
-
             tbUsuario.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione usuário na tabela para exclusão!");
         }

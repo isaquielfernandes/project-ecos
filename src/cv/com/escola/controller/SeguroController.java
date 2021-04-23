@@ -116,7 +116,7 @@ public class SeguroController extends AnchorPane implements Initializable {
         telaCadastro(null);
         Grupo.notEmpty(menu);
         combos();
-        cbVeiculo.setOnMouseClicked((event) -> {
+        cbVeiculo.setOnMouseClicked(event -> {
             sincronizaBase();
             combos();
         });
@@ -291,13 +291,10 @@ public class SeguroController extends AnchorPane implements Initializable {
     @SuppressWarnings("LeakingThisInConstructor")
     public SeguroController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/seguroAuto.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "seguroAuto");
         } catch (IOException ex) {
             Logger.getLogger(SeguroController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela inspecção tecnica" + ex);
+            Mensagem.erro("Erro ao carregar tela seguro auto");
         }
     }
 }

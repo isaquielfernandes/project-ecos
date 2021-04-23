@@ -26,8 +26,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,7 +33,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -51,11 +48,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ExameController extends AnchorPane implements Initializable {
 
-    private List<Categoria> listaCategoria;
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ExameController.class);
+    private static final String QUANTIDADE_DE_EXAMES_ENCONTRADOS = "Quantidade de exames encontrados";
+    private static final String UPLOAD_FILE = "Upload File";
     private List<Exame> listaExame;
     private List<Aluno> listaAluno;
     private long idMarcar;
@@ -143,7 +144,7 @@ public class ExameController extends AnchorPane implements Initializable {
     private FileChooser.ExtensionFilter extensionFilterPDF = new FileChooser.ExtensionFilter("PDF Files(*.pdf)", "*.PDF");
     private String path = System.getProperty("user.home");
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-    private String n = LocalDateTime.now().format(formatter);//rand.nextInt(999999999) + 1;
+    private String n = LocalDateTime.now().format(formatter);
     private String sep = File.separator;
     private File diretorioR = new File("public/img/exame/registro Criminal/");
     private File diretorioA = new File("public/img/exame/atestado medico/");
@@ -153,11 +154,9 @@ public class ExameController extends AnchorPane implements Initializable {
      */
     private void tabelaAluno() {
         ObservableList data = FXCollections.observableArrayList(listaAluno);
-
         colAlunoID.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> 
                 new SimpleStringProperty(Integer.toString(obj.getValue().getIdAluno())));
         colAlunoNome.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
-
         tbAluno.setItems(data);
         cbCliente.setItems(data);
     }
@@ -177,35 +176,22 @@ public class ExameController extends AnchorPane implements Initializable {
      */
     private void filtroAluno(String valor, ObservableList<Aluno> listaAluno) {
         FilteredList<Aluno> dadosFiltrados = new FilteredList<>(listaAluno, aluno -> true);
-        dadosFiltrados.setPredicate((aluno) -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (aluno.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (aluno.getNumBI().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-
-            return false;
-        });
+        dadosFiltrados.setPredicate((aluno) -> aluno.getNome().toLowerCase().startsWith(valor.toLowerCase()) ||
+            aluno.getNumBI().toLowerCase().startsWith(valor.toLowerCase()) 
+        );
         SortedList<Aluno> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbAluno.comparatorProperty());
-        //Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de aluno encontradas");
-
+        Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de aluno encontradas");
         tbAluno.setItems(dadosOrdenados);
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public ExameController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/exame.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "exame");
         } catch (IOException ex) {
-            Logger.getLogger(ExameController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("erro ao caregar a tela marca exame, \n" + ex);
+            LOGGER.error(ex.getMessage());
+            Mensagem.erro("erro ao caregar a tela marca exame");
         }
     }
 
@@ -260,21 +246,21 @@ public class ExameController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaEdicao(ActionEvent event) {
-        configTela("Editar Exame", "Quantidade de exames encontrados", 1);
+        configTela("Editar Exame", QUANTIDADE_DE_EXAMES_ENCONTRADOS, 1);
         Modulo.visualizacao(true, telaEdicao, btEditar, txtPesquisar);
         tabela();
     }
 
     @FXML
     private void telaExcluir(ActionEvent event) {
-        configTela("Excluir Exame", "Quantidade de exames encontrados", 2);
+        configTela("Excluir Exame", QUANTIDADE_DE_EXAMES_ENCONTRADOS, 2);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar);
         tabela();
     }
 
     @FXML
     private void telaImprimir(ActionEvent event) {
-        configTela("Lista de Exame", "Quantidade de exames encontrados", 3);
+        configTela("Lista de Exame", QUANTIDADE_DE_EXAMES_ENCONTRADOS, 3);
         Modulo.visualizacao(true, telaEdicao, txtPesquisar, cbTipoExame, datePickerDia, btImprimir);
         tabela();
     }
@@ -284,14 +270,14 @@ public class ExameController extends AnchorPane implements Initializable {
         boolean vazio = checkEmptyFields(txtId_Aluno, cbTipo_Exame, cbExame_De, dtExame, cbCliente);
 
         Aluno aluno = cbCliente.getValue();
-        String tipo_exame = cbTipo_Exame.getValue();
+        String tipoDeExame = cbTipo_Exame.getValue();
         Categoria cat = cbExame_De.getValue();
         LocalDate dia = dtExame.getValue();
         LocalTime hora = tpHora.getValue();
         String descricao = txtDescricao.getText();
 
         if (vazio) {
-            Exame exame = new Exame(idMarcar, tipo_exame, dia, hora, descricao, cat, aluno);
+            Exame exame = new Exame(idMarcar, tipoDeExame, dia, hora, descricao, cat, aluno);
             exame.setRegistroCriminal(copyRegistroCriminal());
             exame.setAtestadoMedico(copyAtestadoMedico());
 
@@ -335,17 +321,13 @@ public class ExameController extends AnchorPane implements Initializable {
     private void excluir(ActionEvent event) {
         try {
             Exame exame = tbExame.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Exame " + exame.getTipoExame() + " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().exameDAO().delete(exame.getIdExame());
                 sincronizarBase();
                 tabela();
             }
-
             tbExame.getSelectionModel().clearSelection();
-
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione exame na tabela para exclusão!");
         }
@@ -357,7 +339,7 @@ public class ExameController extends AnchorPane implements Initializable {
     }
 
     //@FXML
-    public void filtro(ActionEvent event) {
+    public void filtro() {
         if (cbTipoExame.getValue() != null && datePickerDia.getValue() != null) {
             findByTipoDeExame();
         }else {
@@ -394,27 +376,27 @@ public class ExameController extends AnchorPane implements Initializable {
         // **************************************************************************
         listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
         tabelaAluno();
-        txtBuscar.textProperty().addListener((obs, old, novo) -> {
-            filtroAluno(novo, FXCollections.observableArrayList(listaAluno));
-        });
+        txtBuscar.textProperty().addListener((obs, old, novo) -> 
+            filtroAluno(novo, FXCollections.observableArrayList(listaAluno)));
+        
         // Limpa os detalhes do aluno.
         showAlunoSelected(null);
         // Detecta mudanças de seleção e mostra os detalhes do aluno quando houver mudança.
         cbCliente.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showAlunoSelected(newValue));
 
-        cbCliente.setOnMouseClicked((event) -> {
-            Combo.popular(cbCliente, DAOFactory.daoFactury().alunoDAO().findAll());
-        });
+        cbCliente.setOnMouseClicked(event -> 
+            Combo.popular(cbCliente, DAOFactory.daoFactury().alunoDAO().findAll())
+        );
         // ****************************************************************************
 
-        cbExame_De.setOnMouseClicked((event) -> {
-            Combo.popular(cbExame_De, DAOFactory.daoFactury().categoriaDAO().findAll());
-        });
+        cbExame_De.setOnMouseClicked(event -> 
+            Combo.popular(cbExame_De, DAOFactory.daoFactury().categoriaDAO().findAll())
+        );
 
-        hlinkAtestadoMedico.setOnMouseClicked((event) -> {
+        hlinkAtestadoMedico.setOnMouseClicked(event -> {
             fileChooser.getExtensionFilters().addAll(extensionFilterJPG, extensionFilterPNG, extensionFilterPDF);
-            fileChooser.setTitle("Upload File");
+            fileChooser.setTitle(UPLOAD_FILE);
             file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
                 String filePath = file.getPath();
@@ -422,9 +404,9 @@ public class ExameController extends AnchorPane implements Initializable {
             }
         });
 
-        hlinkRegistro_Criminal.setOnMouseClicked((event) -> {
+        hlinkRegistro_Criminal.setOnMouseClicked(event -> {
             fileChooser.getExtensionFilters().addAll(extensionFilterJPG, extensionFilterPNG, extensionFilterPDF);
-            fileChooser.setTitle("Upload File");
+            fileChooser.setTitle(UPLOAD_FILE);
             file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
                 String filePath = file.getPath();
@@ -433,14 +415,15 @@ public class ExameController extends AnchorPane implements Initializable {
         });
 
         tpHora._24HourViewProperty();
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaExame));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaExame))
+        );
 
-        datePickerDia.valueProperty().addListener((observable, oldValue, newValue) -> {
-            filtroPorData(newValue, FXCollections.observableArrayList(listaExame));
-        });
+        datePickerDia.valueProperty().addListener((observable, oldValue, newValue) -> 
+            filtroPorData(newValue, FXCollections.observableArrayList(listaExame))
+        );
     }
+    
 
     private void tabela() {
         ObservableList exameMarcado = FXCollections.observableArrayList(listaExame);
@@ -467,23 +450,11 @@ public class ExameController extends AnchorPane implements Initializable {
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Exame> listaExame) {
-
         FilteredList<Exame> dadosFiltrados = new FilteredList<>(listaExame, exame -> true);
-        dadosFiltrados.setPredicate(exame -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (exame.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (exame.getTipoExame().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (exame.getDataExame().toString().toLowerCase().startsWith(valor.toUpperCase())) {
-                return true;
-            }
-
-            return false;
-        });
-
+        dadosFiltrados.setPredicate(exame -> exame.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
+            exame.getTipoExame().toLowerCase().startsWith(valor.toLowerCase()) || 
+            exame.getDataExame().toString().toLowerCase().startsWith(valor.toUpperCase())
+        );
         SortedList<Exame> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbExame.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de exame marcado encontradas");
@@ -495,18 +466,9 @@ public class ExameController extends AnchorPane implements Initializable {
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtroPorData(LocalDate valor, ObservableList<Exame> listaExame) {
-
         FilteredList<Exame> dadosFiltrados = new FilteredList<>(listaExame, exame -> true);
-        dadosFiltrados.setPredicate(exame -> {
-
-            if (valor == null) {
-                return true;
-            } else if (exame.getDataExame().toString().toLowerCase().startsWith(valor.toString().toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
-
+        dadosFiltrados.setPredicate(exame -> 
+                exame.getDataExame().toString().toLowerCase().startsWith(valor.toString().toLowerCase()));
         SortedList<Exame> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbExame.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de exame marcado encontradas");
@@ -526,7 +488,7 @@ public class ExameController extends AnchorPane implements Initializable {
             }
             Files.copy(Paths.get(file.getPath()), Paths.get(copyFile.getPath()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            Logger.getLogger(ArtigoController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
         return copyFile.getName();
     }
@@ -543,19 +505,9 @@ public class ExameController extends AnchorPane implements Initializable {
             }
             Files.copy(Paths.get(file.getPath()), Paths.get(copyFile.getPath()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            Logger.getLogger(ArtigoController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
         return copyFile.getName();
-    }
-
-    //caregando file
-    private void uploadFile() {
-        fileChooser.getExtensionFilters().addAll(extensionFilterJPG, extensionFilterPNG, extensionFilterPDF);
-        fileChooser.setTitle("Upload File");
-        file = fileChooser.showOpenDialog(new Stage());
-        if (file != null) {
-            String imagePath = file.getPath();
-        }
     }
 
     private void findByTipoDeExame() {
@@ -563,8 +515,8 @@ public class ExameController extends AnchorPane implements Initializable {
                 .filter(e -> e.getTipoExame().equalsIgnoreCase(cbTipoExame.getValue())
                 || e.getDataExame().equals(datePickerDia.getValue()))
                 .forEach(e -> {
-                    System.out.println(e.toString());
-                    System.out.println("=============================");
+                    LOGGER.info(e.toString());
+                    LOGGER.info("=============================================");
                 });
     }
 }

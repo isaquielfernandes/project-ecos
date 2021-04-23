@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.util.Animacao;
@@ -15,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -67,15 +61,13 @@ public class MenuVeiculoController extends AnchorPane implements Initializable {
     @SuppressWarnings("LeakingThisInConstructor")
     public MenuVeiculoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/menuVeiculo.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "menuVeiculo");
         } catch (IOException ex) {
             Logger.getLogger(MenuVeiculoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela menu veículo! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela menu veículo");
         }
     }
+    
     /**
      * Obter componente para exibição dos modulos da aplicação
      *
@@ -125,14 +117,8 @@ public class MenuVeiculoController extends AnchorPane implements Initializable {
         no.getStyleClass().add(estilo);
     }
 
-    /**
-     * Obter instancia do controler
-     *
-     * @return
-     */
     public static MenuVeiculoController getInstance() {
         return instance;
-    }
-    
+    }  
     
 }

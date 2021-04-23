@@ -28,7 +28,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void create(Inventario inventario) {
-        try (Connection conn = HikariCPDataSource.getConnection();){
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()){
             final StringBuilder query = new StringBuilder();
             query.append("insert into ").append(db).append(".tb_inventario ( num_serie, fk_categoria, item, responsavel, ");
             query.append("fk_area, local, data_compra, meses_desde_compra, valor, estado_consrvacao, ");
@@ -61,7 +61,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void update(Inventario inventario) {
-        try (Connection conn = HikariCPDataSource.getConnection();){
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()){
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db)
                     .append(".tb_inventario SET num_serie =?, fk_categoria =?, item =?, responsavel =?, fk_area =?, local =?, data_compra =?, meses_desde_compra =?, valor =?, estado_consrvacao =?, vida_util_ano =?, valor_atual =?, depreciacao =? WHERE id_inventario =?");
@@ -79,7 +79,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void delete(Integer idInventario) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("DELETE FROM ").append(db).append(".tb_inventario WHERE id_inventario=?");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -94,7 +94,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
     @Override
     public List<Inventario> findAll() {
         List<Inventario> inventario = new ArrayList<>();
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_inventario");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -119,7 +119,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public boolean isNumSerie(String nome, int id) {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT num_serie FROM ").append(db).append(".tb_inventario WHERE num_serie =? AND id_inventario !=? ");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -141,7 +141,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public int total() {
-        try (Connection conn = HikariCPDataSource.getConnection();){
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()){
             final StringBuilder query = new StringBuilder();
             query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_inventario");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -157,7 +157,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void report() {
-        try (Connection conn = HikariCPDataSource.getConnection();) {
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             URL url = getClass().getResource("/cv/com/escola/reports/inventario.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             //null: caso não existem filtros

@@ -28,7 +28,6 @@ import javafx.collections.transformation.SortedList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -120,30 +119,22 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
         sincronizarDataBase();
         txtID.setText(String.valueOf(idEmpresa));
 
-        imageViewLogo.setOnMouseClicked((event) -> {
-            uploadLogo();
-        });
+        imageViewLogo.setOnMouseClicked(event -> uploadLogo());
 
-        imageViewAssinatura.setOnMouseClicked((event) -> {
-            uploadFileAssinatura();
-        });
+        imageViewAssinatura.setOnMouseClicked(event -> uploadFileAssinatura());
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaEmpresa));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaEmpresa))
+        );
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public EscolaConducaoController() {
-
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/dadosIniciais.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "dadosIniciais");
         } catch (IOException ex) {
             Logger.getLogger(EscolaConducaoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela dados inicial da empresa! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela dados inicial da empresa!");
         }
     }
 

@@ -5,23 +5,27 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HikariCPDataSource {
     
     private static HikariCPDataSource instance = new HikariCPDataSource();
     private static final HikariConfig CONFIG = new HikariConfig();
-    private static final String ID_TIME_ZONE = java.util.TimeZone.getDefault().getID();
+    private static final String ID_TIME_ZONE = TimeZone.getDefault().getID();
     private static final String SERVER_CONFIG = "?serverTimezone=" + ID_TIME_ZONE + "";
     private static final String USER = DBProperties.loadPropertiesFileUser();
-    private static final  String PWD = DBProperties.loadPropertiesFilePass();
+    private static final String PWD = DBProperties.loadPropertiesFilePass();
     
     protected final ExecutorService executorService = Executors.newSingleThreadExecutor( r -> {
         Thread thread = new Thread(r);
-        thread.setName("DB");
+        thread.setName("DB: ");
         return thread;
     });
     
@@ -40,7 +44,7 @@ public class HikariCPDataSource {
     
     private HikariCPDataSource(){}
     
-    public static Connection getConnection() {
+    public Connection getConnection() {
         try {
             return dataSource().getConnection();
         } catch (SQLException ex) {
@@ -49,10 +53,11 @@ public class HikariCPDataSource {
         }
     }
     
-    public static HikariDataSource dataSource() {
+    @Bean
+    public HikariDataSource dataSource() {
         return new HikariDataSource(CONFIG);
     }
-
+    
     public static HikariCPDataSource getInstance() {
         if (instance == null) {
             instance = new HikariCPDataSource();

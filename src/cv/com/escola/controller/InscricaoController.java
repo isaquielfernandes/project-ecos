@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2019 Isaquiel Fernandes.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301  USA
- */
 package cv.com.escola.controller;
 
 import cv.com.escola.model.dao.db.DAOFactory;
@@ -42,7 +24,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -137,27 +118,27 @@ public class InscricaoController extends AnchorPane implements Initializable {
         tabela();
         telaCadastro(null);
         selectAlunoListView(null);
-        listViewAluno.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            selectAlunoListView(newValue);
-        });
-        txtBuscarAluno.textProperty().addListener((observable, oldValue, newValue) -> {
-            filtros(newValue, FXCollections.observableArrayList(listaAluno));
-        });
-        txtPesquisar.textProperty().addListener((observable, oldValue, newValue) -> {
-            filtro(newValue, FXCollections.observableArrayList(listaInscricao));
-        });
+
+        listViewAluno.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> 
+            selectAlunoListView(newValue)
+        );
+
+        txtBuscarAluno.textProperty().addListener((observable, oldValue, newValue) -> 
+            filtros(newValue, FXCollections.observableArrayList(listaAluno))
+        );
+
+        txtPesquisar.textProperty().addListener((observable, oldValue, newValue) -> 
+            filtro(newValue, FXCollections.observableArrayList(listaInscricao))
+        );
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public InscricaoController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/inscricao.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "inscricao");
         } catch (IOException ex) {
             Logger.getLogger(InscricaoController.class.getName()).log(Level.SEVERE, null, ex);
-            Mensagem.erro("Erro ao carregar tela inscricao! \n" + ex);
+            Mensagem.erro("Erro ao carregar tela inscricao!");
         }
     }
 
@@ -220,11 +201,10 @@ public class InscricaoController extends AnchorPane implements Initializable {
         colCurso.setCellValueFactory((CellDataFeatures<Matricula, Curso> obj) -> obj.getValue().cursoPretendidoProperty());
         colPeriodo.setCellValueFactory((CellDataFeatures<Matricula, String> obj) -> obj.getValue().periodoProperty());
         colTurma.setCellValueFactory((CellDataFeatures<Matricula, String> obj) -> obj.getValue().turmaProperty());
-        //colObservacao.setCellValueFactory((CellDataFeatures<Matricula, String> obj) -> obj.getValue().observacaoProperty());
-
+ 
         tbInscricao.setItems(data);
     }
-    
+
     /**
      * Campo de pesquisar para filtrar dados na listView
      */
@@ -245,16 +225,12 @@ public class InscricaoController extends AnchorPane implements Initializable {
 
         listViewAluno.setItems(dadosOrdenados);
     }
-    
+
     //Filtrar dados de matricula
     private void filtro(String valor, ObservableList<Matricula> listaMatriculas) {
-
         FilteredList<Matricula> dadosFiltrados = new FilteredList<>(listaMatriculas, inscricao -> true);
         dadosFiltrados.setPredicate(inscrito -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (inscrito.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
+            if (inscrito.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
                 return true;
             } else if (inscrito.getData().toString().toLowerCase().startsWith(valor.toLowerCase())) {
                 return true;
