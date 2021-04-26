@@ -5,6 +5,9 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 
 public class Grupo {
+
+    private Grupo() {
+    }
     
     /**
      * Auxilia para togglemenus ou botões não fique nulo ao clicar duas vezes no mesmo menu,

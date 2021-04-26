@@ -28,7 +28,6 @@ import javafx.scene.layout.HBox;
  */
 public class RelatorioEscolarController extends AnchorPane implements Initializable {
 
-    public static RelatorioEscolarController instance;
     @FXML
     private Label lbTeorica;
     @FXML
@@ -60,20 +59,19 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
     @FXML
     private HBox rootBar;
 
+    private static final String FALTOU = "FALTOU";
+    private static final String REPROVADO = "REPROVADO";
+    private static final String APROVADO = "APROVADO";
+
+    private static final String TECNICA = "TECNICA";
+    private static final String PRATICA = "PRATICA";
+    private static final String TEORICA = "TEORICA";
+    private static final String CAP = "CAP";
+    
     private int totalTeorica;
     private int totalPratica;
     private int totalTecnica;
     private int totalCap;
-
-    private int totalTeoricaAprovado;
-    private int totalPraticaAprovado;
-    private int totalTecnicaAprovado;
-    private int totalCapAprovado;
-
-    private float percentagemAprovadoEmTeorica;
-    private float percentagemAprovadoEmPratica;
-    private float percentagemAprovadoEmTecnica;
-    private float percentagemAprovadoEmCAP;
 
     private String anoAgora = Year.now().toString();
     private String anoPassUm = Year.now().minusYears(1).toString();
@@ -102,55 +100,54 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
         }
     }
 
-    public static RelatorioEscolarController getInstance() {
-        return instance;
-    }
-
     public void relatorioGeral() {
         Year ano = Year.now();
 
-        totalTeorica = DAOFactory.daoFactury().relatorioEscolaDAO().count("TEORICA", ano);
-        totalPratica = DAOFactory.daoFactury().relatorioEscolaDAO().count("PRATICA", ano);
-        totalTecnica = DAOFactory.daoFactury().relatorioEscolaDAO().count("TECNICA", ano);
-        totalCap = DAOFactory.daoFactury().relatorioEscolaDAO().count("CAP", ano);
+        totalTeorica = DAOFactory.daoFactury().relatorioEscolaDAO().count(TEORICA, ano);
+        totalPratica = DAOFactory.daoFactury().relatorioEscolaDAO().count(PRATICA, ano);
+        totalTecnica = DAOFactory.daoFactury().relatorioEscolaDAO().count(TECNICA, ano);
+        totalCap = DAOFactory.daoFactury().relatorioEscolaDAO().count(CAP, ano);
 
-        totalTeoricaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO().countResultadoPorTipoExame("TEORICA", "APROVADO", ano.toString());
-        totalPraticaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO().countResultadoPorTipoExame("PRATICA", "APROVADO", ano.toString());
-        totalCapAprovado = DAOFactory.daoFactury().relatorioEscolaDAO().countResultadoPorTipoExame("CAP", "APROVADO", ano.toString());
-        totalTecnicaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO().countResultadoPorTipoExame("TECNICA", "APROVADO", ano.toString());
+        int totalTeoricaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+                .countResultadoPorTipoExame(TEORICA, APROVADO, ano.toString());
+        int totalPraticaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+                .countResultadoPorTipoExame(PRATICA, APROVADO, ano.toString());
+        int totalCapAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+                .countResultadoPorTipoExame(CAP, APROVADO, ano.toString());
+        int totalTecnicaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+                .countResultadoPorTipoExame(TECNICA, APROVADO, ano.toString());
 
         lblAprovadoTeorica.setText(totalTeoricaAprovado + "");
         lbAprovadoPratica.setText(totalPraticaAprovado + "");
         lblAprovadoTecnica.setText(totalTecnicaAprovado + "");
         lblAprovadoCap.setText(totalCapAprovado + "");
-        
+
         lbTeorica.setText(totalTeorica + "");
         lbPratica.setText(totalPratica + "");
         lbTecnica.setText(totalTecnica + "");
         lbCap.setText(totalCap + "");
 
-        percentagemAprovadoEmTeorica = totalTeorica == 0 ? 0: Float.valueOf(totalTeoricaAprovado)/Float.valueOf(totalTeorica) * 100;
-        percentagemAprovadoEmPratica = totalPratica == 0 ? 0: Float.valueOf(totalPraticaAprovado)/Float.valueOf(totalPratica) * 100;
-        percentagemAprovadoEmTecnica = totalTecnica == 0 ? 0: Float.valueOf(totalTecnicaAprovado)/Float.valueOf(totalTecnica) * 100;
-        percentagemAprovadoEmCAP = totalCap == 0 ? 0: Float.valueOf(totalCapAprovado)/Float.valueOf(totalCap) * 100;
-        
+        float percentagemAprovadoEmTeorica = totalTeorica == 0 ? 0 : Float.valueOf(totalTeoricaAprovado) / Float.valueOf(totalTeorica) * 100;
+        float percentagemAprovadoEmPratica = totalPratica == 0 ? 0 : Float.valueOf(totalPraticaAprovado) / Float.valueOf(totalPratica) * 100;
+        float percentagemAprovadoEmTecnica = totalTecnica == 0 ? 0 : Float.valueOf(totalTecnicaAprovado) / Float.valueOf(totalTecnica) * 100;
+        float percentagemAprovadoEmCAP = totalCap == 0 ? 0 : Float.valueOf(totalCapAprovado) / Float.valueOf(totalCap) * 100;
+
         DecimalFormat myFormatter = new DecimalFormat("###,###.##");
-        
+
         lblPorcentagemDeAprovadoTeorica.setText(myFormatter.format(percentagemAprovadoEmTeorica) + "%");
         lblPorcentagemDeAprovadoPratica.setText(myFormatter.format(percentagemAprovadoEmPratica) + "%");
         lblPorcentagemDeAprovadoCap.setText(myFormatter.format(percentagemAprovadoEmCAP) + "%");
         lblPorcentagemDeAprovadoTecnica.setText(myFormatter.format(percentagemAprovadoEmTecnica) + "%");
-      
+
     }
 
     protected PieChart createChart() {
         Year ano = Year.now();
 
-        final PieChart pc = new PieChart(FXCollections.observableArrayList(
-                new PieChart.Data("TEORICA", totalTeorica),
-                new PieChart.Data("PRATICA", (double) totalPratica),
-                new PieChart.Data("TECNICA", (double) totalTecnica),
-                new PieChart.Data("CAP", (double) totalCap)
+        final PieChart pc = new PieChart(FXCollections.observableArrayList(new PieChart.Data(TEORICA, totalTeorica),
+                new PieChart.Data(PRATICA, (double) totalPratica),
+                new PieChart.Data(TECNICA, (double) totalTecnica),
+                new PieChart.Data(CAP, (double) totalCap)
         ));
         // setup chart
         pc.setId("BasicPie");
@@ -161,7 +158,6 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
 
     @SuppressWarnings("Convert2Diamond")
     protected BarChart<String, Number> createChartBar() {
-
         final String[] years = {anoAgora, anoPassUm, anoPassDois};
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -174,25 +170,35 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
         yAxis.setLabel("Quantidade");
         // add starting data
         XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        series1.setName("APROVADO");
+        series1.setName(APROVADO);
         XYChart.Series<String, Number> series2 = new XYChart.Series<>();
-        series2.setName("REPROVADO");
+        series2.setName(REPROVADO);
         XYChart.Series<String, Number> series3 = new XYChart.Series<>();
-        series3.setName("FALTOU");
+        series3.setName(FALTOU);
         // create sample data
-        series1.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("APROVADO", anoAgora)));
-        series1.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("APROVADO", anoPassUm)));
-        series1.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("APROVADO", anoPassDois)));
-        series2.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("REPROVADO", anoAgora)));
-        series2.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("REPROVADO", anoPassUm)));
-        series2.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("REPROVADO", anoPassDois)));
-        series3.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("FALTOU", anoAgora)));
-        series3.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("FALTOU", anoPassUm)));
-        series3.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory.daoFactury().relatorioEscolaDAO().countResultado("FALTOU", anoPassDois)));
+        series1.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(APROVADO, anoAgora)));
+        series1.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(APROVADO, anoPassUm)));
+        series1.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(APROVADO, anoPassDois)));
+        series2.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(REPROVADO, anoAgora)));
+        series2.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(REPROVADO, anoPassUm)));
+        series2.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(REPROVADO, anoPassDois)));
+        series3.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(FALTOU, anoAgora)));
+        series3.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(FALTOU, anoPassUm)));
+        series3.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory
+                .daoFactury().relatorioEscolaDAO().countResultado(FALTOU, anoPassDois)));
+        
         bc.getData().add(series1);
         bc.getData().add(series2);
         bc.getData().add(series3);
         return bc;
     }
-    
+
 }

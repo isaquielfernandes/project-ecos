@@ -7,15 +7,16 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FXML Controller class
  *
  * @author Isaquiel Fernandes
  */
+@Slf4j
 public class HomeController extends AnchorPane implements Initializable {
 
     @FXML
@@ -28,7 +29,7 @@ public class HomeController extends AnchorPane implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+       log.debug("iniciando ...");
     }    
     @SuppressWarnings("LeakingThisInConstructor")
     public HomeController(){

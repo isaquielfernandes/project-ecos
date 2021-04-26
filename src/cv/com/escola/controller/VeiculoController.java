@@ -306,20 +306,12 @@ public class VeiculoController extends AnchorPane implements Initializable {
 
     private void filtro(String novo, ObservableList<Veiculo> listaVeiculo) {
         FilteredList<Veiculo> dadosFiltrados = new FilteredList<>(listaVeiculo, veivulo -> true);
-        dadosFiltrados.setPredicate((veiculo) -> {
-            if (novo == null || novo.isEmpty()) {
-                return true;
-            } else if (veiculo.getPlaca().toLowerCase().startsWith(novo.toUpperCase())) {
-                return true;
-            } else if (veiculo.getProprietario().getNomePropretario().toLowerCase().startsWith(novo.toUpperCase())) {
-                return true;
-            } else if (veiculo.getFabricante().toLowerCase().startsWith(novo.toUpperCase())) {
-                return true;
-            } else if (veiculo.getModelo().toLowerCase().startsWith(novo.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate((veiculo) -> 
+                veiculo.getPlaca().toLowerCase().startsWith(novo.toUpperCase()) || 
+                veiculo.getProprietario().getNomePropretario().toLowerCase().startsWith(novo.toUpperCase()) || 
+                veiculo.getFabricante().toLowerCase().startsWith(novo.toUpperCase()) || 
+                veiculo.getModelo().toLowerCase().startsWith(novo.toLowerCase()) 
+        );
         SortedList<Veiculo> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbVeiculo.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de veiculo cadastrado");

@@ -47,12 +47,8 @@ public class MenuVeiculoController extends AnchorPane implements Initializable {
     private void btTelaVeiculo(ActionEvent event) {
         Modulo.getVeiculo(boxMenuVeiculo);
     }
-
-    /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
-     */
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btTelaVeiculo(null);

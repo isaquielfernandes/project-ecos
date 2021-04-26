@@ -6,42 +6,42 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoadProperties {
     
-    protected Properties properties = new Properties();
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadProperties.class);
+
+    protected Properties properties;
     protected File file;
-    protected InputStream inputStream;
     protected String url;
     protected String user;
     protected String pass;
 
     public LoadProperties() {
+        properties = new Properties();
     }
 
     public void loadPropertiesFile() {
-        try {
-            file = new File("database.properties");
+        file = new File("database.properties");
+        try (InputStream inputStream = new FileInputStream(file);) {
             if (file.exists()) {
-                inputStream = new FileInputStream(file);
                 properties.load(inputStream);
                 url = "jdbc:mysql://" + properties.getProperty("host") + ":" + properties.getProperty("port") + "/";
                 user = properties.getProperty("user");
                 pass = properties.getProperty("password");
             } else {
                 DBProperties.mkDbProperties();
-                inputStream = new FileInputStream(file);
                 properties.load(inputStream);
                 url = "jdbc:mysql://" + properties.getProperty("host") + ":" + properties.getProperty("port") + "/";
                 user = properties.getProperty("user");
                 pass = properties.getProperty("password");
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+           LOGGER.error(ex.getMessage());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
     

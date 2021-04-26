@@ -79,7 +79,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
 
     @Override
     public List<Matricula> findAll() {
-        List<Matricula> inscricao = new ArrayList();
+        List<Matricula> inscricao = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT m.id_matricula, m.data, a.id_aluno, a.nome, c.codigo, c.nome_curso, m.turma, m.periodo, m.obs FROM ").append(db).append(".tb_matricula as m, ").append(db).append(".tb_aluno as a, ").append(db).append(".tb_curso as c where m.aluno_id = a.id_aluno and m.curso_id = c.codigo order by m.data desc;");

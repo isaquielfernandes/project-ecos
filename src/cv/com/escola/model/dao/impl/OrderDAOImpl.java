@@ -408,14 +408,14 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public void reportReciboFatura(int biFiltro) {
         try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
-            HashMap filtro = new HashMap<>();
+            Map<String, Object> filtro = new HashMap<>();
             filtro.put("id_venda", biFiltro);
 
             URL url = getClass().getResource("/cv/com/escola/reports/reciboFatura.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, filtro, conector);//null: caso não existam filtros
 
-            Print jasperViewer = new Print();//(jasperPrint, false);//false: não deixa fechar a aplicação principal
+            Print jasperViewer = new Print();
             jasperViewer.viewReport("Recibo/Fatura", jasperPrint);
 
         } catch (JRException ex) {

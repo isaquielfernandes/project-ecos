@@ -14,6 +14,8 @@ import java.util.Locale;
 
 public class Tempo {
     
+    private static final String FX_BACKGROUNDCOLOR_FFC8C3 = "-fx-background-color: #ffc8c3;";
+    
     private Tempo() {
         
     }
@@ -91,7 +93,7 @@ public class Tempo {
                 
                 if (item.isBefore(data.plusDays(1))) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc8c3;");
+                    setStyle(FX_BACKGROUNDCOLOR_FFC8C3);
                 }
             }
         };
@@ -109,7 +111,7 @@ public class Tempo {
                 
                 if (item.isAfter(data.plusDays(1))) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc8c3;");
+                    setStyle(FX_BACKGROUNDCOLOR_FFC8C3);
                 }
             }
         };
@@ -121,12 +123,11 @@ public class Tempo {
         final Callback<DatePicker, DateCell> dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
-                
                 super.updateItem(item, empty);
                 
                 if (item.isBefore(data.plusDays(1))) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc8c3;");
+                    setStyle(FX_BACKGROUNDCOLOR_FFC8C3);
                 }
             }
         };

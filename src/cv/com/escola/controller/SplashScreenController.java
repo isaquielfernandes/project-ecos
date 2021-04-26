@@ -15,15 +15,47 @@ public class SplashScreenController implements Initializable {
     
     @FXML
     private Label progress;
-    public static Label label;
+    private static Label label;
     @FXML
     private ProgressBar progressBar;
-    public static ProgressBar statProgressBar;
+    private static ProgressBar statProgressBar;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       label = progress ;
-       statProgressBar = progressBar;
+       setLabel(progress);
+       setStatProgressBar(progressBar);
     }    
-    
+
+    public Label getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Label progress) {
+        this.progress = progress;
+    }
+
+    public static Label getLabel() {
+        return label;
+    }
+
+    public static void setLabel(Label label) {
+        SplashScreenController.label = label;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public static ProgressBar getStatProgressBar() {
+        return statProgressBar;
+    }
+
+    public static void setStatProgressBar(ProgressBar statProgressBar) {
+        SplashScreenController.statProgressBar = statProgressBar;
+    }
+
 }

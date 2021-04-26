@@ -99,7 +99,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <TextField fx:id="txtNome_Completo" prefHeight="35.0" prefWidth="559.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+            <TextField fx:id="txtNomeCompleto" prefHeight="35.0" prefWidth="559.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -161,7 +161,7 @@
                <font>
                   <Font name="SansSerif Regular" size="13.0" />
                </font></TextField>
-            <TextField fx:id="txtBI_NIF" prefHeight="35.0" prefWidth="182.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="5" GridPane.rowIndex="1">
+            <TextField fx:id="txtBiNif" prefHeight="35.0" prefWidth="182.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="5" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -257,7 +257,7 @@
                   <Insets left="6.0" />
                </padding>
             </Label>
-            <TextField fx:id="txtNome_Pai" prefHeight="35.0" prefWidth="370.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
+            <TextField fx:id="txtNomeDoPai" prefHeight="35.0" prefWidth="370.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -265,7 +265,7 @@
                   <Font name="SansSerif Regular" size="13.0" />
                </font>
             </TextField>
-            <TextField fx:id="txtNome_Mae" prefHeight="35.0" prefWidth="370.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8">
+            <TextField fx:id="txtNomeDaMae" prefHeight="35.0" prefWidth="370.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -278,7 +278,7 @@
                   <Insets />
                </GridPane.margin>
             </ComboBox>
-            <TextField fx:id="txtTipo_Sanguineo" prefHeight="35.0" prefWidth="111.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="3" GridPane.rowIndex="9">
+            <TextField fx:id="txtTipoSanguineo" prefHeight="35.0" prefWidth="111.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="3" GridPane.rowIndex="9">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -342,7 +342,7 @@
                   <Font name="SansSerif Regular" size="13.0" />
                </font>
             </TextField>
-            <TextField fx:id="txtZona_rua" prefHeight="35.0" prefWidth="248.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11">
+            <TextField fx:id="txtZonaRua" prefHeight="35.0" prefWidth="248.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -358,7 +358,7 @@
                   <Font name="SansSerif Regular" size="13.0" />
                </font>
             </TextField>
-            <TextField fx:id="txtCidade_Ilha" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="12">
+            <TextField fx:id="txtCidadeIlha" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="12">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -490,7 +490,7 @@
                <font>
                   <Font name="SansSerif Regular" size="13.0" />
                </font></TextField>
-            <TextField fx:id="txtCarta_conducao" prefHeight="35.0" prefWidth="182.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="5" GridPane.rowIndex="5">
+            <TextField fx:id="txtCartaConducao" prefHeight="35.0" prefWidth="182.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="5" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -522,7 +522,7 @@
                   <Font name="SansSerif Regular" size="13.0" />
                </font>
             </TextField>
-            <TextField fx:id="txtConta_Corente" prefHeight="35.0" prefWidth="182.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="5" GridPane.rowIndex="9">
+            <TextField fx:id="txtContaCorente" prefHeight="35.0" prefWidth="182.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 0; -fx-border-radius: 0;" styleClass="campo-texto" GridPane.columnIndex="5" GridPane.rowIndex="9">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -553,7 +553,7 @@
             <Separator orientation="VERTICAL" prefHeight="30.0" prefWidth="11.0" GridPane.columnIndex="6" GridPane.rowSpan="14" />
          </children>
       </GridPane>
-      <AnchorPane fx:id="telaEdicao" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+      <AnchorPane fx:id="telaEdicao" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <children>
             <TableView fx:id="tbInstrutor" editable="true" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
               <columns>

@@ -11,13 +11,13 @@ public enum Ilha {
     FOGO("FOGO"),
     BRAVA("BRAVA");
     
-    private final String ilha;
+    private final String nome;
     
     Ilha(String valor){
-        this.ilha = valor;
+        this.nome = valor;
     }
 
     public String getIlha() {
-        return ilha;
+        return nome;
     }
 }

@@ -103,6 +103,10 @@ public class InscricaoController extends AnchorPane implements Initializable {
     private List<Curso> listaCurso;
     private List<Matricula> listaInscricao;
 
+    private static final String OPERACAO_NAO_SUPORTADA = "Operacao nao suportada";
+    private static final String QUANTIDADE_DE_INSCRICAO_ENCONTRADOS = "Quantidade de inscrição encontrados";
+    private static final String INSCRICAO = "Inscrição";
+    
     /**
      * Initializes the controller class.
      *
@@ -119,16 +123,16 @@ public class InscricaoController extends AnchorPane implements Initializable {
         telaCadastro(null);
         selectAlunoListView(null);
 
-        listViewAluno.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> 
-            selectAlunoListView(newValue)
+        listViewAluno.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
+                -> selectAlunoListView(newValue)
         );
 
         txtBuscarAluno.textProperty().addListener((observable, oldValue, newValue) -> 
-            filtros(newValue, FXCollections.observableArrayList(listaAluno))
+                filtros(newValue, FXCollections.observableArrayList(listaAluno))
         );
 
         txtPesquisar.textProperty().addListener((observable, oldValue, newValue) -> 
-            filtro(newValue, FXCollections.observableArrayList(listaInscricao))
+                filtro(newValue, FXCollections.observableArrayList(listaInscricao))
         );
     }
 
@@ -201,7 +205,7 @@ public class InscricaoController extends AnchorPane implements Initializable {
         colCurso.setCellValueFactory((CellDataFeatures<Matricula, Curso> obj) -> obj.getValue().cursoPretendidoProperty());
         colPeriodo.setCellValueFactory((CellDataFeatures<Matricula, String> obj) -> obj.getValue().periodoProperty());
         colTurma.setCellValueFactory((CellDataFeatures<Matricula, String> obj) -> obj.getValue().turmaProperty());
- 
+
         tbInscricao.setItems(data);
     }
 
@@ -211,14 +215,9 @@ public class InscricaoController extends AnchorPane implements Initializable {
     private void filtros(String valor, ObservableList<Aluno> listaAluno) {
 
         FilteredList<Aluno> dadosFiltrados = new FilteredList<>(listaAluno, aluno -> true);
-        dadosFiltrados.setPredicate(aluno -> {
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (aluno.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false; //To change body of generated lambdas, choose Tools | Templates.
-        });
+        dadosFiltrados.setPredicate(aluno -> 
+                aluno.getNome().toLowerCase().startsWith(valor.toLowerCase())
+        );
 
         SortedList<Aluno> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().get();
@@ -229,16 +228,11 @@ public class InscricaoController extends AnchorPane implements Initializable {
     //Filtrar dados de matricula
     private void filtro(String valor, ObservableList<Matricula> listaMatriculas) {
         FilteredList<Matricula> dadosFiltrados = new FilteredList<>(listaMatriculas, inscricao -> true);
-        dadosFiltrados.setPredicate(inscrito -> {
-            if (inscrito.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (inscrito.getData().toString().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (inscrito.getCursoPretendido().getCurso().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate(inscrito -> 
+                inscrito.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
+                inscrito.getData().toString().toLowerCase().startsWith(valor.toLowerCase()) || 
+                inscrito.getCursoPretendido().getCurso().toLowerCase().startsWith(valor.toLowerCase())
+                );
 
         SortedList<Matricula> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbInscricao.comparatorProperty());
@@ -249,28 +243,28 @@ public class InscricaoController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaCadastro(ActionEvent event) {
-        configTela("Matricula/Inscrição", "Campos obrigatórios", 0);
+        configTela(INSCRICAO, "Campos obrigatórios", 0);
         Modulo.visualizacao(true, telaCadastro, btSalvar);
         limparCampos();
     }
 
     @FXML
     private void telaEdicao(ActionEvent event) {
-        configTela("Matricula/Inscrição", "Quantidade de inscrição encontrados", 1);
+        configTela(INSCRICAO, QUANTIDADE_DE_INSCRICAO_ENCONTRADOS, 1);
         Modulo.visualizacao(true, telaCadastro, btEditar, txtPesquisar);
         tabela();
     }
 
     @FXML
     private void telaExcluir(ActionEvent event) {
-        configTela("Matricula/Inscrição", "Quantidade de inscrição encontrados", 2);
+        configTela(INSCRICAO, QUANTIDADE_DE_INSCRICAO_ENCONTRADOS, 2);
         Modulo.visualizacao(true, telaCadastro, btExcluir, txtPesquisar);
         tabela();
     }
 
     @FXML
     private void imprimirListaDeAlunoInscrito(ActionEvent event) {
-
+        throw new UnsupportedOperationException(OPERACAO_NAO_SUPORTADA);
     }
 
     @FXML
@@ -280,7 +274,7 @@ public class InscricaoController extends AnchorPane implements Initializable {
 
     @FXML
     private void add(ActionEvent event) {
-
+        throw new UnsupportedOperationException(OPERACAO_NAO_SUPORTADA);
     }
 
     @FXML
@@ -351,5 +345,29 @@ public class InscricaoController extends AnchorPane implements Initializable {
             tabela();
         }
 
+    }
+
+    public List<Aluno> getListaAluno() {
+        return listaAluno;
+    }
+
+    public void setListaAluno(List<Aluno> listaAluno) {
+        this.listaAluno = listaAluno;
+    }
+
+    public List<Curso> getListaCurso() {
+        return listaCurso;
+    }
+
+    public void setListaCurso(List<Curso> listaCurso) {
+        this.listaCurso = listaCurso;
+    }
+
+    public List<Matricula> getListaInscricao() {
+        return listaInscricao;
+    }
+
+    public void setListaInscricao(List<Matricula> listaInscricao) {
+        this.listaInscricao = listaInscricao;
     }
 }

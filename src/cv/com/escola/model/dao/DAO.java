@@ -8,23 +8,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 public abstract class DAO {
-    
-    static {
-        Thread.currentThread().setName("MAIN: ");
-    }
-    
-    protected static final Logger LOG = Logger.getLogger(DAO.class.getName());
+
+    protected Connection connect = null;
     protected ResultSet rs;
-    protected PreparedStatement preparedStatement;
+    protected PreparedStatement preparedStatement = null;
     protected String db = DBProperties.loadPropertiesDB();
     protected String user = DBProperties.loadPropertiesFileUser();
     protected String pass = DBProperties.loadPropertiesFilePass();
@@ -33,34 +32,36 @@ public abstract class DAO {
 
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     protected void transact(Consumer<Connection> callback) {
         Connection connection = null;
         try {
             connection = HikariCPDataSource.getInstance().getConnection();
             callback.accept(connection);
             connection.commit();
-        } catch (Exception e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    throw new DataAccessException(ex);
-                }
-            }
-            throw (e instanceof DataAccessException
-                    ? (DataAccessException) e : new DataAccessException(e));
+        } catch (SQLException e) {
+            rollBack(connection);
+            throw new DataAccessException(e);
         } finally {
             close(connection);
         }
     }
 
-    private void close(Connection connection) {
+    private void rollBack(Connection connection) throws DataAccessException {
+        if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        }
+    }
+
+    protected void close(Connection connection) throws DataAccessException{
         if (connection != null) {
             try {
                 connection.close();
-            } catch (SQLException e) {
-                LOG.log(Level.FINER, e.getMessage());
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
             }
         }
     }
@@ -78,23 +79,36 @@ public abstract class DAO {
         }
     }
     
-    protected boolean delete(String sql, Object id) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+    protected void executeStatement(Connection connection, String sql) {
+        try {
+            try(Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(1);
-                statement.setObject(1, id);
-                return statement.execute();
+                statement.execute(sql);
             }
-        } catch (SQLException ex) {
-            throw new IllegalStateException(ex);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
         }
     }
     
+    protected void remove(String query, Object id) {
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    query
+            )) {
+                pstmt.setQueryTimeout(1);
+                pstmt.setObject(1, id);
+                log.debug(MessageFormat.format("SQL: {0}.", query));
+                pstmt.execute();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
+    }
+    
     protected int count(Connection connection, String sql) {
-        try {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setQueryTimeout(1);
-                ResultSet resultSet = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setQueryTimeout(1);
+            try (ResultSet resultSet = statement.executeQuery();) {
                 if(!resultSet.next())
                     throw new IllegalArgumentException("There was no row to be selected!");
                 return ((Number) resultSet.getObject(1)).intValue();

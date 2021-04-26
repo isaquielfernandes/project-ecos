@@ -28,7 +28,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void create(Inventario inventario) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()){
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("insert into ").append(db).append(".tb_inventario ( num_serie, fk_categoria, item, responsavel, ");
             query.append("fk_area, local, data_compra, meses_desde_compra, valor, estado_consrvacao, ");
@@ -61,7 +61,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void update(Inventario inventario) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()){
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db)
                     .append(".tb_inventario SET num_serie =?, fk_categoria =?, item =?, responsavel =?, fk_area =?, local =?, data_compra =?, meses_desde_compra =?, valor =?, estado_consrvacao =?, vida_util_ano =?, valor_atual =?, depreciacao =? WHERE id_inventario =?");
@@ -79,16 +79,9 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public void delete(Integer idInventario) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_inventario WHERE id_inventario=?");
-            preparedStatement = conn.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idInventario);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
+        final StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_inventario WHERE id_inventario=?");
+        this.remove(query.toString(), idInventario);
     }
 
     @Override
@@ -128,7 +121,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                return rs.getString(1).toLowerCase().trim().equals(nome.toLowerCase().trim().toLowerCase());
+                return rs.getString(1).equalsIgnoreCase(nome);
             }
             preparedStatement.close();
             rs.close();
@@ -141,7 +134,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public int total() {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()){
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_inventario");
             preparedStatement = conn.prepareStatement(query.toString());

@@ -23,7 +23,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -119,10 +118,12 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
         Grupo.notEmpty(menu);
         combos();
         Mascara.numerico(txtDuracao);
+        
         cbVeiculo.setOnMouseClicked(event -> {
             sincronizaBase();
             combos();
         });
+        
         txtDuracao.setOnKeyReleased(event -> {
             if(!txtDuracao.getText().trim().isEmpty()){
                 lbValidade.setText(dataDeInspeccao.getValue().plusMonths(Long.parseLong(txtDuracao.getText())) + "");
@@ -238,6 +239,7 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
 
     @FXML
     private void imprimir(ActionEvent event) {
+        throw new UnsupportedOperationException();
     }
 
     private void combos() {
@@ -294,10 +296,7 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
     @SuppressWarnings("LeakingThisInConstructor")
     public InspeccaoTecnicaController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/inspeccaoTecnica.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "inspeccaoTecnica");
         } catch (IOException ex) {
             Logger.getLogger(InspeccaoTecnicaController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela inspecção tecnica" + ex);

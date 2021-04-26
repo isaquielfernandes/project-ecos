@@ -179,14 +179,18 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        instance = this;
+        setInstance(this);
         desativarSubmenus();
         Grupo.notEmpty(grupoMenus, grupoRegistro, grupoRelatorio,
                 grupoUtilidades, grupoExame, grupoProcesso);
         menuDashboard(null);
-        lbUser.setText(LoginController.usuarioLogado.getNome().toUpperCase());
+        lbUser.setText(LoginController.getUsuarioLogado().getNome().toUpperCase());
         notificacoes();
         aniversarioNoMes();
+    }
+
+    public static void setInstance(AppController instance) {
+        AppController.instance = instance;
     }
 
     public VBox boxNotas() {

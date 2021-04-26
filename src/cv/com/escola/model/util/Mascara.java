@@ -13,11 +13,11 @@ import javafx.scene.control.Tooltip;
 public class Mascara {
 
     private Mascara() {
+        
     }
 
-    public static boolean validationEmail(TextField campo) {
+    public static boolean email(TextField campo) {
         boolean email = false;
-
         Pattern p = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com");
         Matcher m = p.matcher(campo.getText());
         if (m.find() && m.group().equals(campo.getText())) {

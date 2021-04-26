@@ -101,7 +101,7 @@
                                           <String fx:value="primary" />
                                        </styleClass>
                                     </Button>
-                                    <Button fx:id="btnCriar" disable="true" mnemonicParsing="false" onAction="#OnActionCriarDataBase" prefHeight="30.0" prefWidth="102.0" text="Criar DB">
+                                    <Button fx:id="btnCriar" disable="true" mnemonicParsing="false" onAction="#onActionCriarDataBase" prefHeight="30.0" prefWidth="102.0" text="Criar DB">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>

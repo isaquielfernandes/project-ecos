@@ -1,5 +1,6 @@
 package cv.com.escola.app;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -20,10 +21,9 @@ public class Server extends Application {
     private double initY;
 
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public void start(final Stage stage) {
         try {
-            palco = stage;
+            Server.setPalco(stage);
             AnchorPane page = FXMLLoader.load(Server.class.getResource("/cv/com/escola/view/login/Server.fxml"));
             Scene cena = new Scene(page);
 
@@ -48,7 +48,7 @@ public class Server extends Application {
             stage.setScene(cena);
             stage.show();
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Erro ao inicializar aplicacao!" , ex);
         }
     }
@@ -56,8 +56,13 @@ public class Server extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
-    public static void close() {
-        palco.close();
+
+    public static Stage getPalco() {
+        return palco;
     }
+
+    private static void setPalco(Stage palco) {
+        Server.palco = palco;
+    }
+    
 }

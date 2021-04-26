@@ -30,7 +30,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -75,7 +74,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
     @FXML
     private GridPane telaCadastro;
     @FXML
-    private TextField txtNome_Completo;
+    private TextField txtNomeCompleto;
     @FXML
     private TextField txtTelefone;
     @FXML
@@ -83,7 +82,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
     @FXML
     private TextField txtNacionalidade;
     @FXML
-    private TextField txtBI_NIF;
+    private TextField txtBiNif;
     @FXML
     private DatePicker dataNascimento;
     @FXML
@@ -93,19 +92,19 @@ public class InstrutorController extends AnchorPane implements Initializable {
     @FXML
     private DatePicker dtAdmisao;
     @FXML
-    private TextField txtNome_Pai;
+    private TextField txtNomeDoPai;
     @FXML
-    private TextField txtNome_Mae;
+    private TextField txtNomeDaMae;
     @FXML
     private ComboBox<String> cbHabilitacao;
     @FXML
-    private TextField txtTipo_Sanguineo;
+    private TextField txtTipoSanguineo;
     @FXML
-    private TextField txtZona_rua;
+    private TextField txtZonaRua;
     @FXML
     private TextField txtCelular;
     @FXML
-    private TextField txtCidade_Ilha;
+    private TextField txtCidadeIlha;
     @FXML
     private TextArea taObservacao;
     @FXML
@@ -119,11 +118,11 @@ public class InstrutorController extends AnchorPane implements Initializable {
     @FXML
     private TextField txtNaturalidade;
     @FXML
-    private TextField txtCarta_conducao;
+    private TextField txtCartaConducao;
     @FXML
     private TextField txtBanco;
     @FXML
-    private TextField txtConta_Corente;
+    private TextField txtContaCorente;
     @FXML
     private TextField txtAgencia;
     @FXML
@@ -191,10 +190,12 @@ public class InstrutorController extends AnchorPane implements Initializable {
     private FileChooser.ExtensionFilter extensionFilterJPG = new FileChooser.ExtensionFilter("JPG Files(*.jpg)", "*.JPG");
     private FileChooser.ExtensionFilter extensionFilterPNG = new FileChooser.ExtensionFilter("PNG Files(*.PNG)", "*.PNG");
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-    private String n = LocalDateTime.now().format(formatter);//rand.nextInt(999999999) + 1;
+    private String n = LocalDateTime.now().format(formatter);
     private String sep = File.separator;
     private File diretorio = new File("public/img/instrutor/");
-    private Image img = new Image("/cv/com/escola/img/sem_foto_0.gif");
+    private Image img = new Image("/cv/com/escola/view/img/sem_foto_0.gif");
+    
+    private static final String QUANTIDADE_DE_INSTRUTOR_ENCONTRADOS = "Quantidade de Instrutor encontrados";
 
     /**
      * Initializes the controller class.
@@ -210,8 +211,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
         colFoto.setVisible(false);
         imgFoto.setOnMouseClicked(event -> uploadImage());
 
-        colNome.setCellFactory(column -> {
-            return new TableCell<Instrutor, String>() {
+        colNome.setCellFactory(column -> new TableCell<Instrutor, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -222,17 +222,14 @@ public class InstrutorController extends AnchorPane implements Initializable {
                         setText(item);
                     }
                 }
-            };
-        });
+            }
+        );
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public InstrutorController() {
         try {
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/cv/com/escola/view/instrutor.fxml"));
-            fxml.setRoot(this);
-            fxml.setController(this);
-            fxml.load();
+            GenericFXXMLLoader.loadFXML(this, "instrutor");
         } catch (IOException ex) {
             Logger.getLogger(InstrutorController.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.erro("Erro ao carregar tela instrutor!");
@@ -278,7 +275,6 @@ public class InstrutorController extends AnchorPane implements Initializable {
         ObservableList data = FXCollections.observableArrayList(listInstrutor);
 
         colFoto.setCellValueFactory(new PropertyValueFactory<>("imgView"));
-        //colId.setCellValueFactory((CellDataFeatures<Instrutor, Long> obj) -> new SimpleLongProperty(obj.getValue().getId()));
         colDataAdmisao.setCellValueFactory((CellDataFeatures<Instrutor, LocalDate> obj) -> new SimpleObjectProperty(obj.getValue().getAdmissao()));
         colNome.setCellValueFactory((CellDataFeatures<Instrutor, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
         colNomePai.setCellValueFactory((CellDataFeatures<Instrutor, String> obj) -> new SimpleStringProperty(obj.getValue().getNomeDoPai()));
@@ -307,7 +303,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
      * Limpar campos textfield cadastro de coleções
      */
     private void limparCampos() {
-        Campo.limpar(txtEmail, txtAgencia, txtBI_NIF, txtCarta_conducao, txtCidade_Ilha, txtBanco, txtNome_Completo, txtNome_Mae, txtNome_Pai, txtCelular, txtTelefone, txtZona_rua, txtConta_Corente, txtNaturalidade, txtNacionalidade, txtTipo_Sanguineo);
+        Campo.limpar(txtEmail, txtAgencia, txtBiNif, txtCartaConducao, txtCidadeIlha, txtBanco, txtNomeCompleto, txtNomeDaMae, txtNomeDoPai, txtCelular, txtTelefone, txtZonaRua, txtContaCorente, txtNaturalidade, txtNacionalidade, txtTipoSanguineo);
         Campo.limpar(taObservacao);
 
         dataNascimento.getEditor().setText("");
@@ -325,14 +321,14 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaEdicao(ActionEvent event) {
-        configTela("INSTRUTOR", "Quantidade de Instrutor encontrados", 1);
+        configTela("INSTRUTOR", QUANTIDADE_DE_INSTRUTOR_ENCONTRADOS, 1);
         Modulo.visualizacao(true, telaEdicao, btEditar, txtPesquisar);
         tabela();
     }
 
     @FXML
     private void telaExcluir(ActionEvent event) {
-        configTela("Excluir Instrutor", "Quantidade de Instrutor encontrados", 2);
+        configTela("Excluir Instrutor", QUANTIDADE_DE_INSTRUTOR_ENCONTRADOS, 2);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar);
         tabela();
     }
@@ -344,7 +340,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
     @FXML
     public void telaImprimir(ActionEvent event) {
-        configTela("Imprimir Dados do Instrutor", "Quantidade de Instrutor encontrados", 3);
+        configTela("Imprimir Dados do Instrutor", QUANTIDADE_DE_INSTRUTOR_ENCONTRADOS, 3);
         Modulo.visualizacao(true, telaEdicao, btImprimir, txtPesquisar);
         tabela();
     }
@@ -356,31 +352,31 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean emptyFields = checkEmptyFields(txtNome_Completo, txtNome_Pai, txtNome_Mae, txtEmail, txtZona_rua, txtCidade_Ilha, txtCelular, txtBI_NIF,
-                txtNacionalidade, dtAdmisao, dataNascimento, cbHabilitacao, txtCarta_conducao);
+        boolean emptyFields = checkEmptyFields(txtNomeCompleto, txtNomeDoPai, txtNomeDaMae, txtEmail, txtZonaRua, txtCidadeIlha, txtCelular, txtBiNif,
+                txtNacionalidade, dtAdmisao, dataNascimento, cbHabilitacao, txtCartaConducao);
 
-        String nome = txtNome_Completo.getText();
+        String nome = txtNomeCompleto.getText();
         LocalDate dataAdmisao = dtAdmisao.getValue();
-        String nomePai = txtNome_Pai.getText();
-        String nomeMae = txtNome_Mae.getText();
+        String nomePai = txtNomeDoPai.getText();
+        String nomeMae = txtNomeDaMae.getText();
         String escolaridade = cbHabilitacao.getValue();
-        String tipoSanguineo = txtTipo_Sanguineo.getText();
+        String tipoSanguineo = txtTipoSanguineo.getText();
 
         String email = txtEmail.getText();
-        String endereco = txtZona_rua.getText();
-        String cidade = txtCidade_Ilha.getText();
+        String endereco = txtZonaRua.getText();
+        String cidade = txtCidadeIlha.getText();
         String telefone = txtTelefone.getText();
         String celular = txtCelular.getText();
 
-        String nif = txtBI_NIF.getText();
+        String nif = txtBiNif.getText();
         String nacionalidade = txtNacionalidade.getText();
         String naturalidade = txtNaturalidade.getText();
         LocalDate datNascimento = dataNascimento.getValue();
-        String cartaConducao = txtCarta_conducao.getText();
+        String cartaConducao = txtCartaConducao.getText();
 
         String banco = txtBanco.getText();
         String agencia = txtAgencia.getText();
-        String contaCorenta = txtConta_Corente.getText();
+        String contaCorenta = txtContaCorente.getText();
         String observacao = taObservacao.getText();
 
         if (emptyFields) {
@@ -412,29 +408,29 @@ public class InstrutorController extends AnchorPane implements Initializable {
 
             telaCadastro(null);
 
-            txtNome_Completo.setText(instrutor.getNome());
+            txtNomeCompleto.setText(instrutor.getNome());
             dtAdmisao.setValue(instrutor.getAdmissao());
 
-            txtNome_Pai.setText(instrutor.getNomeDoPai());
-            txtNome_Mae.setText(instrutor.getNomeDaMae());
+            txtNomeDoPai.setText(instrutor.getNomeDoPai());
+            txtNomeDaMae.setText(instrutor.getNomeDaMae());
             cbHabilitacao.setValue(instrutor.getGrauAcademico());
-            txtTipo_Sanguineo.setText(instrutor.getTipoSanguineo());
+            txtTipoSanguineo.setText(instrutor.getTipoSanguineo());
 
             txtEmail.setText(instrutor.getEmail());
-            txtZona_rua.setText(instrutor.getMorada());
-            txtCidade_Ilha.setText(instrutor.getCidadeIlha());
+            txtZonaRua.setText(instrutor.getMorada());
+            txtCidadeIlha.setText(instrutor.getCidadeIlha());
             txtTelefone.setText(instrutor.getContactoTelefonico());
             txtCelular.setText(instrutor.getContactoMovel());
 
-            txtBI_NIF.setText(instrutor.getNumeroDeIndentificacao());
+            txtBiNif.setText(instrutor.getNumeroDeIndentificacao());
             txtNacionalidade.setText(instrutor.getNacionalidade());
             txtNaturalidade.setText(instrutor.getNaturalidade());
             dataNascimento.setValue(instrutor.getNascimento());
-            txtCarta_conducao.setText(instrutor.getCartaConducao());
+            txtCartaConducao.setText(instrutor.getCartaConducao());
 
             txtBanco.setText(instrutor.getBanco());
             txtAgencia.setText(instrutor.getAgencia());
-            txtConta_Corente.setText(instrutor.getNumDeConta());
+            txtContaCorente.setText(instrutor.getNumDeConta());
             taObservacao.setText(instrutor.getObservacao());
 
             lbTitulo.setText("Editar Instrutor");
@@ -502,5 +498,13 @@ public class InstrutorController extends AnchorPane implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(InstrutorController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public File getCopyFile() {
+        return copyFile;
+    }
+
+    public void setCopyFile(File copyFile) {
+        this.copyFile = copyFile;
     }
 }

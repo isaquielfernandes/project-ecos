@@ -25,14 +25,16 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
-import org.apache.log4j.Level;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    
+    private static final StringBuilder INSERT_QUERY = new StringBuilder();
+
     public AlunoDAOImpl() {
         super();
         jdbcTemplate = new JdbcTemplate(HikariCPDataSource.getInstance().dataSource());
@@ -40,30 +42,29 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void create(Aluno aluno) {
-        StringBuilder query = new StringBuilder();
-        query.append("INSERT INTO ").append(db).append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,");
-        query.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
-        query.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
-        query.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
+        INSERT_QUERY.append("INSERT INTO ").append(db).append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,");
+        INSERT_QUERY.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
+        INSERT_QUERY.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
+        INSERT_QUERY.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(query.toString());
+            preparedStatement = conector.prepareStatement(INSERT_QUERY.toString());
             mapToSave(aluno, preparedStatement);
             preparedStatement.executeUpdate();
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void update(Aluno aluno) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            StringBuilder updateQuery = new StringBuilder();
-            updateQuery.append("UPDATE ").append(db).append(".tb_aluno SET nome=?, dataNascimento=?, numBI=?, dataEmisao=?, resedencia=?, conselho=?,");
-            updateQuery.append("naturalidade=?, email=?, contato=?, habilitacaoLit=?, nacionalidade=?, ");
-            updateQuery.append("foto=?, fotocopiaBI=?, descricao=?, nomeDaMae=?, nomeDoPai=?, professao=?, estadoCivil=?, localDeEmisao=?, freguesia=? WHERE id_aluno =?");
+        StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".tb_aluno SET nome=?, dataNascimento=?, numBI=?, dataEmisao=?, resedencia=?, conselho=?,");
+        updateQuery.append("naturalidade=?, email=?, contato=?, habilitacaoLit=?, nacionalidade=?, ");
+        updateQuery.append("foto=?, fotocopiaBI=?, descricao=?, nomeDaMae=?, nomeDoPai=?, professao=?, estadoCivil=?, localDeEmisao=?, freguesia=? WHERE id_aluno =?");
 
+        try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(updateQuery.toString());
             mapToSave(aluno, preparedStatement);
             preparedStatement.setInt(21, aluno.getIdAluno());
@@ -71,22 +72,15 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             conector.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void delete(Integer idAluno) {
         final StringBuilder query = new StringBuilder();
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            query.append("DELETE FROM ").append(db).append(".tb_aluno WHERE id_aluno=?");
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idAluno);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
-        }
+        query.append("DELETE FROM ").append(db).append(".tb_aluno WHERE id_aluno=?");
+        remove(query.toString(), idAluno);
     }
 
     @Override
@@ -97,20 +91,22 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     }
 
     @Override
-    public ObservableList<Aluno> listar(int quantidade, int pagina) {
+    public ObservableList<Aluno> listar(int limit, int offset) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".tb_aluno LIMIT ? OFFSET ? ");
+
         ObservableList listaAluno = FXCollections.observableArrayList();
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT * from ").append(db).append(".tb_aluno limit ").append(quantidade * pagina).append(",").append(quantidade).append("");
-            preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                listaAluno.add(mapRowToObject(rs));
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(query.toString());) {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+            try (ResultSet resultSet = ps.executeQuery()) {
+                while (resultSet.next()) {
+                    listaAluno.add(mapRowToObject(resultSet));
+                }
             }
-            preparedStatement.close();
-            rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return listaAluno;
     }
@@ -122,18 +118,18 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT id_aluno, nome, numBI from ").append(db).append(".tb_aluno ORDER BY nome");
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                Aluno aluno = new Aluno();
-                aluno.setIdAluno(rs.getInt("id_aluno"));
-                aluno.setNome(rs.getString("nome"));
-                aluno.setNumBI(rs.getString("numBI"));
-                alunos.add(aluno);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Aluno aluno = new Aluno();
+                    aluno.setIdAluno(resultSet.getInt("id_aluno"));
+                    aluno.setNome(resultSet.getString("nome"));
+                    aluno.setNumBI(resultSet.getString("numBI"));
+                    alunos.add(aluno);
+                }
             }
             preparedStatement.close();
-            rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return alunos;
     }
@@ -155,41 +151,22 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return total;
     }
 
     @Override
-    public ObservableList<Aluno> student(int pagina) {
-        ObservableList<Aluno> listData = FXCollections.observableArrayList();
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("select * from ").append(db).append(".tb_aluno limit ").append(pagina);
-            preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                listData.add(mapRowToObject(rs));
-            }
-            rs.close();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
-        }
-        return listData;
-    }
-
-    @Override
-    public ObservableList<Aluno> searchStudent(Pagina pagina, String query) {
+    public ObservableList<Aluno> searchStudent(Pagina pagina, String params) {
         ObservableList<Aluno> alunos = FXCollections.observableArrayList();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement("select * from " + db
                     + ".tb_aluno where nome like ? or contato like ? or email like ? "
                     + "or numBI like ? limit " + pagina.getInicio() + "," + pagina.getFim());
-            preparedStatement.setString(1, query + "%");
-            preparedStatement.setString(2, query + "%");
-            preparedStatement.setString(3, query + "%");
-            preparedStatement.setString(4, query + "%");
+            preparedStatement.setString(1, params + "%");
+            preparedStatement.setString(2, params + "%");
+            preparedStatement.setString(3, params + "%");
+            preparedStatement.setString(4, params + "%");
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 alunos.add(mapRowToObject(rs));
@@ -197,7 +174,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return alunos;
     }
@@ -211,14 +188,14 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
             jasperViewer.setVisible(true);
         } catch (JRException | SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void reportRequiremento(String biFiltro) {
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            HashMap filtro = new HashMap();
+            HashMap<String, Object> filtro = new HashMap<>();
             filtro.put("bi", biFiltro);
 
             URL url = getClass().getResource("/cv/com/escola/reports/Requiremento.jasper");
@@ -227,7 +204,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             Print jasperViewer = new Print();
             jasperViewer.viewReport("Requiremento", jasperPrint);
         } catch (JRException | SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
 
@@ -279,6 +256,11 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         aluno.setFreguesia(resultSet.getString("freguesia"));
         aluno.setDataCadastro(Tempo.toDate(resultSet.getTimestamp("data_cadastro")));
         return aluno;
+    }
+
+    @Override
+    public Page<Aluno> findAll(Pageable page) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private class AlunoMapper implements RowMapper<Aluno> {

@@ -46,12 +46,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FXML Controller class
  *
  * @author Isaquiel Fernandes
  */
+@Slf4j
 public class RegistrarController implements Initializable{
 
     private List<Usuario> listaUsuario;
@@ -108,28 +110,19 @@ public class RegistrarController implements Initializable{
     @FXML
     private Label legenda;
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
 
-    /**
-     * Initializes the controller class.
-     *
-     * @param url
-     * @param rb
-     */
-   
-    //@Override
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         telaCadastro(null);
 
         Grupo.notEmpty(menu);
         sincronizarBase();
         combos();
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> {
-            filtro(novo, FXCollections.observableArrayList(listaUsuario));
-        });
+        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
+            filtro(novo, FXCollections.observableArrayList(listaUsuario))
+        );
     }
 
     @FXML
@@ -156,7 +149,6 @@ public class RegistrarController implements Initializable{
     @FXML
     private void salvar(ActionEvent event) {
         boolean vazio = Campo.noEmpty(txtNome, txtLogin, txtSenha, txtConfirmarSenha);
-        //boolean validacao = Mascara.validationEmail(txtEmail);
         
         String nome = txtNome.getText();
         String login = txtLogin.getText().replaceAll(" ", "").trim();
@@ -168,9 +160,6 @@ public class RegistrarController implements Initializable{
         TipoUsuario tipo = cbPermissaoUsuario.getValue();
 
         if (vazio) {
-            /*Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Preencher campos vazios!");
-            alert.show();*/
             Mensagem.alerta("Preencher campos vazios!");
         } else if (cbPermissaoUsuario.getValue() == null ) {
             Mensagem.alerta("Permissão do Usuário não encontrada!");
@@ -189,7 +178,7 @@ public class RegistrarController implements Initializable{
                 Mensagem.info("Usuário atualizado com sucesso!");
             }
             sincronizarBase();
-            Registrar.fechar();
+            Registrar.getPalco().close();
             new Login().start(new Stage());
         }
     }
@@ -203,7 +192,7 @@ public class RegistrarController implements Initializable{
             Screen screen = Screen.getPrimary();
             Rectangle2D windows = screen.getVisualBounds();
 
-            palco = new Stage();//stage;
+            palco = new Stage();
             page = FXMLLoader.load(EcosApp.class.getResource("/cv/com/escola/view/login/login.fxml"));
             cena = new Scene(page);
 
@@ -213,7 +202,6 @@ public class RegistrarController implements Initializable{
             palco.setY(windows.getMinY());
             palco.setWidth(windows.getWidth());
             palco.setHeight(windows.getHeight());
-            //stage.setMaximized(true);
 
             palco.getIcons().addAll(new Image(EcosApp.class.getResourceAsStream("/cv/com/escola/img/servidor.png")));
 
@@ -221,7 +209,7 @@ public class RegistrarController implements Initializable{
             palco.show();
 
         } catch (IOException ex) {
-            System.out.println("Erro ao inicializar aplicação!" + ex);
+            log.error("Erro ao inicializar aplicação!" + ex);
         }
     }
 
@@ -321,24 +309,13 @@ public class RegistrarController implements Initializable{
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Usuario> listaUsuario) {
-
         FilteredList<Usuario> dadosFiltrados = new FilteredList<>(listaUsuario, usuario -> true);
-        dadosFiltrados.setPredicate(usuario -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (usuario.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (usuario.getEmail().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (usuario.getLogin().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (usuario.getTipoUsuario().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-
-            return false;
-        });
+        dadosFiltrados.setPredicate(usuario -> 
+                usuario.getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
+                usuario.getEmail().toLowerCase().startsWith(valor.toLowerCase()) || 
+                usuario.getLogin().toLowerCase().startsWith(valor.toLowerCase()) || 
+                usuario.getTipoUsuario().getNome().toLowerCase().startsWith(valor.toLowerCase())
+         );
 
         SortedList<Usuario> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbUsuario.comparatorProperty());

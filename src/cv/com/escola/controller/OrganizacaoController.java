@@ -268,36 +268,19 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Organizacao> listaOrganizacao) {
-
         FilteredList<Organizacao> dadosFiltrados = new FilteredList<>(listaOrganizacao, orgao -> true);
-        dadosFiltrados.setPredicate(orgao -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (orgao.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getSigla().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getEmail().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getFax().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getTelefone().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getLogradouro().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getBairro().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getCidade().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getEstado().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (orgao.getPais().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-
-            return false;
-        });
+        dadosFiltrados.setPredicate(orgao -> 
+                orgao.getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getSigla().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getEmail().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getFax().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getTelefone().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getLogradouro().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getBairro().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getCidade().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getEstado().toLowerCase().startsWith(valor.toLowerCase()) || 
+                orgao.getPais().toLowerCase().startsWith(valor.toLowerCase()) 
+        );
 
         SortedList<Organizacao> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbOrganizacao.comparatorProperty());

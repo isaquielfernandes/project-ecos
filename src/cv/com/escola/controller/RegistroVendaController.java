@@ -21,7 +21,7 @@ import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
 import cv.com.escola.model.util.Tempo;
 import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
-import static cv.com.escola.model.util.Meses.retornaNomeMes;
+import static cv.com.escola.model.util.Mes.retornaNomeMes;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -104,9 +104,10 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private Item item;
     private List<Cliente> listaCliente;
     private int idVenda;
-    private int idItens;
+    
     private int idItemVenda = 0;
-    private int quantity;
+    private int idItens;
+    private int quantity = 0;
     private int cod;
     private static final int QUANTIDADE_PAGINA = 50;
 
@@ -150,7 +151,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private TableColumn<Item, BigDecimal> colSubTotal;
     @FXML
     private TableColumn colActions;
-    private TableColumn<Item, Button> colEdtitar;
     @FXML
     private TableView<Item> tbItems;
     @FXML
@@ -264,7 +264,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private TextField pesquisarProduto;
 
     private ObservableList<String> observableListMeses = FXCollections.observableArrayList();
-    private ObservableList<Item> dadoItemVenda = FXCollections.observableArrayList();
+    private ObservableList<Item> dadosItemVenda = FXCollections.observableArrayList();
     private String ano;
     private double initX;
     private double initY;
@@ -298,7 +298,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
         dataVenda.setValue(LocalDate.now());
 
-        txtUser.setText(LoginController.usuarioLogado.getNome());
+        txtUser.setText(LoginController.getUsuarioLogado().getNome());
         dataPickerAnoMes.valueProperty().addListener((observable, oldValue, newValue) -> {
             atualizarGrade(0);
             filtro(newValue, FXCollections.observableArrayList(listVendas));
@@ -329,18 +329,9 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         cbArtigo.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showArtigoSelected(newValue));
 
-        cbCliente.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> showClienteSelected(newValue));
+        comboBoxCliente();
 
-        cbCliente.setOnMouseClicked(event -> {
-            ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
-            cbCliente.setItems(dadoCliente);
-        });
-
-        listViewProduto.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        listViewProdutoSelected(null);
-        listViewProduto.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> listViewProdutoSelected(newValue));
+        listViewArtigo();
 
         pesquisarProduto.textProperty().addListener((obs, old, novo)
                 -> filtros(novo, FXCollections.observableArrayList(listaProduto)));
@@ -350,29 +341,11 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colQuantidade.setEditable(true);
         colNomeArtigo.setEditable(true);
         colNomeArtigo.setEditable(true);
-        colNomeArtigo.setCellFactory(
-                ComboBoxTableCell.forTableColumn());
+        colNomeArtigo.setCellFactory(ComboBoxTableCell.forTableColumn());
         colNomeArtigo.setOnEditCommit((TableColumn.CellEditEvent<Item, Artigo> event)
                 -> event.getTableView().getItems().get(event.getTablePosition().getRow()).setArtigo(event.getNewValue())
         );
-
-        colQuantidade.setCellFactory(
-                TextFieldTableCell.forTableColumn(new StringConverter<Integer>() {
-                    @Override
-                    public String toString(Integer object) {
-                        return object.toString();
-                    }
-
-                    @Override
-                    public Integer fromString(String string) {
-                        return Integer.valueOf(string);
-                    }
-                }));
-
-        colQuantidade.setOnEditCommit((TableColumn.CellEditEvent<Item, Integer> event) -> 
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setQuantidade(event.getNewValue())
-        );
-
+        
         inserir(txtQuantia);
         realizarVenda(txtDesconto);
 
@@ -416,34 +389,76 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             }
         });
 
-        colPrecoUnitario.setCellFactory(column -> new TableCell<Item, BigDecimal>() {
+        columnPrecoUnitarioCellFactory();
+
+        columnSubTotalCellFactory();
+
+        columnQuantityCellFactory();
+
+        columnStatusCellFactory();
+
+        listViewProdutoCellFactory();
+
+        pagination.setPageFactory((Integer pagina) -> {
+            atualizarGrade(pagina);
+            return tbVendas;
+        });
+
+    }
+
+    private void columnStatusCellFactory() {
+        colSituacao.setCellFactory(column -> new TableCell<Venda, Boolean>() {
             @Override
-            protected void updateItem(BigDecimal item, boolean empty) {
+            protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setText(null);
                     setStyle("");
                 } else {
-                    setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
-                    setText(item + " $00");
+                    if (item) {
+                        setText("SIM");
+                    } else {
+                        setText("NAO");
+                    }
                 }
             }
         });
+    }
 
-        colSubTotal.setCellFactory(column -> new TableCell<Item, BigDecimal>() {
+    private void listViewArtigo() {
+        listViewProduto.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        listViewProdutoSelected(null);
+        listViewProduto.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> listViewProdutoSelected(newValue));
+    }
+
+    private void comboBoxCliente() {
+        cbCliente.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> showClienteSelected(newValue));
+        
+        cbCliente.setOnMouseClicked(event -> {
+            ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
+            cbCliente.setItems(dadoCliente);
+        });
+    }
+
+    private void listViewProdutoCellFactory() {
+        listViewProduto.setCellFactory((ListView<Artigo> param) -> new ListCell() {
             @Override
-            protected void updateItem(BigDecimal item, boolean empty) {
+            protected void updateItem(Object item, boolean empty) {
+                setText(null);
+                setGraphic(null);
                 super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
-                    setText(item + " $00");
+                Artigo artigo = (Artigo) item;
+                if (artigo  != null) {
+                    setText("N: " + artigo .getNomeArtigo() + "\n" + "P: " + artigo .getPreco() + " $00");
+                    setMaxSize(48, 48);
                 }
             }
         });
+    }
 
+    private void columnQuantityCellFactory() {
         colQuantidade.setCellFactory(column -> new TableCell<Item, Integer>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
@@ -457,43 +472,56 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 }
             }
         });
+        
+        colQuantidade.setCellFactory(
+                TextFieldTableCell.forTableColumn(new StringConverter<Integer>() {
+                    @Override
+                    public String toString(Integer object) {
+                        return object.toString();
+                    }
+                    
+                    @Override
+                    public Integer fromString(String string) {
+                        return Integer.valueOf(string);
+                    }
+                })
+        );
+        
+        colQuantidade.setOnEditCommit((TableColumn.CellEditEvent<Item, Integer> event) -> 
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setQuantidade(event.getNewValue())
+        );
+    }
 
-        colSituacao.setCellFactory(column -> new TableCell<Venda, Boolean>() {
+    private void columnSubTotalCellFactory() {
+        colSubTotal.setCellFactory(column -> new TableCell<Item, BigDecimal>() {
             @Override
-            protected void updateItem(Boolean item, boolean empty) {
+            protected void updateItem(BigDecimal item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setText(null);
                     setStyle("");
                 } else {
-                    if (item == true) {
-                        setText("SIM");
-                    } else {
-                        setText("NAO");
-                    }
+                    setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
+                    setText(item + " $00");
                 }
             }
         });
+    }
 
-        listViewProduto.setCellFactory((ListView<Artigo> param) -> new ListCell() {
+    private void columnPrecoUnitarioCellFactory() {
+        colPrecoUnitario.setCellFactory(column -> new TableCell<Item, BigDecimal>() {
             @Override
-            protected void updateItem(Object item, boolean empty) {
-                setText(null);
-                setGraphic(null);
+            protected void updateItem(BigDecimal item, boolean empty) {
                 super.updateItem(item, empty);
-                Artigo produts = (Artigo) item;
-                if (produts != null) {
-                    setText("N: " + produts.getNomeArtigo() + "\n" + "P: " + produts.getPreco() + " $00");
-                    setMaxSize(48, 48);
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setStyle("-fx-alignment: center-right;-fx-padding: 0 5 0 0;");
+                    setText(item + " $00");
                 }
             }
         });
-
-        pagination.setPageFactory((Integer pagina) -> {
-            atualizarGrade(pagina);
-            return tbVendas;
-        });
-
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
@@ -640,8 +668,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         tbItens.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
 
-        idItens = 0;
-        idVenda = 0;
+        this.idItens = 0;
+        this.idVenda = 0;
     }
 
     /**
@@ -939,11 +967,11 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             cbFormaPag.setValue(dadosVenda.getMeioDePagamento());
             cbCliente.setValue(dadosVenda.getCliente());
 
-            if (dadosVenda.isPago() != true) {
-                rbSituacao.setSelected(false);
+            if (dadosVenda.isPago()) {
+                rbSituacao.setSelected(true);
                 rbSituacao.setText("NÃO");
             } else {
-                rbSituacao.setSelected(true);
+                rbSituacao.setSelected(false);
                 rbSituacao.setText("SIM");
             }
 
@@ -964,7 +992,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         try {
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir venda " + vendas.getNumFatura() + "?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().itemDAO().delete(vendas.getIdVenda());
                 DAOFactory.daoFactury().orderDAO().delete(vendas.getIdVenda());
@@ -972,9 +999,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 tabela();
                 gerarNumRecibo();
                 tbItems.getItems().clear();
-
             }
-
             tbVendas.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione venda na tabela para exclusão!");
@@ -988,7 +1013,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         try {
 
             Usuario user = new Usuario();
-            user.setId(LoginController.usuarioLogado.getId());
+            user.setId(LoginController.getUsuarioLogado().getId());
             String numRecibo = labelNumRecibo.getText();
             Cliente cliente = cbCliente.getValue();
             String formaDePagamento = cbFormaPag.getValue();
@@ -1011,13 +1036,13 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                         for (int i = 0; i < indexs; i++) {
                             tbItens.getSelectionModel().select(i);
                             items.setIdItem((long) idItemVenda);
-                            items.setQuantidade(quantity = tbItens.getSelectionModel().getSelectedItem().getQuantidade());
+                            items.setQuantidade(tbItens.getSelectionModel().getSelectedItem().getQuantidade());
                             items.setValorUnitario(tbItens.getSelectionModel().getSelectedItem().getValorUnitario());
                             items.setArtigo(tbItens.getSelectionModel().getSelectedItem().getArtigo());
                             items.setVenda(DAOFactory.daoFactury().orderDAO().buscarUltimaVenda());
                             DAOFactory.daoFactury().itemDAO().create(items);
-                            Mensagem.info("Registro de pagamento feito com sucesso!");
                         }
+                        Mensagem.info("Registro de pagamento feito com sucesso!");
                     } else {
                         DAOFactory.daoFactury().orderDAO().update(vendas);
                         Mensagem.info("Registro de pagamento foi atulizado com sucesso!");
@@ -1103,6 +1128,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     @FXML
     private void telaDetalheVenda(MouseEvent event) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
     }
 
     @FXML
@@ -1146,20 +1172,18 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                         .findFirst()
                         .isPresent();
                 if (!findByArtigo) {
-                    dadoItemVenda.add(item);
-                    tbItens.setItems(dadoItemVenda);
+                    dadosItemVenda.add(item);
+                    tbItens.setItems(dadosItemVenda);
                 } else {
                     for (int i = 0; i < items; i++) {
                         tbItens.getSelectionModel().select(i);
                         String selectedItem = tbItens.getSelectionModel().getSelectedItem().getArtigo().toString();
                         if (item.getArtigo().toString().equals(selectedItem)) {
-                            dadoItemVenda.set(i, item);
-                            tbItens.setItems(dadoItemVenda);
+                            dadosItemVenda.set(i, item);
+                            tbItens.setItems(dadosItemVenda);
                             break;
                         }
-
                     }
-
                 }
 
                 viewAll();
@@ -1172,7 +1196,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
             }
         } catch (NullPointerException ex) {
-            //ex.printStackTrace();
+            Mensagem.alerta("Campo nao pode ser nulo");
         }
     }
 
@@ -1185,7 +1209,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            // Mostrando a mensagem de erro
             Nota.erro("Campos inválidos, por favor, corrija... " + errorMessage);
             return false;
         }
@@ -1233,10 +1256,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     }
 
-    private GridPane createEditor(TableRowExpanderColumn.TableRowDataFeatures<Item> p) {
+    public GridPane createEditor(TableRowExpanderColumn.TableRowDataFeatures<Item> p) {
         p.setExpanded(false);
-
-        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
 
         GridPane editor = new GridPane();
         editor.setPadding(new Insets(10));
@@ -1249,12 +1270,12 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         quantiadade.setPrefSize(120, 30);
 
         ComboBox<Artigo> artigo = new ComboBox();
-        artigo.setItems(dadoArtigo);
+        artigo.setItems((ObservableList<Artigo>) DAOFactory.daoFactury().artigoDAO().findAll());
 
         artigo.setPrefSize(200, 30);
         artigo.setValue(item.getArtigo());
 
-        quantiadade.setOnKeyReleased((event) -> {
+        quantiadade.setOnKeyReleased(event -> {
             txtQuantia.setText(quantiadade.getText());
             onKeyReleasedQuantia(event);
         });
@@ -1305,8 +1326,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 setText(null);
                 setGraphic(null);
                 super.updateItem(item, empty);
-                Cliente cliente = ((Cliente) item);
-                if (cliente != null) {
+                Cliente cliente = (Cliente) item;
+                if (item != null) {
                     setText(cliente.getNomeCliente() + "\n" + cliente.getNif());
                 }
             }
@@ -1436,4 +1457,24 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
     }
 
+    public List<Item> getListaDeItem() {
+        return listaDeItem;
+    }
+
+    public int getIdItens() {
+        return idItens;
+    }
+
+    public List<Venda> getListVendas() {
+        return listVendas;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public List<Artigo> getListaProduto() {
+        return listaProduto;
+    }
+    
 }

@@ -17,6 +17,9 @@ public class GraficoArea {
     private static NumberAxis eixoY;
     private static AreaChart<String, Number> grafico;
 
+    private GraficoArea() {
+        
+    }
     /**
      * Criar grafico de area e inserir dados das series, datas e valores apartir do map informado
      * @param map
@@ -30,18 +33,15 @@ public class GraficoArea {
         eixoY = new NumberAxis();
         grafico = new AreaChart<>(eixoX, eixoY);
 
-        map.keySet().stream().map((chave) -> {
+        map.keySet().stream().map(chave -> {
             XYChart.Series<String, Number> serie = new XYChart.Series<>();
             serie.setName(chave);
             List<Relatorio> relatorios = map.get(chave);
-            relatorios.forEach((relatorio) -> {
-                serie.getData().add(new XYChart.Data<>(relatorio.getData(), relatorio.getTotal()));
-            });
+            relatorios.forEach(relatorio -> 
+                serie.getData().add(new XYChart.Data<>(relatorio.getData(), relatorio.getTotal()))
+            );
             return serie;
-        }).forEachOrdered((serie) -> {
-            grafico.getData().add(serie);
-        });
-
+        }).forEachOrdered(serie -> grafico.getData().add(serie));
         return grafico;
     }
 
@@ -54,6 +54,7 @@ public class GraficoArea {
         grafico.setTitle(titulo);
         grafico.setVerticalGridLinesVisible(false);
 
+        eixoY.setLabel("Value");
         eixoX.setLabel("Data");
     }
 }

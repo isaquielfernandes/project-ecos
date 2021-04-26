@@ -22,7 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -111,7 +110,6 @@ public class SeguroController extends AnchorPane implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         sincronizaBase();
         telaCadastro(null);
         Grupo.notEmpty(menu);
@@ -238,6 +236,7 @@ public class SeguroController extends AnchorPane implements Initializable {
 
     @FXML
     private void imprimir(ActionEvent event) {
+        throw new UnsupportedOperationException();
     }
 
     private void combos() {

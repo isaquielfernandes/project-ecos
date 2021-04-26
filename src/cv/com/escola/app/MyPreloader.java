@@ -18,7 +18,6 @@ public class MyPreloader extends Preloader {
 
     @Override
     public void init() throws Exception {
-
         Parent root1 = FXMLLoader.load(getClass().getResource("/cv/com/escola/view/app/splashScreen.fxml"));
         scene = new Scene(root1);
 
@@ -39,8 +38,8 @@ public class MyPreloader extends Preloader {
     @Override
     public void handleApplicationNotification(Preloader.PreloaderNotification info) {
         if (info instanceof ProgressNotification) {
-            SplashScreenController.label.setText("Loading " + ((ProgressNotification) info).getProgress() * 100 + "%");
-            SplashScreenController.statProgressBar.setProgress(((ProgressNotification) info).getProgress());
+            SplashScreenController.getLabel().setText("Loading " + ((ProgressNotification) info).getProgress() * 100 + "%");
+            SplashScreenController.getStatProgressBar().setProgress(((ProgressNotification) info).getProgress());
         }
     }
 

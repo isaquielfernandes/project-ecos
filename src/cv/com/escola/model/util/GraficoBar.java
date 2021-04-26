@@ -32,15 +32,15 @@ public class GraficoBar {
         Text texto = new Text(data.getYValue().toString());
         texto.setStyle("-fx-fill: #555; -fx-font-size: 11px;");
 
-        data.getNode().parentProperty().addListener((ObservableValue<? extends Parent> obs, Parent old, Parent novo) -> {
+        data.getNode().parentProperty().addListener((ObservableValue<? extends Parent> obs, Parent old, Parent novo) -> 
             Platform.runLater(() -> {
                 if (novo != null) {
-                    Group grupo = (Group) novo;
+                    Group grupo = new Group(novo);
                     grupo.getChildren().add(texto);
                 }
                 
-            });
-        });
+            })
+        );
 
         data.getNode().boundsInParentProperty().addListener((ObservableValue<? extends Bounds> obs, Bounds old, Bounds novo) -> {
             texto.setLayoutX(Math.round(novo.getMinX() + novo.getWidth() / 2 - texto.prefWidth(-1) / 2));
@@ -58,6 +58,7 @@ public class GraficoBar {
     public static void config(String titulo, String eixo) {
         grafico.getData().clear();
         eixoX.setLabel(eixo);
+        eixoY.setLabel(titulo);
         grafico.setLegendVisible(false);
     }
 }

@@ -10,10 +10,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.ImageView;
 
-/**
- *
- * @author Isaquiel Fernandes
- */
+
 public class Instrutor {
     
     private LongProperty id;
@@ -363,10 +360,7 @@ public class Instrutor {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.numeroDeIndentificacao, other.numeroDeIndentificacao)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.numeroDeIndentificacao, other.numeroDeIndentificacao);
     }
 
     @Override

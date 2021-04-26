@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -18,7 +17,6 @@ import javafx.stage.StageStyle;
 public class App extends Application {
     
     private static final Logger LOG = Logger.getLogger(App.class.getName());
-    private static Scene scene;
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
 
@@ -27,7 +25,7 @@ public class App extends Application {
         try {
             
             AnchorPane page = FXMLLoader.load(App.class.getResource("/cv/com/escola/view/app/app.fxml"));
-            scene = new Scene(page);
+            Scene scene = new Scene(page);
 
             stage.initStyle(StageStyle.DECORATED);
             stage.setTitle("ESCOLA DE CONDUÇÂO O SINAL");
@@ -50,15 +48,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         Application.launch(App.class, (java.lang.String[]) null);
-    }
-    
-    public static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
     }
 
 }

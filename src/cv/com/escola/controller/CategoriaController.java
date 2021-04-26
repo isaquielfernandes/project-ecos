@@ -22,7 +22,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -164,7 +163,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
             lbTitulo.setText("Editar Categoria");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idCategoria = categ.getId_categoria();
+            idCategoria = categ.getId();
 
         } catch (NullPointerException ex) {
             Nota.alerta("Selecione uma categoria na tabela para edição!");
@@ -177,7 +176,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
             Categoria categoria = this.tbCategoria.getSelectionModel().getSelectedItem();
             Dialogo.Resposta responta = Mensagem.confirmar("Excluir Categoria " + categoria.getNome());
             if (responta == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().categoriaDAO().delete(categoria.getId_categoria());
+                DAOFactory.daoFactury().categoriaDAO().delete(categoria.getId());
                 sincronizarBase();
                 tabela();
             }
@@ -243,7 +242,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
     }
 
     private void limparCampos() {
-        Campo.limpar(this.txtCategoria);
+        Campo.limpar(txtCategoria);
         Campo.limpar(txtDescricao);
     }
 

@@ -18,15 +18,15 @@ public class ParalleTasks {
         final ExecutorService threads = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         try {
             final CountDownLatch latch = new CountDownLatch(tasks.size());
-            tasks.forEach((task) -> {
+            tasks.forEach(task -> 
                 threads.execute(() -> {
                     try {
                         task.run();
                     } finally {
                         latch.countDown();
                     }
-                });
-            });
+                })
+            );
             latch.await();
         } finally {
             threads.shutdown();

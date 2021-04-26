@@ -11,12 +11,13 @@ import javafx.beans.property.StringProperty;
  * @author Isaquiel Fernandes
  */
 public class Categoria {
-    private IntegerProperty id_categoria;
+    
+    private IntegerProperty id;
     private StringProperty nome;
     private StringProperty descricao;
 
-    public Categoria(int id_categoria, String nome, String descricao) {
-        this.id_categoria = new SimpleIntegerProperty(id_categoria);
+    public Categoria(int id, String nome, String descricao) {
+        this.id = new SimpleIntegerProperty(id);
         this.nome = new SimpleStringProperty(nome);
         this.descricao = new SimpleStringProperty(descricao);
     }
@@ -25,19 +26,19 @@ public class Categoria {
         this.nome = new SimpleStringProperty(nome);
     }
 
-    public Categoria(int id_categoria, String nome) {
-        this.id_categoria = new SimpleIntegerProperty(id_categoria);
+    public Categoria(int id, String nome) {
+        this.id = new SimpleIntegerProperty(id);
         this.nome = new SimpleStringProperty(nome);
     }
  
     public Categoria() {
     }
 
-    public int getId_categoria() { return idCategoriaProperty().get();}
-    public void setId_categoria(int id_categoria) { idCategoriaProperty().set(id_categoria);}
+    public int getId() { return idCategoriaProperty().get();}
+    public void setIdCategoria(int id) { idCategoriaProperty().set(id);}
     public IntegerProperty idCategoriaProperty() {
-         if (id_categoria == null) id_categoria = new SimpleIntegerProperty(this, "id_categoria");
-         return id_categoria;
+         if (id == null) id = new SimpleIntegerProperty(this, "id");
+         return id;
     }
     
     public String getNome() { return nomeProperty().get();}
@@ -62,7 +63,7 @@ public class Categoria {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id_categoria);
+        hash = 79 * hash + Objects.hashCode(this.id);
         hash = 79 * hash + Objects.hashCode(this.nome);
         return hash;
     }
@@ -79,7 +80,7 @@ public class Categoria {
             return false;
         }
         final Categoria other = (Categoria) obj;
-        if (!Objects.equals(this.id_categoria, other.id_categoria)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return Objects.equals(this.nome, other.nome);

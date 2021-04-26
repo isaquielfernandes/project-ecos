@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
  * @author Isaquiel Fernandes
  */
 public class Filtro {
+    
     private Filtro() {
     }
 

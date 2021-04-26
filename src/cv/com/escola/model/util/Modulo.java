@@ -64,7 +64,7 @@ public class Modulo {
     private Modulo() {
     }
 
-    public static void getJasperViewerFX(AnchorPane box) {
+    public static void getJasperViewerFX() {
         jasperViewerFX = jasperViewerFX == null ? new JasperViewerFX() : jasperViewerFX;
     }
 
@@ -124,7 +124,7 @@ public class Modulo {
         config(box, configEmpresa);
     }
 
-    public static void getCargo_Salario(AnchorPane box) {
+    public static void getCargoSalario(AnchorPane box) {
         cargoSalario = cargoSalario == null ? new CargoSalarioController() : cargoSalario;
         config(box, cargoSalario);
     }

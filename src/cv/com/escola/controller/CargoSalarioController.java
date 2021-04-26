@@ -52,7 +52,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
     @FXML
     private GridPane telaCadastro;
     @FXML
-    private TextField txtNome_cargo;
+    private TextField txtNomeCargo;
     @FXML
     private TextArea txtDescricao;
     @FXML
@@ -60,7 +60,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
     @FXML
     private AnchorPane telaEdicao;
     @FXML
-    private TableView<CargoSalario> tbCargo_salario;
+    private TableView<CargoSalario> tbCargoSalario;
     @FXML
     private TableColumn<CargoSalario, Integer> colId;
     @FXML
@@ -113,7 +113,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        cargoSalarios = DAOFactory.daoFactury().getCargo_salarioDAO().findAll();
+        cargoSalarios = DAOFactory.daoFactury().getCargoSalarioDAO().findAll();
     }
 
     /**
@@ -124,7 +124,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
         Modulo.visualizacao(false, btExcluir, btSalvar, btEditar, telaCadastro, telaEdicao, txtPesquisar);
 
         legenda.setText(msg);
-        tbCargo_salario.getSelectionModel().clearSelection();
+        tbCargoSalario.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
 
         idCargoSalario = 0;
@@ -134,7 +134,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      * Limpar campos textfield cadastro de coleções
      */
     private void limparCampos() {
-        Campo.limpar(this.txtNome_cargo, this.txtSalario);
+        Campo.limpar(this.txtNomeCargo, this.txtSalario);
         Campo.limpar(txtDescricao);
     }
 
@@ -161,24 +161,24 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean vazio = Campo.noEmpty(this.txtNome_cargo, this.txtSalario);
+        boolean vazio = Campo.noEmpty(this.txtNomeCargo, this.txtSalario);
 
-        String cargo = txtNome_cargo.getText();
+        String cargo = txtNomeCargo.getText();
         double salario = Double.parseDouble(txtSalario.getText());
         String descricao = txtDescricao.getText();
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().getCargo_salarioDAO().isCargo_salario(cargo, idCargoSalario)) {
+        } else if (DAOFactory.daoFactury().getCargoSalarioDAO().isCargo_salario(cargo, idCargoSalario)) {
             Nota.alerta("Cargo já cadastrada!");
         } else {
             CargoSalario cargoSalario = new CargoSalario(idCargoSalario, cargo, salario, descricao);
 
             if (idCargoSalario == 0) {
-                DAOFactory.daoFactury().getCargo_salarioDAO().create(cargoSalario);
+                DAOFactory.daoFactury().getCargoSalarioDAO().create(cargoSalario);
                 Mensagem.info("Cargo cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().getCargo_salarioDAO().update(cargoSalario);
+                DAOFactory.daoFactury().getCargoSalarioDAO().update(cargoSalario);
                 Mensagem.info("Cargo atualizada com sucesso!");
             }
 
@@ -190,12 +190,12 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
     @FXML
     private void editar(ActionEvent event) {
         try {
-            CargoSalario cargoSalario = tbCargo_salario.getSelectionModel().getSelectedItem();
+            CargoSalario cargoSalario = tbCargoSalario.getSelectionModel().getSelectedItem();
             cargoSalario.getClass();
 
             telaCadastro(null);
 
-            txtNome_cargo.setText(cargoSalario.getNomeCargo());
+            txtNomeCargo.setText(cargoSalario.getNomeCargo());
             txtSalario.setText(Double.toString(cargoSalario.getSalario()));
             txtDescricao.setText(cargoSalario.getDescricao());
 
@@ -212,14 +212,14 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
     @FXML
     private void excluir(ActionEvent event) {
         try {
-            CargoSalario cargo = tbCargo_salario.getSelectionModel().getSelectedItem();
+            CargoSalario cargo = tbCargoSalario.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir cargo " + cargo.getNomeCargo()+ " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().getCargo_salarioDAO().delete(cargo.getIdcargoSalario());
+                DAOFactory.daoFactury().getCargoSalarioDAO().delete(cargo.getIdcargoSalario());
                 sincronizarBase();
                 tabela();
             }
-            tbCargo_salario.getSelectionModel().clearSelection();
+            tbCargoSalario.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione cargo na tabela para exclusão!");
         }
@@ -234,7 +234,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
         colCargo.setCellValueFactory((CellDataFeatures<CargoSalario, String> obj) -> obj.getValue().nomeCargoProperty());
         colSalario.setCellValueFactory((CellDataFeatures<CargoSalario, Double> obj) -> obj.getValue().salarioProperty().asObject());
         colDescricao.setCellValueFactory((CellDataFeatures<CargoSalario, String> obj) -> obj.getValue().descricaoProperty());
-        tbCargo_salario.setItems(data);
+        tbCargoSalario.setItems(data);
     }
 
     /**
@@ -246,8 +246,8 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
             cargo.getNomeCargo().toLowerCase().startsWith(valor.toLowerCase())
         );
         SortedList<CargoSalario> dadosOrdenados = new SortedList<>(dadosFiltrados);
-        dadosOrdenados.comparatorProperty().bind(tbCargo_salario.comparatorProperty());
+        dadosOrdenados.comparatorProperty().bind(tbCargoSalario.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de cargos encontrados");
-        tbCargo_salario.setItems(dadosOrdenados);
+        tbCargoSalario.setItems(dadosOrdenados);
     }
 }

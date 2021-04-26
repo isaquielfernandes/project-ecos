@@ -47,7 +47,9 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class EscolaConducaoController extends AnchorPane implements Initializable {
 
     private List<EscolaConducao> listaEmpresa;
@@ -123,8 +125,8 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
 
         imageViewAssinatura.setOnMouseClicked(event -> uploadFileAssinatura());
 
-        txtPesquisar.textProperty().addListener((obs, old, novo) -> 
-            filtro(novo, FXCollections.observableArrayList(listaEmpresa))
+        txtPesquisar.textProperty().addListener((obs, old, novo)
+                -> filtro(novo, FXCollections.observableArrayList(listaEmpresa))
         );
     }
 
@@ -156,7 +158,7 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
         idEmpresa = 0;
     }
 
-    private void limparCampos() {
+    protected void limparCampos() {
         Campo.limpar(txtCidade, txtNomeEscola, txtContato, txtEmail, txtNif, txtEndereco);
         Campo.limpar(txtDescricao);
         imageViewLogo.setImage(null);
@@ -250,6 +252,7 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
 
     @FXML
     private void excluir(ActionEvent event) {
+        throw new UnsupportedOperationException("Operacao nao suportado");
     }
 
     /**
@@ -275,19 +278,11 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<EscolaConducao> listaEmpresa) {
-
         FilteredList<EscolaConducao> dadosFiltrados = new FilteredList<>(listaEmpresa, empresa -> true);
-        dadosFiltrados.setPredicate(empresa -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (empresa.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (empresa.getEndereco().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate(empresa
+                -> empresa.getNome().toLowerCase().startsWith(valor.toLowerCase())
+                || empresa.getEndereco().toLowerCase().startsWith(valor.toLowerCase())
+        );
 
         SortedList<EscolaConducao> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbEmpresa.comparatorProperty());
@@ -353,7 +348,7 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+           log.error(e.getMessage());
         }
         return newFile;
     }

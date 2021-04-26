@@ -16,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -31,8 +30,6 @@ public class ConfiguracaoController implements Initializable {
     private File file;
     private File fileAssinatura;
 
-    //@FXML
-    private ToggleGroup menu;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -85,15 +82,15 @@ public class ConfiguracaoController implements Initializable {
         boolean vazio = checkEmptyFields(txtCidade, txtNomeEscola, txtNif, txtEmail,
                 txtContato, txtEndereco);
 
-        String cidade = txtCidade.getText();
-        String nomeEscola = txtNomeEscola.getText();
-        String nif = txtNif.getText();
-        String endereco = txtEndereco.getText();
-        String email = txtEmail.getText();
-        String contato = txtContato.getText();
-        String descricao = txtDescricao.getText();
+        txtCidade.getText();
+        txtNomeEscola.getText();
+        txtNif.getText();
+        txtEndereco.getText();
+        txtEmail.getText();
+        txtContato.getText();
+        txtDescricao.getText();
         idEmpresa = Integer.valueOf(txtID.getText().trim().isEmpty() ? "0" : txtID.getText());
-        
+        limparCampos();
     }
 
     public void uploadLogo() {
@@ -145,4 +142,38 @@ public class ConfiguracaoController implements Initializable {
         alert.setContentText("Your Image file is too big to upload \n please choise another image");
         alert.initStyle(StageStyle.UNDECORATED);
     }
+
+    public List<EscolaConducao> getListaEmpresa() {
+        return listaEmpresa;
+    }
+
+    public void setListaEmpresa(List<EscolaConducao> listaEmpresa) {
+        this.listaEmpresa = listaEmpresa;
+    }
+
+    public int getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public File getFileAssinatura() {
+        return fileAssinatura;
+    }
+
+    public void setFileAssinatura(File fileAssinatura) {
+        this.fileAssinatura = fileAssinatura;
+    }
+    
+    
 }

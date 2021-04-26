@@ -1,8 +1,12 @@
 package cv.com.escola.model.util;
 
-public class Meses {
-    
-    public static String[] arrayMeses = {"Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"};
+public class Mes {
+
+    private static final String[] meses = {"Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"};
+
+    private Mes() {
+
+    }
 
     public static String retornaNomeMes(int mes) {
         switch (mes) {
@@ -33,5 +37,9 @@ public class Meses {
             default:
                 return "";
         }
+    }
+
+    public static String[] getMeses() {
+        return meses;
     }
 }

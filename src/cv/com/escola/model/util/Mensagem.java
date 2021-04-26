@@ -7,7 +7,9 @@ import cv.com.escola.model.util.Dialogo.Resposta;
  * @author Isaquiel Fernandes
  */
 public class Mensagem {
+    
     private Mensagem() {
+        
     }
 
     public static void info(String mensagem) {

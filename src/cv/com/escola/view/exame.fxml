@@ -66,11 +66,11 @@
             </ToggleButton>
          </children>
       </HBox>
-      <GridPane fx:id="telaCadastro" hgap="8.0" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="60.0">
+      <GridPane fx:id="telaCadastro" hgap="8.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="60.0">
          <columnConstraints>
             <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="126.0" prefWidth="156.0" />
-            <ColumnConstraints maxWidth="200.0" minWidth="109.0" prefWidth="116.0" />
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="143.0" />
+            <ColumnConstraints maxWidth="200.0" minWidth="109.0" prefWidth="123.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="124.0" />
             <ColumnConstraints maxWidth="221.0" minWidth="180.0" prefWidth="221.0" />
             <ColumnConstraints maxWidth="170.0" minWidth="117.0" prefWidth="146.0" />
          </columnConstraints>
@@ -89,21 +89,21 @@
                   <String fx:value="lb-info-requerido" />
                </styleClass>
             </Label>
-            <TextField fx:id="txtId_Aluno" editable="false" prefHeight="35.0" prefWidth="559.0" promptText="ID" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtIdAluno" editable="false" prefHeight="35.0" prefWidth="559.0" promptText="ID" styleClass="campo-texto" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label layoutX="722.0" layoutY="17.0" prefHeight="17.0" prefWidth="266.0" text="Tipo de Exame" GridPane.columnIndex="3">
                <styleClass>
                   <String fx:value="titulo-campos" />
                   <String fx:value="lb-info-requerido" />
                </styleClass>
             </Label>
-            <ComboBox fx:id="cbTipo_Exame" layoutX="722.0" layoutY="41.0" prefHeight="34.0" prefWidth="464.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <ComboBox fx:id="cbTipo" layoutX="722.0" layoutY="41.0" prefHeight="34.0" prefWidth="464.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <Label prefHeight="17.0" prefWidth="266.0" text="Data" GridPane.rowIndex="2">
                <styleClass>
                   <String fx:value="titulo-campos" />
                   <String fx:value="lb-info-requerido" />
                </styleClass>
             </Label>
-            <DatePicker fx:id="dtExame" prefHeight="34.0" GridPane.rowIndex="3" />
+            <DatePicker fx:id="dtExame" prefHeight="34.0" showWeekNumbers="true" GridPane.rowIndex="3" />
             <Label prefHeight="17.0" prefWidth="236.0" text="Categoria" GridPane.columnIndex="4">
                <styleClass>
                   <String fx:value="titulo-campos" />
@@ -118,11 +118,11 @@
                   <String fx:value="lb-info-requerido" />
                </styleClass>
             </Label>
-            <TextField fx:id="txtNome_Aluno" prefHeight="35.0" prefWidth="91.0" styleClass="campo-texto" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <TextField fx:id="txtNomeAluno" prefHeight="35.0" prefWidth="91.0" styleClass="campo-texto" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></TextField>
-            <Hyperlink fx:id="hlinkRegistro_Criminal" prefHeight="23.0" prefWidth="171.0" styleClass="lb-info-requerido" text="Registro Criminal" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Hyperlink fx:id="hlinkRegistroCriminal" prefHeight="23.0" prefWidth="171.0" styleClass="lb-info-requerido" text="Registro Criminal" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -132,9 +132,9 @@
                   <Insets />
                </GridPane.margin>
             </Hyperlink>
-            <TextField fx:id="txtAtestado_Medico" editable="false" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-            <TextField fx:id="txtRegistro_Criminal" editable="false" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <ComboBox fx:id="cbExame_De" prefHeight="34.0" prefWidth="464.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <TextField fx:id="txtAtestadoMedico" editable="false" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+            <TextField fx:id="txtRegistroCriminal" editable="false" prefHeight="35.0" prefWidth="559.0" styleClass="campo-texto" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <ComboBox fx:id="cbCategoria" prefHeight="34.0" prefWidth="464.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
             <MenuButton mnemonicParsing="false" prefHeight="35.0" prefWidth="196.0" text="Selecione o aluno..." visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <items>
                   <MenuItem mnemonicParsing="false" text="Pesquisar">
@@ -169,16 +169,16 @@
                </GridPane.margin>
             </MenuButton>
             <Label styleClass="lb-info-requerido" text="Hora" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <JFXTimePicker fx:id="tpHora" prefHeight="33.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <JFXTimePicker fx:id="tpHora" editable="true" prefHeight="33.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></JFXTimePicker>
             <TextField fx:id="txtBuscarAluno" promptText="Pesquisar ..." styleClass="campo" GridPane.rowIndex="1" />
             <Label text="Pesquisar" />
-            <ComboBox fx:id="cbCliente" prefWidth="835.0" promptText="Selecione o aluno ...." styleClass="campo" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <ComboBox fx:id="cbAluno" maxWidth="1.7976931348623157E308" prefHeight="55.0" prefWidth="137.0" promptText="Selecione o aluno ...." GridPane.columnIndex="2" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <AnchorPane fx:id="telaEdicao" cache="true" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+      <AnchorPane fx:id="telaEdicao" cache="true" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <children>
             <TableView fx:id="tbExame" prefHeight="372.0" prefWidth="783.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
                <columns>

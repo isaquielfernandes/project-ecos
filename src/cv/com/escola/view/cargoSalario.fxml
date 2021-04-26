@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="530.0" prefWidth="885.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox prefHeight="60.0" prefWidth="1207.0" styleClass="box-topo" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -59,7 +59,7 @@
          </rowConstraints>
          <children>
             <Label styleClass="lb-info-requerido" text="Nome do Cargo" />
-            <TextField fx:id="txtNome_cargo" styleClass="campo" visible="true" GridPane.rowIndex="1" />
+            <TextField fx:id="txtNomeCargo" styleClass="campo" visible="true" GridPane.rowIndex="1" />
             <Label styleClass="lb-info" text="Descrição" GridPane.rowIndex="2" />
             <TextArea fx:id="txtDescricao" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="3" />
             <Label layoutX="10.0" layoutY="82.0" styleClass="lb-info-requerido" text="Salário bruto" GridPane.columnIndex="1" />
@@ -68,7 +68,7 @@
       </GridPane>
       <AnchorPane fx:id="telaEdicao" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <children>
-            <TableView fx:id="tbCargo_salario" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
+            <TableView fx:id="tbCargoSalario" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
                <columns>
                   <TableColumn fx:id="colId" maxWidth="100.0" minWidth="50.0" prefWidth="50.0" text="Codigo" />
                   <TableColumn fx:id="colCargo" maxWidth="500.0" minWidth="150.0" prefWidth="200.0" text="Cargo" />

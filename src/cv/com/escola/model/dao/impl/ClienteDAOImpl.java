@@ -13,30 +13,24 @@ import java.util.List;
 
 public class ClienteDAOImpl extends DAO implements ClienteDAO {
 
+    private static final StringBuilder INSERT_QUERY = new StringBuilder();
+    private static final StringBuilder UPDATE_QUERY = new StringBuilder();
+
     public ClienteDAOImpl() {
         super();
     }
 
     @Override
     public void create(Cliente cliente) {
-        final StringBuilder query = new StringBuilder();
-
-        query.append("INSERT INTO ").append(db).append(".`tb_clientes` (`nomeCliente`,`nif`,");
-        query.append("`contato`,`tipoCliente`,`descricao`,`endereco`,`codigoPostal`,");
-        query.append("`localidade`) VALUES (?,?,?,?,?,?,?,?);");
+        INSERT_QUERY.append("INSERT INTO ").append(db).append(".`tb_clientes` (`nomeCliente`,`nif`,");
+        INSERT_QUERY.append("`contato`,`tipoCliente`,`descricao`,`endereco`,`codigoPostal`,");
+        INSERT_QUERY.append("`localidade`) VALUES (?,?,?,?,?,?,?,?);");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    INSERT_QUERY.toString()
             )) {
-                pstmt.setString(1, cliente.getNomeCliente());
-                pstmt.setString(2, cliente.getNif());
-                pstmt.setString(3, cliente.getContato());
-                pstmt.setString(4, cliente.getTipoCliente());
-                pstmt.setString(5, cliente.getDescricao());
-                pstmt.setString(6, cliente.getEndereco());
-                pstmt.setString(7, cliente.getCodigoPostal());
-                pstmt.setString(8, cliente.getLocalidade());
+                map(pstmt, cliente);
                 pstmt.executeUpdate();
             } catch (SQLException e) {
                 throw new DataAccessException(e);
@@ -44,27 +38,29 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
         });
     }
 
+    private void map(final PreparedStatement pstmt, Cliente cliente) throws SQLException {
+        pstmt.setString(1, cliente.getNomeCliente());
+        pstmt.setString(2, cliente.getNif());
+        pstmt.setString(3, cliente.getContato());
+        pstmt.setString(4, cliente.getTipoCliente());
+        pstmt.setString(5, cliente.getDescricao());
+        pstmt.setString(6, cliente.getEndereco());
+        pstmt.setString(7, cliente.getCodigoPostal());
+        pstmt.setString(8, cliente.getLocalidade());
+    }
+
     @Override
     public void update(Cliente cliente) {
-        final StringBuilder query = new StringBuilder();
-        
-        query.append("UPDATE ").append(db)
-                    .append(".`tb_clientes` SET `nomeCliente` = ?,`nif` = ?,");
-        query.append("`contato` = ?,`tipoCliente` = ?,`descricao` = ?,`endereco` = ?,");
-        query.append("`codigoPostal` = ?,`localidade` = ? WHERE `id_clientes` = ?;");
-        
+        UPDATE_QUERY.append("UPDATE ").append(db)
+                .append(".`tb_clientes` SET `nomeCliente` = ?,`nif` = ?,");
+        UPDATE_QUERY.append("`contato` = ?,`tipoCliente` = ?,`descricao` = ?,`endereco` = ?,");
+        UPDATE_QUERY.append("`codigoPostal` = ?,`localidade` = ? WHERE `id_clientes` = ?;");
+
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    UPDATE_QUERY.toString()
             )) {
-                pstmt.setString(1, cliente.getNomeCliente());
-                pstmt.setString(2, cliente.getNif());
-                pstmt.setString(3, cliente.getContato());
-                pstmt.setString(4, cliente.getTipoCliente());
-                pstmt.setString(5, cliente.getDescricao());
-                pstmt.setString(6, cliente.getEndereco());
-                pstmt.setString(7, cliente.getCodigoPostal());
-                pstmt.setString(8, cliente.getLocalidade());
+                map(pstmt, cliente);
                 pstmt.setInt(9, cliente.getIdCliente());
                 pstmt.executeUpdate();
             } catch (SQLException e) {
@@ -75,16 +71,9 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
 
     @Override
     public void delete(Integer idClinte) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_clientes WHERE id_clientes=?");
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idClinte);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao excluir cliente na base de dados!");
-        }
+        final StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_clientes WHERE id_clientes=?");
+        remove(query.toString(), idClinte);
     }
 
     @Override
@@ -113,7 +102,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
     @Override
     public Cliente buscar(Cliente cliente) {
         final StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM ").append(db).append(".tb_clientes WHERE id_clientes=?");
+        query.append("SELECT * FROM ").append(db).append(".tb_clientes WHERE id_clientes=?");
         Cliente retorno = new Cliente();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(query.toString());

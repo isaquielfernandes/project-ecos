@@ -110,7 +110,7 @@ public class DAOFactory {
         return new EscolaConducaoDAOImpl();
     }
 
-    public CargoSalarioDAO getCargo_salarioDAO() {
+    public CargoSalarioDAO getCargoSalarioDAO() {
         return new CargoSalarioDAOImpl();
     }
 

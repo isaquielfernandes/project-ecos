@@ -38,7 +38,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import net.sf.jasperreports.engine.JRException;
 
 
 public class ClienteController extends AnchorPane implements Initializable {
@@ -160,7 +159,6 @@ public class ClienteController extends AnchorPane implements Initializable {
     private void salvar(ActionEvent event) {
         boolean emptyFields = checkEmptyFields(txtNome, cbTipoCliente);
 
-        String idDoCliente = txtID.getText();
         String nome = txtNome.getText();
         String nif = txtNumBI.getText();
         String contato = txtContacto.getText();
@@ -302,19 +300,12 @@ public class ClienteController extends AnchorPane implements Initializable {
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Cliente> listaAluno) {
-
         FilteredList<Cliente> dadosFiltrados = new FilteredList<>(listaAluno, cliente -> true);
-        dadosFiltrados.setPredicate(cliente -> {
-            if (cliente.getNomeCliente().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (cliente.getNif().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (cliente.getContato().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
-
+        dadosFiltrados.setPredicate(cliente -> 
+                cliente.getNomeCliente().toLowerCase().startsWith(valor.toLowerCase()) || 
+                cliente.getNif().toLowerCase().startsWith(valor.toLowerCase()) || 
+                cliente.getContato().toLowerCase().startsWith(valor.toLowerCase())
+        );
         SortedList<Cliente> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbCliente.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de cliente encontradas");
@@ -323,7 +314,7 @@ public class ClienteController extends AnchorPane implements Initializable {
     }
 
     @FXML
-    private void imprimir(ActionEvent event) throws JRException {
+    private void imprimir(ActionEvent event) {
         throw new UnsupportedOperationException();
     }
 

@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
 
 public class LoginController implements Initializable {
     
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LoginController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
     
-    public static Usuario usuarioLogado = null;
+    private static Usuario usuarioLogado = null;
     @FXML
     private PasswordField psSenha;
     @FXML
@@ -43,7 +43,7 @@ public class LoginController implements Initializable {
     @FXML
     private void linkRegistrar(ActionEvent event) {
         new Registrar().start(new Stage());
-        Login.palco.close();
+        Login.getPalco().close();
     }
 
     @FXML
@@ -52,13 +52,13 @@ public class LoginController implements Initializable {
         String senha = psSenha.getText();
         if (DAOFactory.daoFactury().loginDAO().autenticarUsername(login)) {
             if (DAOFactory.daoFactury().loginDAO().autenticarSenha(login, senha)) {
-                usuarioLogado = DAOFactory.daoFactury().loginDAO().usuarioLogado(login);
+                setUsuarioLogado(DAOFactory.daoFactury().loginDAO().usuarioLogado(login));
                 if (DAOFactory.daoFactury().empresaDAO().total() == 0) {
                     new Configuracao().start(new Stage());
-                    Login.palco.close();
+                    Login.getPalco().close();
                 } else {
                     new App().start(new Stage());
-                    Login.palco.close();
+                    Login.getPalco().close();
                 }
             } else {
                 lbErroLogin.setText("Senha incorreta, verifique os valores!");
@@ -72,12 +72,12 @@ public class LoginController implements Initializable {
     
     @FXML
     public void minimizar(ActionEvent event) {
-        Login.palco.setIconified(true);
+        Login.getPalco().setIconified(true);
     }
 
     @FXML
     public void fechar(ActionEvent event) {
-        Login.palco.close();
+        Login.getPalco().close();
     }
 
     private void acessar(PasswordField senha) {
@@ -96,11 +96,19 @@ public class LoginController implements Initializable {
         });
     }
     
-    private void createTypeUser() {
+    public void createTypeUser() {
         if (DAOFactory.daoFactury().usuarioDAO().totalTipoUsuario() == 0) {
             DAOFactory.daoFactury().usuarioDAO().createUserAdminAndUserType();
             LOGGER.info(" Tipo de User criado com sucesso!");
         }
     }
 
+    public static Usuario getUsuarioLogado() {
+        return LoginController.usuarioLogado;
+    }
+
+    public static void setUsuarioLogado(Usuario usuarioLogado) {
+        LoginController.usuarioLogado = usuarioLogado;
+    }
+    
 }

@@ -8,6 +8,7 @@ import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Print;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
+
+    private static final StringBuilder UPDATE_QUERY = new StringBuilder();
     
     public CategoriaDAOImpl() {
         super();
@@ -27,51 +30,47 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
 
     @Override
     public void create(Categoria categoria) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
-            StringBuilder query = new StringBuilder(); 
-            query.append("INSERT INTO ")
-                    .append(db)
-                    .append(".tb_categoria ( categoria, descricao) VALUES (?, ?)");
-            preparedStatement = connection.prepareStatement(query.toString());
-            preparedStatement.setString(1, categoria.getNome());
-            preparedStatement.setString(2, categoria.getDescricao());
-            preparedStatement.executeUpdate();
-            connection.commit();
-        } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao inserir categoria na base de dados!");
-        }
+        StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db)
+                .append(".tb_categoria ( categoria, descricao) VALUES (?, ?)");
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    query.toString()
+            )) {
+                pstmt.setString(1, categoria.getNome());
+                pstmt.setString(2, categoria.getDescricao());
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
     public void update(Categoria categoria) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
-            StringBuilder query = new StringBuilder();
-            query.append("UPDATE ")
-                    .append(db)
-                    .append(".tb_categoria SET categoria=?, descricao=? WHERE id_categoria =?");
-            preparedStatement = connection.prepareStatement(query.toString());
-            preparedStatement.setString(1, categoria.getNome());
-            preparedStatement.setString(2, categoria.getDescricao());
-            preparedStatement.setInt(3, categoria.getId_categoria());
-            preparedStatement.executeUpdate();
-            connection.commit();
-        } catch (SQLException ex) {
-            throw new DataAccessException("Erro ao atualizar categoria na base de dados!n");
-        } 
+        UPDATE_QUERY.append("UPDATE ").append(db)
+                .append(".tb_categoria SET categoria=?, descricao=? WHERE id_categoria =?");
+
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    UPDATE_QUERY.toString()
+            )) {
+                pstmt.setString(1, categoria.getNome());
+                pstmt.setString(2, categoria.getDescricao());
+                pstmt.setInt(3, categoria.getId());
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
     public void delete(Integer idCategoria) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
-            StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db)
-                    .append(".tb_categoria WHERE id_categoria=?");
-            preparedStatement = connection.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idCategoria);
-            preparedStatement.execute();
-        } catch (SQLException ex) {
-            throw new DataAccessException("DELETE: ", ex);
-        }
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db)
+                .append(".tb_categoria WHERE id_categoria=?");
+        remove(query.toString(), idCategoria);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             URL url = getClass().getResource("/cv/com/escola/reports/Categoria.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, connection);
-            
+
             Print jasperViewer = new Print();
             jasperViewer.viewReport("Categoria", jasperPrint);
         } catch (JRException | SQLException ex) {

@@ -1,5 +1,6 @@
 package cv.com.escola.app;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -17,17 +18,15 @@ public class Login extends Application {
 
     private static final Logger LOG = Logger.getLogger(Login.class.getName());
     
-    public static Stage palco;
+    private static Stage palco;
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D windows = screen.getVisualBounds();
     
     
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public void start(final Stage stage) {
         try {
-
-            palco = stage;
+            setPalco(stage);
             AnchorPane page = FXMLLoader.load(Login.class.getResource("/cv/com/escola/view/login/login.fxml"));
             Scene cena = new Scene(page);
 
@@ -44,12 +43,20 @@ public class Login extends Application {
             stage.setScene(cena);
             stage.show();
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Erro ao inicializar aplicacao!" , ex);
         }
     }
     
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getPalco() {
+        return Login.palco;
+    }
+
+    private static void setPalco(Stage palco) {
+        Login.palco = palco;
     }
 }

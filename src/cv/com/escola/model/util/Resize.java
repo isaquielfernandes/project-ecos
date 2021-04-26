@@ -4,18 +4,20 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 public class Resize {
-     private Resize() {
+
+    private Resize() {
+        
     }
 
     /**
      * Função para facilitar o redimensionamento dos nós para seu tamanho de
      * acordo com a distancia do seu parente
      *
-     * @param no     node parente do componente a ser redimensionado
-     * @param top    distancia do topo com o nó parente
-     * @param right  distancia da direita com o nó parente
+     * @param no node parente do componente a ser redimensionado
+     * @param top distancia do topo com o nó parente
+     * @param right distancia da direita com o nó parente
      * @param bottom distancia do fundi com o nó parente
-     * @param left   distancia sa esquerda com o nó parente
+     * @param left distancia sa esquerda com o nó parente
      */
     public static void margin(Node no, double top, double right, double bottom, double left) {
         AnchorPane.setTopAnchor(no, top);
@@ -28,7 +30,7 @@ public class Resize {
      * Função para facilitar o redimensionamento dos nós para seu tamanho de
      * acordo com a distancia do seu parente
      *
-     * @param no    node parente do componente a ser redimensionado
+     * @param no node parente do componente a ser redimensionado
      * @param valor valores para todos os nodes
      */
     public static void margin(Node no, double valor) {
@@ -40,6 +42,7 @@ public class Resize {
 
     /**
      * Defenir valores de margen topo, direita e esquerda em relação ao parente
+     *
      * @param no
      * @param top
      * @param right
@@ -53,6 +56,7 @@ public class Resize {
 
     /**
      * Defenir valores de margen direita e esquerda em relação ao parente
+     *
      * @param no
      * @param right
      * @param left
@@ -64,6 +68,7 @@ public class Resize {
 
     /**
      * Defenir valores de margen do topo
+     *
      * @param no
      * @param top
      */
@@ -73,6 +78,7 @@ public class Resize {
 
     /**
      * Defenir valores de margen direita
+     *
      * @param no
      * @param right
      */
@@ -82,6 +88,7 @@ public class Resize {
 
     /**
      * Defenir valores de margen rodape
+     *
      * @param no
      * @param bottom
      */
@@ -91,6 +98,7 @@ public class Resize {
 
     /**
      * Defenir valores de margen esquerda
+     *
      * @param no
      * @param left
      */

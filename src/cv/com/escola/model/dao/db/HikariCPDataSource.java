@@ -22,6 +22,7 @@ public class HikariCPDataSource {
     private static final String SERVER_CONFIG = "?serverTimezone=" + ID_TIME_ZONE + "";
     private static final String USER = DBProperties.loadPropertiesFileUser();
     private static final String PWD = DBProperties.loadPropertiesFilePass();
+    private static final String DB = DBProperties.loadPropertiesDB();
     
     protected final ExecutorService executorService = Executors.newSingleThreadExecutor( r -> {
         Thread thread = new Thread(r);
@@ -32,7 +33,7 @@ public class HikariCPDataSource {
     static {
         int cpuCores = Runtime.getRuntime().availableProcessors();
         CONFIG.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        CONFIG.setJdbcUrl("jdbc:mysql://localhost:3306/dbescola" + SERVER_CONFIG);
+        CONFIG.setJdbcUrl("jdbc:mysql://localhost:3306/" + DB + SERVER_CONFIG);
         CONFIG.setUsername(USER);
         CONFIG.setPassword(PWD);
         CONFIG.addDataSourceProperty("cachePrepStmts", "true");

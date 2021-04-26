@@ -22,7 +22,7 @@ public class GraficoPie {
      * @param total
      */
     public static void info(PieChart grafico, double total) {
-        grafico.getData().forEach((data) -> {
+        grafico.getData().forEach(data -> {
             final Tooltip tip = new Tooltip(data.getName()+ " - Valor: "+ data.getPieValue()
                     + " : " + new DecimalFormat("#.##").format((data.getPieValue() / total) * 100) + " %");
 

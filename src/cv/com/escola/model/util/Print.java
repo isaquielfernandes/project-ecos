@@ -30,6 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -39,9 +40,17 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
+@Slf4j
 public class Print extends AnchorPane {
 
-    private Button print, save, backPage, firstPage, nextPage, lastPage, zoomIn, zoomOut;
+    private Button btnPrint;
+    private Button save;
+    private Button backPage;
+    private Button firstPage;
+    private Button nextPage;
+    private Button lastPage;
+    private Button zoomIn;
+    private Button zoomOut;
     private static final String PATH = "/cv/com/escola/view/img/";
     private ImageView report;
     private Label lblReportPages;
@@ -50,7 +59,9 @@ public class Print extends AnchorPane {
     private JasperPrint jasperPrint;
 
     private final SimpleIntegerProperty currentPage;
-    private int imageHeight = 0, imageWidth = 0, reportPages = 0;
+    private int imageHeight = 0;
+    private int imageWidth = 0;
+    private int reportPages = 0;
 
     public Print() {
         currentPage = new SimpleIntegerProperty(this, "currentPage", 1);
@@ -121,13 +132,13 @@ public class Print extends AnchorPane {
         menu.setAlignment(Pos.CENTER);
         menu.setPadding(new Insets(4));
         menu.setPrefHeight(40.0);
-        menu.getChildren().addAll(print, save, firstPage, backPage, txtPage, 
+        menu.getChildren().addAll(btnPrint, save, firstPage, backPage, txtPage, 
                 lblReportPages, nextPage, lastPage, zoomIn, zoomOut);
         return menu;
     }
 
     private void setupPrefSizes() {
-        print.setPrefSize(30, 30);
+        btnPrint.setPrefSize(30, 30);
         save.setPrefSize(30, 30);
         backPage.setPrefSize(30, 30);
         firstPage.setPrefSize(30, 30);
@@ -138,7 +149,7 @@ public class Print extends AnchorPane {
     }
 
     private void buttonAcction() {
-        print = new Button(null, new ImageView(getClass()
+        btnPrint = new Button(null, new ImageView(getClass()
                 .getResource(PATH + "printer.png").toExternalForm()));
         save = new Button(null, new ImageView(getClass()
                 .getResource(PATH + "save.png").toExternalForm()));
@@ -204,7 +215,7 @@ public class Print extends AnchorPane {
     }
 
     private void printAction() {
-        print.setOnAction((ActionEvent event) -> {
+        btnPrint.setOnAction((ActionEvent event) -> {
             try {
                 JasperPrintManager.printReport(jasperPrint, true);
             } catch (JRException ex) {
@@ -250,6 +261,8 @@ public class Print extends AnchorPane {
                 xlsxExporterx.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
                 xlsxExporterx.exportReport();
                 break;
+            default:
+                break;
         }
     }
 
@@ -267,15 +280,11 @@ public class Print extends AnchorPane {
     }
 
     private void zoomInAction() {
-        zoomIn.setOnAction((ActionEvent event) -> {
-            zoom(0.15);
-        });
+        zoomIn.setOnAction((ActionEvent event) -> zoom(0.15));
     }
 
     private void zoomOutAction() {
-        zoomOut.setOnAction((ActionEvent event) -> {
-            zoom(-0.15);
-        });
+        zoomOut.setOnAction((ActionEvent event) -> zoom(-0.15));
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
@@ -302,7 +311,7 @@ public class Print extends AnchorPane {
                 report.setImage(SwingFXUtils.toFXImage(image, fxImage));
             }
         } catch (JRException ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage());
         }
     }
 
@@ -335,7 +344,7 @@ public class Print extends AnchorPane {
 
     }
 
-    public void viewPrint(String title, JasperPrint jasperPrint) {
+    public void viewPrint(JasperPrint jasperPrint) {
         try {
             this.jasperPrint = jasperPrint;
             JasperPrintManager.printReport(jasperPrint, true);
@@ -351,21 +360,11 @@ public class Print extends AnchorPane {
         telaPrint.getSelectionModel().select(tab);
     }
 
-    public void exibir() {
-
-    }
-
     public void zoom(double factor) {
         report.setScaleX(report.getScaleX() + factor);
         report.setScaleY(report.getScaleY() + factor);
         report.setFitHeight(imageHeight + factor);
         report.setFitWidth(imageWidth + factor);
     }
-//
-//    @Override
-//    public void run() {
-//        printAction();
-//        show();
-//    }
 
 }

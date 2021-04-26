@@ -200,15 +200,12 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
     private void excluir(ActionEvent event) {
         try {
             Benificio benificio = tbBenificios.getSelectionModel().getSelectedItem();
-
             Dialogo.Resposta response = Mensagem.confirmar("Excluir benificio " + benificio.getNomeBenificio() + " ?");
-
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().benificioDAO().delete(benificio.getIdBenificio());
                 sincronizarBase();
                 tabela();
             }
-
             tbBenificios.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
             Mensagem.alerta("Selecione benificio na tabela para exclusão!");
@@ -217,11 +214,9 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
 
     private void tabela() {
         ObservableList data = FXCollections.observableArrayList(listaBenificios);
-
         colId.setCellValueFactory((TableColumn.CellDataFeatures<Benificio, Integer> obj) -> obj.getValue().idBenificioProperty().asObject());
         colBenificios.setCellValueFactory((TableColumn.CellDataFeatures<Benificio, String> obj) -> obj.getValue().nomeBenificioProperty());
         colDescricao.setCellValueFactory((TableColumn.CellDataFeatures<Benificio, String> obj) -> obj.getValue().descricaoProperty());
-
         tbBenificios.setItems(data);
     }
     

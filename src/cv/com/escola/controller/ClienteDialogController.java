@@ -63,6 +63,7 @@ public class ClienteDialogController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         combos();
+        limparCampos();
         lbClose.setOnMouseClicked(event -> 
             dialogStage.close()
         );
@@ -91,7 +92,6 @@ public class ClienteDialogController implements Initializable {
         this.txtCodigoPostal.setText(cliente.getCodigoPostal());
         this.txtLocalidade.setText(cliente.getLocalidade());
         this.txtEndereco.setText(cliente.getEndereco());
-        //this.txtID.setText(cliente.getIdDoCliente());
     }
 
     public boolean isButtonConfirmarClicked() {

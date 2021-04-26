@@ -89,15 +89,15 @@ public class RelatorioEscolaDAOImpl extends DAO implements RelatorioEscolaDAO {
     }
 
     @Override
-    public Map<String, ArrayList> listarExamePorTipoDeExame(Year ano) {
+    public Map<String, ArrayList<Object>> listarExamePorTipoDeExame(Year ano) {
         final StringBuilder query = new StringBuilder();
         query.append("SELECT count(id_exame) as Qtd, tipo_exame, extract(year from dia) as ano FROM ").append(db).append(".tb_exame where extract(year from dia) = ").append(ano).append(" group by tipo_exame;");
-        Map<String, ArrayList> retorno = new HashMap();
+        Map<String, ArrayList<Object>> retorno = new HashMap<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                ArrayList linha = new ArrayList();
+                ArrayList<Object> linha = new ArrayList<>();
                 linha.add(rs.getInt("Qtd"));
                 linha.add(rs.getString("tipo_exame"));
                 retorno.put(rs.getString("tipo_exame"), linha);

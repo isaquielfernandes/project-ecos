@@ -3,7 +3,6 @@ package cv.com.escola.controller;
 import cv.com.escola.app.Login;
 import cv.com.escola.app.Server;
 import cv.com.escola.model.dao.db.DAOFactory;
-import cv.com.escola.model.dao.db.DBMigration;
 import cv.com.escola.model.util.Dialogo;
 import cv.com.escola.model.util.Mensagem;
 import java.io.FileInputStream;
@@ -28,14 +27,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@Slf4j
 public class ServerController implements Initializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerController.class);
-    
+
     @FXML
     private TextField tfHost;
     @FXML
@@ -57,6 +57,7 @@ public class ServerController implements Initializable {
     @FXML
     private TextField tfUserName;
 
+    private static final String DATABASE_PROPERTIES = "database.properties";
     private final Properties properties = new Properties();
     private InputStream inputStream;
     private OutputStream output = null;
@@ -66,8 +67,9 @@ public class ServerController implements Initializable {
     private String url;
     private String user;
     private String pass;
-    private final String idTimezone = java.util.TimeZone.getDefault().getID();
-    private final String unicode = "?serverTimezone=" + idTimezone + "";
+    private static final String ID_TIME_ZONE = java.util.TimeZone.getDefault().getID();
+    private static final String UNICODE = "?serverTimezone=" + ID_TIME_ZONE + "";
+    private static final String PASSWORD = "password";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -82,7 +84,7 @@ public class ServerController implements Initializable {
     @FXML
     private void btnIniciarOnAction(ActionEvent event) {
         new Login().start(new Stage());
-        Server.close();
+        Server.getPalco().close();
     }
 
     @FXML
@@ -91,55 +93,43 @@ public class ServerController implements Initializable {
     }
 
     @FXML
-    private void OnActionCriarDataBase(ActionEvent event) {
-        Dialogo.Resposta res = Mensagem.confirmar("Criar Base Dados", "Deseja criar um novo base de dados (Shema)?");
-        if (res == Dialogo.Resposta.YES) {
-            DBMigration.createDataBase();
-        }
-        esperar(1000);
+    private void onActionCriarDataBase(ActionEvent event) {
 
-        Dialogo.Resposta resView = Mensagem.confirmar("Criar Views?");
-        if (resView == Dialogo.Resposta.YES) {
-            DBMigration.createView();
-        }
-        
-        esperar(1000);
-        
         Dialogo.Resposta resInsert = Mensagem.confirmar("Criar usuario admin");
         if (resInsert == Dialogo.Resposta.YES) {
             DAOFactory.daoFactury().usuarioDAO().createUserAdminAndUserType();
         }
-        
+
     }
 
     public void getDataFromFile() {
         try {
-            inputStream = new FileInputStream("database.properties");
+            inputStream = new FileInputStream(DATABASE_PROPERTIES);
 
             properties.load(inputStream);
-            System.err.println("Host : " + properties.getProperty("host"));
+            log.debug("Host : " + properties.getProperty("host"));
             tfHost.setText(properties.getProperty("host"));
             tfDBName.setText(properties.getProperty("db"));
             tfUserName.setText(properties.getProperty("user"));
-            pfPassword.setText(properties.getProperty("password"));
+            pfPassword.setText(properties.getProperty(PASSWORD));
             thPort.setText(properties.getProperty("port"));
             inputStream.close();
         } catch (FileNotFoundException ex) {
             LOGGER.error(ex.getMessage());
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
     public void mkDbProperties() {
         try {
-            output = new FileOutputStream("database.properties");
+            output = new FileOutputStream(DATABASE_PROPERTIES);
 
             properties.setProperty("host", tfHost.getText().trim());
             properties.setProperty("port", thPort.getText().trim());
             properties.setProperty("db", tfDBName.getText().trim());
             properties.setProperty("user", tfUserName.getText().trim());
-            properties.setProperty("password", pfPassword.getText().trim());
+            properties.setProperty(PASSWORD, pfPassword.getText().trim());
             properties.store(output, null);
             output.close();
 
@@ -154,26 +144,26 @@ public class ServerController implements Initializable {
             }
         } catch (FileNotFoundException | SQLException ex) {
             LOGGER.error(ex.getMessage());
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
     public void mkDbPropertiesReset() {
         try {
-            output = new FileOutputStream("database.properties");
+            output = new FileOutputStream(DATABASE_PROPERTIES);
             clearField();
             properties.setProperty("host", null);
             properties.setProperty("port", null);
             properties.setProperty("db", null);
             properties.setProperty("user", null);
-            properties.setProperty("password", null);
+            properties.setProperty(PASSWORD, null);
             properties.store(output, null);
             output.close();
         } catch (FileNotFoundException ex) {
             LOGGER.error(ex.getMessage());
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -196,8 +186,8 @@ public class ServerController implements Initializable {
             }
         } catch (FileNotFoundException ex) {
             LOGGER.error(ex.getMessage());
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -213,11 +203,11 @@ public class ServerController implements Initializable {
 
     public void loadPropertiesFile() {
         try {
-            inputStream = new FileInputStream("database.properties");
+            inputStream = new FileInputStream(DATABASE_PROPERTIES);
             properties.load(inputStream);
             url = "jdbc:mysql://" + properties.getProperty("host") + ":" + properties.getProperty("port") + "/";
             user = properties.getProperty("user");
-            pass = properties.getProperty("password");
+            pass = properties.getProperty(PASSWORD);
         } catch (IOException ex) {
             LOGGER.error("erro ao caregar arquivo de configuracao!", ex);
         }
@@ -227,7 +217,7 @@ public class ServerController implements Initializable {
         loadPropertiesFile();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(url + unicode, user, pass);
+            con = DriverManager.getConnection(url + UNICODE, user, pass);
             return true;
         } catch (ClassNotFoundException | SQLException ex) {
             LOGGER.error(ex.getMessage());
@@ -235,7 +225,7 @@ public class ServerController implements Initializable {
         return false;
     }
 
-    private static void esperar(long milesegundos) {
+    public static void esperar(long milesegundos) {
         try {
             Thread.sleep(milesegundos);
         } catch (InterruptedException e) {

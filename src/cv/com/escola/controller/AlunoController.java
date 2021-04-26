@@ -218,7 +218,7 @@ public class AlunoController extends AnchorPane implements Initializable {
     @FXML
     private Pagination pagination;
 
-    private static final int QUANTIDADE_POR_PAGINA = 20;
+    private static final int QUANTIDADE_POR_PAGINA = 45;
     private static final String MENSAGEM = "Voce precisa Selecionar um Aluno na Tabela!";
 
     private boolean studantDefault = true;
@@ -403,7 +403,6 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     private File writeBinaryIntoFile(Aluno aluno) {
-        //String tmpdir = System.getProperty("java.oi.temdir");
         String fileSeparator = File.separator;
         final String homeDirectory = System.getProperty("user.home") + fileSeparator
                 + "Documents/ecos/aluno/";
@@ -490,11 +489,7 @@ public class AlunoController extends AnchorPane implements Initializable {
         telaVisualizacao(null);
         Tempo.blockDataPosterior(LocalDate.now().plusYears(100), dtNascimento);
 
-        scrollPane.viewportBoundsProperty().addListener(
-                (ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) -> {
-                    observable.getValue().contains(oldValue);
-                    flowPane.setPrefWidth(newValue.getWidth());
-                });
+        scrollPaneConfig();
 
         sincronizarDataBase();
         loadAlunos();
@@ -532,6 +527,20 @@ public class AlunoController extends AnchorPane implements Initializable {
 
         DateTimeFormatter myDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        columnDataNascimentoCellFactory(myDateFormatter);
+
+        atualizarGrade(0);
+    }
+
+    private void scrollPaneConfig() {
+        scrollPane.viewportBoundsProperty().addListener(
+                (ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) -> {
+                    observable.getValue().contains(oldValue);
+                    flowPane.setPrefWidth(newValue.getWidth());
+                });
+    }
+
+    private void columnDataNascimentoCellFactory(DateTimeFormatter myDateFormatter) {
         colDataNacimento.setCellFactory(column -> new TableCell<Aluno, LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
@@ -551,8 +560,6 @@ public class AlunoController extends AnchorPane implements Initializable {
                 }
             }
         });
-
-        atualizarGrade(0);
     }
 
     private void tooltip() {
@@ -707,9 +714,9 @@ public class AlunoController extends AnchorPane implements Initializable {
                 });
     }
 
-    private void atualizarGrade(int pagina) {
+    public void atualizarGrade(int pagina) {
         totalAluno = DAOFactory.daoFactury().alunoDAO().count();
-        pagination.setPageCount((int) Math.ceil(((double) totalAluno)) / QUANTIDADE_POR_PAGINA);
+        pagination.setPageCount(totalAluno / QUANTIDADE_POR_PAGINA);
         final ObservableList<Aluno> alunos = FXCollections
                 .observableArrayList(DAOFactory.daoFactury().alunoDAO().listar(QUANTIDADE_POR_PAGINA, pagina));
         tbAluno.setItems(alunos);

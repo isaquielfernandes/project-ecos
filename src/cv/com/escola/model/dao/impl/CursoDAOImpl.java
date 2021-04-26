@@ -26,7 +26,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.setString(1, curso.getCurso());
             preparedStatement.setInt(2, curso.getDuracao());
             preparedStatement.setString(3, curso.getDescricao());
-            preparedStatement.setInt(4, curso.getCategoria().getId_categoria());
+            preparedStatement.setInt(4, curso.getCategoria().getId());
 
             preparedStatement.executeUpdate();
             conector.commit();
@@ -45,7 +45,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             preparedStatement.setString(1, curso.getCurso());
             preparedStatement.setInt(2, curso.getDuracao());
             preparedStatement.setString(3, curso.getDescricao());
-            preparedStatement.setInt(4, curso.getCategoria().getId_categoria());
+            preparedStatement.setInt(4, curso.getCategoria().getId());
 
             preparedStatement.setLong(5, curso.getCodigo());
 
@@ -58,17 +58,10 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
     }
 
     @Override
-    public void delete(Long IdCurso) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_curso WHERE codigo=?");
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setLong(1, IdCurso);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
-        }
+    public void delete(Long cursoId) {
+        final StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_curso WHERE codigo=?");
+        remove(query.toString(), cursoId);
     }
 
     @Override

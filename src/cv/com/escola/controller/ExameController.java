@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 public class ExameController extends AnchorPane implements Initializable {
 
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ExameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExameController.class);
     private static final String QUANTIDADE_DE_EXAMES_ENCONTRADOS = "Quantidade de exames encontrados";
     private static final String UPLOAD_FILE = "Upload File";
     private List<Exame> listaExame;
@@ -70,7 +70,7 @@ public class ExameController extends AnchorPane implements Initializable {
     @FXML
     private GridPane telaCadastro;
     @FXML
-    private TextField txtId_Aluno;
+    private TextField txtIdAluno;
     @FXML
     private TextField txtBuscar;
     @FXML
@@ -80,9 +80,9 @@ public class ExameController extends AnchorPane implements Initializable {
     @FXML
     private TableColumn<Aluno, String> colAlunoNome;
     @FXML
-    private ComboBox<String> cbTipo_Exame;
+    private ComboBox<String> cbTipo;
     @FXML
-    private ComboBox<Aluno> cbCliente;
+    private ComboBox<Aluno> cbAluno;
     @FXML
     private ComboBox<String> cbTipoExame;
     @FXML
@@ -96,13 +96,13 @@ public class ExameController extends AnchorPane implements Initializable {
     @FXML
     private TextArea txtDescricao;
     @FXML
-    private TextField txtNome_Aluno;
+    private TextField txtNomeAluno;
     @FXML
-    private TextField txtAtestado_Medico;
+    private TextField txtAtestadoMedico;
     @FXML
-    private TextField txtRegistro_Criminal;
+    private TextField txtRegistroCriminal;
     @FXML
-    private ComboBox<Categoria> cbExame_De;
+    private ComboBox<Categoria> cbCategoria;
     @FXML
     private AnchorPane telaEdicao;
     @FXML
@@ -132,7 +132,7 @@ public class ExameController extends AnchorPane implements Initializable {
     @FXML
     private Label legenda;
     @FXML
-    private Hyperlink hlinkRegistro_Criminal;
+    private Hyperlink hlinkRegistroCriminal;
     @FXML
     private Hyperlink hlinkAtestadoMedico;
 
@@ -146,8 +146,8 @@ public class ExameController extends AnchorPane implements Initializable {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
     private String n = LocalDateTime.now().format(formatter);
     private String sep = File.separator;
-    private File diretorioR = new File("public/img/exame/registro Criminal/");
-    private File diretorioA = new File("public/img/exame/atestado medico/");
+    private File diretorioR = new File(path + "/public/img/exame/registro Criminal/");
+    private File diretorioA = new File(path +"/public/img/exame/atestado medico/");
 
     /**
      * Mapear dados objetos para inserção dos dados na tabela
@@ -158,16 +158,16 @@ public class ExameController extends AnchorPane implements Initializable {
                 new SimpleStringProperty(Integer.toString(obj.getValue().getIdAluno())));
         colAlunoNome.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
         tbAluno.setItems(data);
-        cbCliente.setItems(data);
+        cbAluno.setItems(data);
     }
 
     public void showAlunoSelected(Aluno aluno) {
         if (aluno != null) {
-            txtId_Aluno.setText(String.valueOf(aluno.getIdAluno()));
-            txtNome_Aluno.setText(aluno.getNome());
+            txtIdAluno.setText(String.valueOf(aluno.getIdAluno()));
+            txtNomeAluno.setText(aluno.getNome());
         } else {
-            txtId_Aluno.setText("");
-            txtNome_Aluno.setText("");
+            txtIdAluno.setText("");
+            txtNomeAluno.setText("");
         }
     }
 
@@ -176,7 +176,7 @@ public class ExameController extends AnchorPane implements Initializable {
      */
     private void filtroAluno(String valor, ObservableList<Aluno> listaAluno) {
         FilteredList<Aluno> dadosFiltrados = new FilteredList<>(listaAluno, aluno -> true);
-        dadosFiltrados.setPredicate((aluno) -> aluno.getNome().toLowerCase().startsWith(valor.toLowerCase()) ||
+        dadosFiltrados.setPredicate(aluno -> aluno.getNome().toLowerCase().startsWith(valor.toLowerCase()) ||
             aluno.getNumBI().toLowerCase().startsWith(valor.toLowerCase()) 
         );
         SortedList<Aluno> dadosOrdenados = new SortedList<>(dadosFiltrados);
@@ -220,11 +220,11 @@ public class ExameController extends AnchorPane implements Initializable {
      * Limpar campos textfield cadastro de coleções
      */
     private void limparCampos() {
-        Campo.limpar(txtId_Aluno, txtNome_Aluno, txtRegistro_Criminal, txtAtestado_Medico);
+        Campo.limpar(txtIdAluno, txtNomeAluno, txtRegistroCriminal, txtAtestadoMedico);
         Campo.limpar(txtDescricao);
-        cbCliente.setValue(null);
-        cbExame_De.setValue(null);
-        cbTipo_Exame.setValue(null);
+        cbAluno.setValue(null);
+        cbCategoria.setValue(null);
+        cbTipo.setValue(null);
         dtExame.setValue(null);
     }
 
@@ -232,9 +232,9 @@ public class ExameController extends AnchorPane implements Initializable {
      * Preencher combos tela
      */
     private void combos() {
-        Combo.popular(cbTipo_Exame, "", "TEORICA", "PRATICA", "TECNICA", "CAP");
+        Combo.popular(cbTipo, "", "TEORICA", "PRATICA", "TECNICA", "CAP");
         Combo.popular(cbTipoExame, "", "TEORICA", "PRATICA", "TECNICA", "CAP");
-        Combo.popular(cbExame_De, DAOFactory.daoFactury().categoriaDAO().findAll());
+        Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll());
     }
 
     @FXML
@@ -267,11 +267,11 @@ public class ExameController extends AnchorPane implements Initializable {
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean vazio = checkEmptyFields(txtId_Aluno, cbTipo_Exame, cbExame_De, dtExame, cbCliente);
+        boolean vazio = checkEmptyFields(txtIdAluno, cbTipo, cbCategoria, dtExame, cbAluno);
 
-        Aluno aluno = cbCliente.getValue();
-        String tipoDeExame = cbTipo_Exame.getValue();
-        Categoria cat = cbExame_De.getValue();
+        Aluno aluno = cbAluno.getValue();
+        String tipoDeExame = cbTipo.getValue();
+        Categoria cat = cbCategoria.getValue();
         LocalDate dia = dtExame.getValue();
         LocalTime hora = tpHora.getValue();
         String descricao = txtDescricao.getText();
@@ -300,10 +300,10 @@ public class ExameController extends AnchorPane implements Initializable {
             exame.getClass();
             telaCadastro(null);
 
-            cbCliente.setValue(exame.getAluno());
-            txtId_Aluno.setText(exame.getAluno().getIdAluno().toString());
-            cbTipo_Exame.setValue(exame.getTipoExame());
-            cbExame_De.setValue(exame.getCategoria());
+            cbAluno.setValue(exame.getAluno());
+            txtIdAluno.setText(exame.getAluno().getIdAluno().toString());
+            cbTipo.setValue(exame.getTipoExame());
+            cbCategoria.setValue(exame.getCategoria());
             dtExame.setValue(exame.getDataExame());
             tpHora.setValue(exame.getHoraDeExame());
             txtDescricao.setText(exame.getDescricao());
@@ -382,16 +382,16 @@ public class ExameController extends AnchorPane implements Initializable {
         // Limpa os detalhes do aluno.
         showAlunoSelected(null);
         // Detecta mudanças de seleção e mostra os detalhes do aluno quando houver mudança.
-        cbCliente.getSelectionModel().selectedItemProperty().addListener(
+        cbAluno.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showAlunoSelected(newValue));
 
-        cbCliente.setOnMouseClicked(event -> 
-            Combo.popular(cbCliente, DAOFactory.daoFactury().alunoDAO().findAll())
+        cbAluno.setOnMouseClicked(event -> 
+            Combo.popular(cbAluno, DAOFactory.daoFactury().alunoDAO().findAll())
         );
         // ****************************************************************************
 
-        cbExame_De.setOnMouseClicked(event -> 
-            Combo.popular(cbExame_De, DAOFactory.daoFactury().categoriaDAO().findAll())
+        cbCategoria.setOnMouseClicked(event -> 
+            Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll())
         );
 
         hlinkAtestadoMedico.setOnMouseClicked(event -> {
@@ -400,17 +400,17 @@ public class ExameController extends AnchorPane implements Initializable {
             file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
                 String filePath = file.getPath();
-                txtAtestado_Medico.setText(filePath);
+                txtAtestadoMedico.setText(filePath);
             }
         });
 
-        hlinkRegistro_Criminal.setOnMouseClicked(event -> {
+        hlinkRegistroCriminal.setOnMouseClicked(event -> {
             fileChooser.getExtensionFilters().addAll(extensionFilterJPG, extensionFilterPNG, extensionFilterPDF);
             fileChooser.setTitle(UPLOAD_FILE);
             file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
                 String filePath = file.getPath();
-                txtRegistro_Criminal.setText(filePath);
+                txtRegistroCriminal.setText(filePath);
             }
         });
 

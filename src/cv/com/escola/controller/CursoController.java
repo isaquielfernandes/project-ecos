@@ -46,7 +46,7 @@ public class CursoController extends AnchorPane implements Initializable {
     private List<Curso> listaCurso;
     private long codigoCurso;
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
     @FXML
     private Label lbTitulo;
     @FXML
@@ -114,9 +114,9 @@ public class CursoController extends AnchorPane implements Initializable {
         telaCadastro(null);
         combos();
         sincronizarBase();
-        cbCategoria.setOnMouseClicked((event) -> {
-            Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll());
-        });
+        cbCategoria.setOnMouseClicked(event -> 
+            Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll())
+        );
     }
 
     @FXML
@@ -228,7 +228,6 @@ public class CursoController extends AnchorPane implements Initializable {
 
     private void tabela() {
         ObservableList dados = FXCollections.observableArrayList(listaCurso);
-        //colId.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         colId.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(Long.toString(obj.getValue().getCodigo())));
         colCurso.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(obj.getValue().getCurso()));
         colCategoria.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(obj.getValue().getCategoria().getNome()));
@@ -238,24 +237,12 @@ public class CursoController extends AnchorPane implements Initializable {
         tbCurso.setItems(dados);
     }
 
-    /**
-     * Campo de pesquisar para filtrar dados na tabela
-     */
-    private void filtro(String valor, ObservableList<Curso> listaCurso) {
-
+    public void filtro(String valor, ObservableList<Curso> listaCurso) {
         FilteredList<Curso> dadosFiltrados = new FilteredList<>(listaCurso, curso -> true);
-        dadosFiltrados.setPredicate((curso) -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (curso.getCurso().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (curso.getCategoria().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-
-            return false;
-        });
+        dadosFiltrados.setPredicate(curso -> 
+                curso.getCurso().toLowerCase().startsWith(valor.toLowerCase()) || 
+                curso.getCategoria().getNome().toLowerCase().startsWith(valor.toLowerCase())
+        );
         SortedList<Curso> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbCurso.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de cursos encontradas");

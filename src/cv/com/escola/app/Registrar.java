@@ -1,5 +1,6 @@
 package cv.com.escola.app;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -22,10 +23,9 @@ public class Registrar extends Application {
     private final Rectangle2D windows = screen.getVisualBounds();
 
     @Override
-    @SuppressWarnings("UseSpecificCatch")
     public void start(final Stage stage) {
         try {
-            palco = stage;
+            setPalco(stage);
             AnchorPane page = FXMLLoader.load(Registrar.class.getResource("/cv/com/escola/view/registrar.fxml"));
             Scene cena = new Scene(page);
 
@@ -42,7 +42,7 @@ public class Registrar extends Application {
             stage.setScene(cena);
             stage.show();
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Erro ao inicializar aplicacao!" , ex);
         }
     }
@@ -50,8 +50,13 @@ public class Registrar extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
-    public static void fechar() {
-        palco.close();
+
+    public static Stage getPalco() {
+        return palco;
     }
+
+    private static void setPalco(Stage palco) {
+        Registrar.palco = palco;
+    }
+ 
 }

@@ -9,7 +9,6 @@ import cv.com.escola.model.util.Criptografia;
 import cv.com.escola.model.util.Dialogo;
 import cv.com.escola.model.util.Filtro;
 import cv.com.escola.model.util.Grupo;
-import cv.com.escola.model.util.Mascara;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
@@ -45,6 +44,7 @@ import javafx.scene.layout.GridPane;
  */
 public class UsuarioController extends AnchorPane implements Initializable{
 
+    private static final String QUANTIDADE_DE_USUARIOS_ENCONTRADOS = "Quantidade de usuários encontrados";
     private List<Usuario> listaUsuario;
     private int idUsuario = 0;
 
@@ -99,7 +99,7 @@ public class UsuarioController extends AnchorPane implements Initializable{
     @FXML
     private Label legenda;
     @FXML
-    private AnchorPane AnchorPane;
+    private AnchorPane anchorPane;
 
     /**
      * Initializes the controller class.
@@ -140,22 +140,22 @@ public class UsuarioController extends AnchorPane implements Initializable{
 
     @FXML
     private void telaEdicao(ActionEvent event) {
-        config("Editar Usuário", "Quantidade de usuários encontrados", 1);
+        config("Editar Usuário", QUANTIDADE_DE_USUARIOS_ENCONTRADOS, 1);
         Modulo.visualizacao(true, telaEdicao, btEditar, txtPesquisar);
         tabela();
     }
 
     @FXML
     private void telaExcluir(ActionEvent event) {
-        config("Excluir Usuário", "Quantidade de usuários encontrados", 2);
+        config("Excluir Usuário", QUANTIDADE_DE_USUARIOS_ENCONTRADOS, 2);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar);
         tabela();
     }
+    
 
     @FXML
     private void salvar(ActionEvent event) {
         boolean vazio = Campo.noEmpty(txtNome, txtLogin, txtSenha, txtConfirmarSenha);
-        boolean validacao = Mascara.validationEmail(txtEmail);
         
         String nome = txtNome.getText();
         String login = txtLogin.getText().replaceAll(" ", "").trim();
@@ -266,11 +266,9 @@ public class UsuarioController extends AnchorPane implements Initializable{
      * Mapear dados objetos para inserção dos dados na tabela
      */
     private void tabela() {
-
         ObservableList data = FXCollections.observableArrayList(listaUsuario);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-       
         colLogin.setCellValueFactory((TableColumn.CellDataFeatures<Usuario, String> obj) -> new SimpleStringProperty(obj.getValue().getLogin()));
         colNome.setCellValueFactory((TableColumn.CellDataFeatures<Usuario, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
         colEmail.setCellValueFactory((TableColumn.CellDataFeatures<Usuario, String> obj) -> new SimpleStringProperty(obj.getValue().getEmail()));
@@ -285,29 +283,16 @@ public class UsuarioController extends AnchorPane implements Initializable{
      * Campo de pesquisar para filtrar dados na tabela
      */
     private void filtro(String valor, ObservableList<Usuario> listaUsuario) {
-
         FilteredList<Usuario> dadosFiltrados = new FilteredList<>(listaUsuario, usuario -> true);
-        dadosFiltrados.setPredicate(usuario -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (usuario.getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (usuario.getEmail().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (usuario.getLogin().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            } else if (usuario.getTipoUsuario().getNome().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-
-            return false;
-        });
-
+        dadosFiltrados.setPredicate(usuario -> 
+                usuario.getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
+                usuario.getEmail().toLowerCase().startsWith(valor.toLowerCase()) || 
+                usuario.getLogin().toLowerCase().startsWith(valor.toLowerCase()) || 
+                usuario.getTipoUsuario().getNome().toLowerCase().startsWith(valor.toLowerCase())
+        );
         SortedList<Usuario> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbUsuario.comparatorProperty());
         Filtro.mensagem(legenda, dadosOrdenados.size(), "Quantidade de usuários encontradas");
-
         tbUsuario.setItems(dadosOrdenados);
     }
 

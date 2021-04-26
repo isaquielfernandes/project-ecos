@@ -118,7 +118,7 @@ public class BenificioDAOImpl extends DAO implements BenificioDAO {
             preparedStatement.setInt(2, id);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return rs.getString(1).toLowerCase().trim().equals(nome.toLowerCase().trim().toLowerCase());
+                return rs.getString(1).equalsIgnoreCase(nome);
             }
             preparedStatement.close();
             rs.close();

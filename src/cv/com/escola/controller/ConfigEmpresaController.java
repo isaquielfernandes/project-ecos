@@ -1,6 +1,5 @@
 package cv.com.escola.controller;
 
-import cv.com.escola.model.util.Animacao;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import java.io.IOException;
@@ -11,14 +10,11 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 
 
-public class ConfigEmpresaController extends AnchorPane implements Initializable {
+public class ConfigEmpresaController extends SubMenusConfig implements Initializable {
 
     private static ConfigEmpresaController instance;
     @FXML
@@ -57,7 +53,7 @@ public class ConfigEmpresaController extends AnchorPane implements Initializable
 
     @FXML
     private void menuRegistroCargoSalario(ActionEvent event) {
-        Modulo.getCargo_Salario(anchorPaneEmpresa);
+        Modulo.getCargoSalario(anchorPaneEmpresa);
     }
 
     @FXML
@@ -69,43 +65,4 @@ public class ConfigEmpresaController extends AnchorPane implements Initializable
         return anchorPaneEmpresa;
     }
 
-    /**
-     * Exibir e ocultar submenus
-     *
-     * @param menu
-     * @param box
-     * @param submenus
-     */
-    public void submenus(ToggleButton menu, VBox box, ToggleButton... submenus) {
-        if (box.getChildren().isEmpty()) {
-            box.getChildren().addAll(submenus);
-            Animacao.fade(box);
-            estilo(menu, "menu-grupo");
-        } else {
-            desativarSubmenus(box);
-            estilo(menu, "menu-grupo-inativo");
-        }
-    }
-
-    /**
-     * Desativar e esconder todos submenus
-     *
-     * @param boxes
-     */
-    public void desativarSubmenus(VBox... boxes) {
-        for (VBox box : boxes) {
-            box.getChildren().clear();
-        }
-    }
-
-    /**
-     * Aplicar estilo para mostrar/ocultar submenus
-     *
-     * @param no
-     * @param estilo
-     */
-    public void estilo(Node no, String estilo) {
-        no.getStyleClass().remove(3);
-        no.getStyleClass().add(estilo);
-    }
 }

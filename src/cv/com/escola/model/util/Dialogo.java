@@ -16,12 +16,14 @@ import javafx.stage.StageStyle;
  * @author Isaquiel Fernandes
  */
 public class Dialogo {
+    
     private static final Screen SCREEN = Screen.getPrimary();
     private static final Rectangle2D WINDOWS = SCREEN.getVisualBounds();
     private static Dialog dialogo;
     private static Resposta resposta = Resposta.CANCEL;
 
     private Dialogo() {
+        
     }
 
     /**
@@ -81,9 +83,7 @@ public class Dialogo {
         box.getStyleClass().add("box-acao-dialog");
 
         Button ok = new Button("OK");
-        ok.setOnAction((ActionEvent e) -> {
-            dialogo.close();
-        });
+        ok.setOnAction((ActionEvent e) ->  dialogo.close());
 
         ok.getStyleClass().add("bt-ok");
         box.getChildren().addAll(ok);

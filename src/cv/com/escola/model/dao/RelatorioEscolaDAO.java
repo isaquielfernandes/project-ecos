@@ -10,6 +10,6 @@ public interface RelatorioEscolaDAO {
     int count(String tipo, Year ano);
     int countResultado(String resultado, String ano);
     int countResultadoPorTipoExame(String tipo, String resultado, String ano);
-    Map<String, ArrayList> listarExamePorTipoDeExame(Year ano);
+    Map<String, ArrayList<Object>> listarExamePorTipoDeExame(Year ano);
     
 }
