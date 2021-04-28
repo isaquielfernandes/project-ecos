@@ -51,7 +51,6 @@ public class Print extends AnchorPane {
     private Button lastPage;
     private Button zoomIn;
     private Button zoomOut;
-    private static final String PATH = "/cv/com/escola/view/img/";
     private ImageView report;
     private Label lblReportPages;
     private Stage dialog;
@@ -150,21 +149,21 @@ public class Print extends AnchorPane {
 
     private void buttonAcction() {
         btnPrint = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "printer.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/printer.png").toExternalForm()));
         save = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "save.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/save.png").toExternalForm()));
         backPage = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "backimg.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/backimg.png").toExternalForm()));
         firstPage = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "firstimg.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/firstimg.png").toExternalForm()));
         nextPage = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "nextimg.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/nextimg.png").toExternalForm()));
         lastPage = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "lastimg.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/lastimg.png").toExternalForm()));
         zoomIn = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "zoomin.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/zoomin.png").toExternalForm()));
         zoomOut = new Button(null, new ImageView(getClass()
-                .getResource(PATH + "zoomout.png").toExternalForm()));
+                .getResource("/cv/com/escola/view/img/zoomout.png").toExternalForm()));
     }
 
     private void backAction() {

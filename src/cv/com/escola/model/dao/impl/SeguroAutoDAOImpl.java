@@ -8,10 +8,10 @@ import cv.com.escola.model.dao.SeguroAutoDAO;
 import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
@@ -21,61 +21,55 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
 
     @Override
     public void create(Seguro seguro) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO ").append(db).append(".`tb_seguro` ");
-            query.append("(`compania`, `veiculo_seguro`, `desde`, `ate`, `emissao`) VALUES (?,?,?,?,?)");
+        StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db).append(".tb_seguro ");
+        query.append("(compania, veiculo_seguro, desde, ate, emissao) VALUES (?,?,?,?,?)");
 
-            preparedStatement = conector.prepareStatement(query.toString());
-
-            preparedStatement.setString(1, seguro.getCompania());
-            preparedStatement.setLong(2, seguro.getVeiculo().getCodigo());
-            preparedStatement.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
-            preparedStatement.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
-            preparedStatement.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
-
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
-        }
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    query.toString()
+            )) {
+                mapToSave(pstmt, seguro);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
     public void update(Seguro seguro) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db).append(".`tb_seguro` SET `compania` = ?, `veiculo_seguro` = ?, `desde` = ?, `ate` = ?, `emissao` = ? WHERE `id` = ?");
+        StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".`tb_seguro` SET `compania` = ?, `veiculo_seguro` = ?, `desde` = ?, `ate` = ?, `emissao` = ? WHERE `id` = ?");
 
-            preparedStatement = conector.prepareStatement(query.toString());
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    updateQuery.toString()
+            )) {
+                mapToSave(pstmt, seguro);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
+    }
 
-            preparedStatement.setString(1, seguro.getCompania());
-            preparedStatement.setLong(2, seguro.getVeiculo().getCodigo());
-            preparedStatement.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
-            preparedStatement.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
-            preparedStatement.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
+    private void mapToSave(final PreparedStatement pstmt, Seguro seguro) throws SQLException {
+        pstmt.setString(1, seguro.getCompania());
+        pstmt.setLong(2, seguro.getVeiculo().getCodigo());
+        pstmt.setDate(3, java.sql.Date.valueOf(seguro.getDeste()));
+        pstmt.setDate(4, java.sql.Date.valueOf(seguro.getValidade()));
+        pstmt.setDate(5, java.sql.Date.valueOf(seguro.getEmissao()));
 
-            preparedStatement.setLong(6, seguro.getId());
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+        if (seguro.getId() != 0) {
+            pstmt.setLong(6, seguro.getId());
         }
+        pstmt.executeUpdate();
     }
 
     @Override
     public void delete(Long idSeuro) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".`tb_seguro` WHERE `id` = ?");
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setLong(1, idSeuro);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
-        }
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_seguro WHERE id = ?");
+        remove(query.toString(), idSeuro);
     }
 
     @Override
@@ -99,7 +93,7 @@ public class SeguroAutoDAOImpl extends DAO implements SeguroAutoDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(ex);
         }
         return dadosSeguro;
     }

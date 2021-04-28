@@ -143,10 +143,7 @@ public class Matricula {
         if (!Objects.equals(this.aluno, other.aluno)) {
             return false;
         }
-        if (!Objects.equals(this.cursoPretendido, other.cursoPretendido)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.cursoPretendido, other.cursoPretendido);
     }
 
     @Override

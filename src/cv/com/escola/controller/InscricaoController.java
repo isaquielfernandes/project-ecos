@@ -231,7 +231,7 @@ public class InscricaoController extends AnchorPane implements Initializable {
         dadosFiltrados.setPredicate(inscrito -> 
                 inscrito.getAluno().getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
                 inscrito.getData().toString().toLowerCase().startsWith(valor.toLowerCase()) || 
-                inscrito.getCursoPretendido().getCurso().toLowerCase().startsWith(valor.toLowerCase())
+                inscrito.getCursoPretendido().getNome().toLowerCase().startsWith(valor.toLowerCase())
                 );
 
         SortedList<Matricula> dadosOrdenados = new SortedList<>(dadosFiltrados);

@@ -121,17 +121,21 @@ public class Inventario {
         if(depreciacao == null) depreciacao = new SimpleStringProperty(this, "depreciacao");
         return depreciacao;
     }
-    private ObjectProperty<LocalDate> data_cadastro;
+    private ObjectProperty<LocalDate> dataCadastro;
 
-    public LocalDate getData_cadastro() {
-        return data_cadastro.get();
+    public LocalDate getDataCadastro() {
+        return dataCadastro.get();
     }
 
-    public void setData_cadastro(LocalDate data_cadastro) {
-        this.data_cadastro.set(data_cadastro);
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro.set(dataCadastro);
     }
 
-    public Inventario(int idInventario, String numSerie, String categoria, String item, String responsavel, String area, String local, LocalDate data_compra, int meses_desde_compra, double valor, String estado_consrvacao, int vida_util_ano, double valor_atual, String depreciacao, LocalDate data_cadastro) {
+     public Inventario() {
+         super();
+     }
+     
+    public Inventario(int idInventario, String numSerie, String categoria, String item, String responsavel, String area, String local, LocalDate dataDeCompra, int mesesDesdeCompra, double valor, String estadoDeConservacao, int vidaUtil, double valorAtual, String depreciacao, LocalDate dataCadastro) {
         this.idInventario = new SimpleIntegerProperty(idInventario);
         this.numSerie = new SimpleStringProperty(numSerie);
         this.categoria = new SimpleStringProperty(categoria);
@@ -139,33 +143,14 @@ public class Inventario {
         this.responsavel = new SimpleStringProperty(responsavel);
         this.area = new SimpleStringProperty(area);
         this.local = new SimpleStringProperty(local);
-        this.dataCompra = new SimpleObjectProperty(data_compra);
-        this.mesesDesdeCompra = new SimpleIntegerProperty(meses_desde_compra);
+        this.dataCompra = new SimpleObjectProperty(dataDeCompra);
+        this.mesesDesdeCompra = new SimpleIntegerProperty(mesesDesdeCompra);
         this.valor = new SimpleDoubleProperty(valor);
-        this.estadoConservacao = new SimpleStringProperty(estado_consrvacao);
-        this.vidaUtilAno = new SimpleIntegerProperty(vida_util_ano);
-        this.valorAtual = new SimpleDoubleProperty(valor_atual);
+        this.estadoConservacao = new SimpleStringProperty(estadoDeConservacao);
+        this.vidaUtilAno = new SimpleIntegerProperty(vidaUtil);
+        this.valorAtual = new SimpleDoubleProperty(valorAtual);
         this.depreciacao = new SimpleStringProperty(depreciacao);
-        this.data_cadastro = new SimpleObjectProperty(data_cadastro);
-    }
-    
-    
-
-    public Inventario(int id_inventario, String num_serie, String categoria, String item, String responsavel, String area, String local, LocalDate data_compra, int meses_desde_compra, double valor, String estado_consrvacao, int vida_util_ano, double valor_atual, String depreciacao) {
-        this.idInventario = new SimpleIntegerProperty(id_inventario);
-        this.numSerie = new SimpleStringProperty(num_serie);
-        this.categoria = new SimpleStringProperty(categoria);
-        this.item = new SimpleStringProperty(item);
-        this.responsavel = new SimpleStringProperty(responsavel);
-        this.area = new SimpleStringProperty(area);
-        this.local = new SimpleStringProperty(local);
-        this.dataCompra = new SimpleObjectProperty(data_compra);
-        this.mesesDesdeCompra = new SimpleIntegerProperty(meses_desde_compra);
-        this.valor = new SimpleDoubleProperty(valor);
-        this.estadoConservacao = new SimpleStringProperty(estado_consrvacao);
-        this.vidaUtilAno = new SimpleIntegerProperty(vida_util_ano);
-        this.valorAtual = new SimpleDoubleProperty(valor_atual);
-        this.depreciacao = new SimpleStringProperty(depreciacao);
+        this.dataCadastro = new SimpleObjectProperty(dataCadastro);
     }
 
     @Override

@@ -3,15 +3,12 @@ package cv.com.escola.model.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.logging.Logger;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  *
@@ -27,11 +24,9 @@ public class Seguro {
     private ObjectProperty<LocalDate> deste;
     private ObjectProperty<LocalDate> validade;
     private ObjectProperty<LocalDate> emissao;
-    
-    private ObservableList<Seguro> seguro = FXCollections.observableArrayList();
-    private static final Logger LOG = Logger.getLogger(Seguro.class.getName());
 
     public Seguro() {
+        super();
     }
     
     public Seguro(Long id, String compania, Veiculo veiculo, LocalDate deste, LocalDate validade, LocalDate emissao) {

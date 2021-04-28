@@ -74,10 +74,7 @@ public class Auditoria {
             return false;
         }
         final Auditoria other = (Auditoria) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
 }

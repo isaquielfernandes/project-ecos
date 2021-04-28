@@ -230,15 +230,8 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
      */
     private void filtro(String valor, ObservableList<Benificio> listaBenificios) {
         FilteredList<Benificio> dadosFiltrados = new FilteredList<>(listaBenificios, benificio -> true);
-        dadosFiltrados.setPredicate(benificio -> {
-
-            if (valor == null || valor.isEmpty()) {
-                return true;
-            } else if (benificio.getNomeBenificio().toLowerCase().startsWith(valor.toLowerCase())) {
-                return true;
-            }
-            return false;
-        });
+        dadosFiltrados.setPredicate(benificio -> 
+                benificio.getNomeBenificio().toLowerCase().startsWith(valor.toLowerCase()));
 
         SortedList<Benificio> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().bind(tbBenificios.comparatorProperty());

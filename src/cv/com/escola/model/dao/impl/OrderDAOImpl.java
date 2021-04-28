@@ -47,72 +47,68 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public void create(Venda venda) {
-        final StringBuilder query = new StringBuilder();
-        query.append(INSERT_INTO).append(db).append(".`tb_vendas`(`data`, `valor_total`, ");
-        query.append("`pago`, `cliente_fk`, `id_user`, `meioDePag`, `desconto`, ");
-        query.append("`num_fatura`, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);");
+        StringBuilder insertQuery = new StringBuilder();
+        insertQuery.append(INSERT_INTO).append(db).append(".tb_vendas (data, valor_total, ");
+        insertQuery.append("pago, cliente_fk, id_user, meioDePag, desconto, ");
+        insertQuery.append("num_fatura, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    insertQuery.toString()
             )) {
-                pstmt.setTimestamp(1, Tempo.toTimestamp(venda.getData()));
-                pstmt.setBigDecimal(2, venda.getValor());
-                pstmt.setBoolean(3, venda.isPago());
-                pstmt.setInt(4, venda.getCliente().getIdCliente());
-                pstmt.setInt(5, venda.getUsuario().getId());
-                pstmt.setString(6, venda.getMeioDePagamento());
-                pstmt.setBigDecimal(7, venda.getDesconto());
-                pstmt.setString(8, venda.getNumFatura());
-                pstmt.setBigDecimal(9, venda.getValorTotal());
-
-                pstmt.execute();
+                mapToSave(pstmt, venda);
             } catch (SQLException ex) {
-                throw new DataAccessException(Level.ERROR.toString(), ex);
+                throw new DataAccessException(ex);
             }
         });
     }
 
     @Override
     public void update(Venda venda) {
-        final StringBuilder query = new StringBuilder();
-        query.append("UPDATE ").append(db).append(".`tb_vendas` SET `data` = ?,`valor_total` = ?,");
-        query.append("`pago` = ?,`cliente_fk` = ?, `id_user` = ?, `meioDePag` = ?, ");
-        query.append("`desconto` = ?, `num_fatura` = ?, precoTotal=? WHERE `id_vendas` = ?;");
+        StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".tb_vendas SET data = ?, valor_total = ?,");
+        updateQuery.append("pago = ?, cliente_fk = ?, id_user = ?, meioDePag = ?, ");
+        updateQuery.append("desconto = ?, num_fatura = ?, precoTotal = ? WHERE id_vendas = ?;");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    updateQuery.toString()
             )) {
-                pstmt.setTimestamp(1, Tempo.toTimestamp(venda.getData()));
-                pstmt.setBigDecimal(2, venda.getValor());
-                pstmt.setBoolean(3, venda.isPago());
-                pstmt.setInt(4, venda.getCliente().getIdCliente());
-                pstmt.setInt(5, venda.getUsuario().getId());
-                pstmt.setString(6, venda.getMeioDePagamento());
-                pstmt.setBigDecimal(7, venda.getDesconto());
-                pstmt.setString(8, venda.getNumFatura());
-                pstmt.setBigDecimal(9, venda.getValorTotal());
-                pstmt.setInt(10, venda.getIdVenda());
-
-                pstmt.execute();
+                mapToSave(pstmt, venda);
             } catch (SQLException ex) {
-                throw new DataAccessException(Level.ERROR.toString(), ex);
+                throw new DataAccessException(ex);
             }
         });
     }
 
+    private void mapToSave(final PreparedStatement pstmt, Venda venda) throws SQLException {
+        pstmt.setTimestamp(1, Tempo.toTimestamp(venda.getData()));
+        pstmt.setBigDecimal(2, venda.getValor());
+        pstmt.setBoolean(3, venda.isPago());
+        pstmt.setInt(4, venda.getCliente().getIdCliente());
+        pstmt.setInt(5, venda.getUsuario().getId());
+        pstmt.setString(6, venda.getMeioDePagamento());
+        pstmt.setBigDecimal(7, venda.getDesconto());
+        pstmt.setString(8, venda.getNumFatura());
+        pstmt.setBigDecimal(9, venda.getValorTotal());
+        
+        if (venda.getIdVenda() != 0) {
+            pstmt.setInt(10, venda.getIdVenda());
+        }
+        pstmt.execute();
+    }
+
     @Override
     public void delete(Integer idVenda) {
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_vendas WHERE id_vendas=?");
         try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_vendas WHERE id_vendas=?");
             preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idVenda);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
 
@@ -130,7 +126,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return vendas;
     }
@@ -138,10 +134,10 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     @Override
     public ObservableList<Venda> listar(int quantidade, int pagina) {
         List<Venda> vendas = FXCollections.observableArrayList();
-        final StringBuilder query = new StringBuilder();
-        query.append(SELECT_FROM).append(db).append(".venda_view ORDER BY data desc, num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
+        StringBuilder selectQuery = new StringBuilder();
+        selectQuery.append(SELECT_FROM).append(db).append(".venda_view ORDER BY data desc, num_fatura desc limit ").append(quantidade * pagina).append(",").append(quantidade).append(";");
         try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
-            preparedStatement = conector.prepareStatement(query.toString());
+            preparedStatement = conector.prepareStatement(selectQuery.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     mapResultSet(resultSet, vendas);
@@ -149,7 +145,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return FXCollections.observableArrayList(vendas);
     }
@@ -184,7 +180,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             rs.close();
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return 0;
     }
@@ -225,7 +221,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return retorno;
     }

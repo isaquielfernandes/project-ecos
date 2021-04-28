@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cv.com.escola.model.entity;
 
 import java.util.Objects;
@@ -20,14 +15,14 @@ public class Benificio {
     private StringProperty nomeBenificio;
     private StringProperty descricao;
 
-    public Benificio(int idBenificio, String nomeBenificio, String descricao) {
-        this.idBenificio = new SimpleIntegerProperty(idBenificio);
+    public Benificio(int id, String nomeBenificio, String descricao) {
+        this.idBenificio = new SimpleIntegerProperty(id);
         this.nomeBenificio = new SimpleStringProperty(nomeBenificio);
         this.descricao = new SimpleStringProperty(descricao);
     }
 
-    public Benificio(int id_benificio, String nomeBenificio) {
-        this.idBenificio = new SimpleIntegerProperty(id_benificio);
+    public Benificio(int id, String nomeBenificio) {
+        this.idBenificio = new SimpleIntegerProperty(id);
         this.nomeBenificio = new SimpleStringProperty(nomeBenificio);
     }
     

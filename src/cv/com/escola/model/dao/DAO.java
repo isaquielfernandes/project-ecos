@@ -28,9 +28,7 @@ public abstract class DAO {
     protected String user = DBProperties.loadPropertiesFileUser();
     protected String pass = DBProperties.loadPropertiesFilePass();
     
-    public DAO() {
-
-    }
+    protected DAO() {}
 
     protected void transact(Consumer<Connection> callback) {
         Connection connection = null;

@@ -8,11 +8,11 @@ import cv.com.escola.model.dao.db.ConnectionManager;
 import cv.com.escola.model.dao.exception.DataAccessException;
 import cv.com.escola.model.util.Tempo;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
@@ -22,83 +22,68 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
 
     @Override
     public void create(Veiculo veiculo) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("insert into ").append(db).append(".tb_veiculo (placa, ilha, fabricante, modelo,");
-            query.append("anoFabricacao, anoModelo, chassi, tipoCombustivel, nomeProprietario,");
-            query.append("contatoProprietario, emailProprietario, dataCadastro, especificacao) ");
-            query.append("VALUES (?, ?, ?,?, ?,?,?,?,?,?,?,?,?)");
+        StringBuilder query = new StringBuilder();
+        query.append("insert into ").append(db).append(".tb_veiculo (placa, ilha, fabricante, modelo,");
+        query.append("anoFabricacao, anoModelo, chassi, tipoCombustivel, nomeProprietario,");
+        query.append("contatoProprietario, emailProprietario, dataCadastro, especificacao) ");
+        query.append("VALUES (?, ?, ?,?, ?,?,?,?,?,?,?,?,?)");
 
-            preparedStatement = conector.prepareStatement(query.toString());
-
-            preparedStatement.setString(1, veiculo.getPlaca());
-            preparedStatement.setString(2, veiculo.getCidade());
-            preparedStatement.setString(3, veiculo.getFabricante());
-            preparedStatement.setString(4, veiculo.getModelo());
-            preparedStatement.setInt(5, veiculo.getAnoFabricacao());
-            preparedStatement.setInt(6, veiculo.getAnoModelo());
-            preparedStatement.setString(7, veiculo.getChassi());
-            preparedStatement.setString(8, veiculo.getTipoCombustivel());
-            preparedStatement.setString(9, veiculo.getProprietario().getNomePropretario());
-            preparedStatement.setString(10, veiculo.getProprietario().getTelefonePropretario());
-            preparedStatement.setString(11, veiculo.getProprietario().getEmailPropertario());
-            preparedStatement.setTimestamp(12, Tempo.toTimestamp(veiculo.getDataCadastro()));
-            preparedStatement.setString(13, veiculo.getEspecificacoes());
-
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("CREATE: ", ex);
-        }
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    query.toString()
+            )) {
+                mapToSave(pstmt, veiculo);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
     public void update(Veiculo veiculo) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db).append(".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,");
-            query.append("anoFabricacao=?, anoModelo=?, chassi=?, tipoCombustivel=?, nomeProprietario=?,");
-            query.append("contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? ");
-            query.append("WHERE  codigo =?");
+        StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".tb_veiculo set placa=?, ilha=?, fabricante=?, modelo=?,");
+        updateQuery.append("anoFabricacao=?, anoModelo=?, chassi=?, tipoCombustivel=?, nomeProprietario=?,");
+        updateQuery.append("contatoProprietario=?, emailProprietario=?, dataModificacao=?, especificacao=? ");
+        updateQuery.append("WHERE  codigo =?");
 
-            preparedStatement = conector.prepareStatement(query.toString());
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    updateQuery.toString()
+            )) {
+                mapToSave(pstmt, veiculo);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
+    }
 
-            preparedStatement.setString(1, veiculo.getPlaca());
-            preparedStatement.setString(2, veiculo.getCidade());
-            preparedStatement.setString(3, veiculo.getFabricante());
-            preparedStatement.setString(4, veiculo.getModelo());
-            preparedStatement.setInt(5, veiculo.getAnoFabricacao());
-            preparedStatement.setInt(6, veiculo.getAnoModelo());
-            preparedStatement.setString(7, veiculo.getChassi());
-            preparedStatement.setString(8, veiculo.getTipoCombustivel());
-            preparedStatement.setString(9, veiculo.getProprietario().getNomePropretario());
-            preparedStatement.setString(10, veiculo.getProprietario().getTelefonePropretario());
-            preparedStatement.setString(11, veiculo.getProprietario().getEmailPropertario());
-            preparedStatement.setTimestamp(12, Tempo.toTimestamp(LocalDateTime.now()));
-            preparedStatement.setString(13, veiculo.getEspecificacoes());
+    private void mapToSave(final PreparedStatement pstmt, Veiculo veiculo) throws SQLException {
+        pstmt.setString(1, veiculo.getPlaca());
+        pstmt.setString(2, veiculo.getCidade());
+        pstmt.setString(3, veiculo.getFabricante());
+        pstmt.setString(4, veiculo.getModelo());
+        pstmt.setInt(5, veiculo.getAnoFabricacao());
+        pstmt.setInt(6, veiculo.getAnoModelo());
+        pstmt.setString(7, veiculo.getChassi());
+        pstmt.setString(8, veiculo.getTipoCombustivel());
+        pstmt.setString(9, veiculo.getProprietario().getNomePropretario());
+        pstmt.setString(10, veiculo.getProprietario().getTelefonePropretario());
+        pstmt.setString(11, veiculo.getProprietario().getEmailPropertario());
+        pstmt.setTimestamp(12, Tempo.toTimestamp(LocalDateTime.now()));
+        pstmt.setString(13, veiculo.getEspecificacoes());
 
-            preparedStatement.setLong(14, veiculo.getCodigo());
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+        if (veiculo.getCodigo() != 0) {
+            pstmt.setLong(14, veiculo.getCodigo());
         }
+        pstmt.executeUpdate();
     }
 
     @Override
     public void delete(Long idVeiculo) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_veiculo WHERE codigo=?");
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setLong(1, idVeiculo);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("DELETE: ", ex);
-        }
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_veiculo WHERE codigo=?");
+        remove(query.toString(), idVeiculo);
     }
 
     @Override
@@ -132,26 +117,15 @@ public class VeiculoDAOImpl extends DAO implements VeiculoDAO {
             rs.close();
 
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
+            throw new DataAccessException(ex);
         }
         return dadosVeiculo;
     }
 
     @Override
     public int total() {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_veiculo");
-            preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-            preparedStatement.close();
-            rs.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
-        }
-        return 0;
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_veiculo");
+        return count(query.toString());
     }
 }

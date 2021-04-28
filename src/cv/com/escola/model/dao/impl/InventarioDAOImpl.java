@@ -5,6 +5,7 @@ import cv.com.escola.model.dao.DAO;
 import cv.com.escola.model.dao.InventariaDAO;
 import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
+import cv.com.escola.model.entity.InventarioBuilder;
 import cv.com.escola.model.util.JasperViewerFX;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
@@ -94,18 +95,13 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
             rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                Inventario item = new Inventario(rs.getInt(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4), rs.getString(5),
-                        rs.getString(6), rs.getString(7), Tempo.toDate(rs.getTimestamp(8)),
-                        rs.getInt(9), rs.getDouble(10), rs.getString(11),
-                        rs.getInt(12), rs.getDouble(13), rs.getString(14),
-                        Tempo.toDate(rs.getTimestamp(15)));
+                Inventario item = new InventarioBuilder().setIdInventario(rs.getInt(1)).setNumSerie(rs.getString(2)).setCategoria(rs.getString(3)).setItem(rs.getString(4)).setResponsavel(rs.getString(5)).setArea(rs.getString(6)).setLocal(rs.getString(7)).setDataDeCompra(Tempo.toDate(rs.getTimestamp(8))).setMesesDesdeCompra(rs.getInt(9)).setValor(rs.getDouble(10)).setEstadoDeConservacao(rs.getString(11)).setVidaUtil(rs.getInt(12)).setValorAtual(rs.getDouble(13)).setDepreciacao(rs.getString(14)).setDataCadastro(Tempo.toDate(rs.getTimestamp(15))).createInventario();
                 inventario.add(item);
             }
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
         return inventario;
     }
@@ -128,7 +124,6 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
-
         return false;
     }
 
@@ -161,7 +156,7 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
         } catch (JRException ex) {
             Logger.getLogger(InventarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
     }
 }

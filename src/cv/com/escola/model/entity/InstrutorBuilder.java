@@ -29,6 +29,7 @@ public class InstrutorBuilder {
     private String obsercacao;
 
     public InstrutorBuilder() {
+        super();
     }
 
     public InstrutorBuilder setId(Long id) {

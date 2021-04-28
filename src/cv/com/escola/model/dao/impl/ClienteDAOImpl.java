@@ -31,7 +31,6 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
                     INSERT_QUERY.toString()
             )) {
                 map(pstmt, cliente);
-                pstmt.executeUpdate();
             } catch (SQLException e) {
                 throw new DataAccessException(e);
             }
@@ -47,6 +46,10 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
         pstmt.setString(6, cliente.getEndereco());
         pstmt.setString(7, cliente.getCodigoPostal());
         pstmt.setString(8, cliente.getLocalidade());
+        if (cliente.getIdCliente() != 0) {
+            pstmt.setInt(9, cliente.getIdCliente());
+        }
+        pstmt.executeUpdate();
     }
 
     @Override
@@ -61,8 +64,6 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
                     UPDATE_QUERY.toString()
             )) {
                 map(pstmt, cliente);
-                pstmt.setInt(9, cliente.getIdCliente());
-                pstmt.executeUpdate();
             } catch (SQLException e) {
                 throw new DataAccessException(e);
             }
@@ -94,7 +95,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
         return clientes;
     }
@@ -116,7 +117,7 @@ public class ClienteDAOImpl extends DAO implements ClienteDAO {
                 retorno = cliente;
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
         return retorno;
     }

@@ -48,15 +48,15 @@ public class CargoSalario {
     public CargoSalario() {
     }
     
-    public CargoSalario(int id_cargo_salario, String cargo, double salario, String descricao) {
-        this.idCargoSalario = new SimpleIntegerProperty(id_cargo_salario);
+    public CargoSalario(int id, String cargo, double salario, String descricao) {
+        this.idCargoSalario = new SimpleIntegerProperty(id);
         this.nomeCargo = new SimpleStringProperty(cargo);
         this.salario = new SimpleDoubleProperty(salario);
         this.descricao = new SimpleStringProperty(descricao);
     }
 
-    public CargoSalario(int id_cargo_salario, String cargo) {
-        this.idCargoSalario = new SimpleIntegerProperty(id_cargo_salario);
+    public CargoSalario(int id, String cargo) {
+        this.idCargoSalario = new SimpleIntegerProperty(id);
         this.nomeCargo = new SimpleStringProperty(cargo);
     }
     public CargoSalario(String cargo) {

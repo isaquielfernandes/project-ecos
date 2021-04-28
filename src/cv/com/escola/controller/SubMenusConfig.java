@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
  */
 public abstract class SubMenusConfig extends AnchorPane {
     
-    public SubMenusConfig() {
+    protected SubMenusConfig() {
         
     }
 

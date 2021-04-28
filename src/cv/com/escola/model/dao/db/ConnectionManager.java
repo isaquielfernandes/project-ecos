@@ -1,17 +1,16 @@
 package cv.com.escola.model.dao.db;
 
+import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class ConnectionManager extends LoadProperties {
 
-    private final String idTimezone = java.util.TimeZone.getDefault().getID();
-    private final String unicode = "?serverTimezone=" + idTimezone + "";
+    private static final String ID_TIME_ZONE = java.util.TimeZone.getDefault().getID();
+    private static final String UNI_CODE = "?serverTimezone=" + ID_TIME_ZONE + "";
     private static ConnectionManager instance = new ConnectionManager();
-    private Connection connection;
+    private Connection connection = null;
 
     private ConnectionManager() {
         
@@ -20,11 +19,11 @@ public final class ConnectionManager extends LoadProperties {
     public Connection begin() {
         loadPropertiesFile();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            connection = DriverManager.getConnection(url + unicode, user, pass);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url + UNI_CODE, user, pass);
             connection.setAutoCommit(false);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException| SQLException ex) {
+            throw new DataAccessException(ex);
         }
         return connection;
     }

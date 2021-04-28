@@ -10,6 +10,11 @@ import javafx.scene.control.Button;
 
 public class Cliente {
     
+    private static final String EDITAR = "Editar";
+    private static final String REMOVER = "Remover";
+    private static final String FX_BACKGROUND_COLOR_388E3C_FX_TEXTFILL_FFF = "-fx-background-color: #388E3C; -fx-text-fill: #fff;";
+    private static final String FX_BACKGROUND_COLOR_F44336_FX_TEXTFILL_FFF = "-fx-background-color: #F44336; -fx-text-fill: #FFF;";
+    
     private IntegerProperty idCliente;
     public Integer getIdCliente() { return idClienteProperty().get(); }
     public void setIdCliente(int value) { idClienteProperty().set(value);}
@@ -97,12 +102,12 @@ public class Cliente {
         this.remove = remove;
     }
     
-    private Button editar;
-    public Button getEditar() {
-        return editar;
+    private Button btnEditar;
+    public Button getBtnEditar() {
+        return btnEditar;
     }
-    public void setEditar(Button editar) {
-        this.editar = editar;
+    public void setBtnEditar(Button btnEditar) {
+        this.btnEditar = btnEditar;
     }
     
     public Cliente() {
@@ -112,14 +117,14 @@ public class Cliente {
         this.idCliente = new SimpleIntegerProperty(idCliente);
         this.nomeCliente = new SimpleStringProperty(nomeCliente);
         this.nif = new SimpleStringProperty(nif);
-        this.remove = new Button("Remover");
-        remove.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFF;");
+        this.remove = new Button(REMOVER);
+        remove.setStyle(FX_BACKGROUND_COLOR_F44336_FX_TEXTFILL_FFF);
         remove.setPrefSize(100, 20);
-        this.editar = new Button("Editar");
-        editar.setStyle("-fx-background-color: #388E3C; -fx-text-fill: #fff;");
-        editar.setPrefSize(100, 20);
+        this.btnEditar = new Button(EDITAR);
+        btnEditar.setStyle(FX_BACKGROUND_COLOR_388E3C_FX_TEXTFILL_FFF);
+        btnEditar.setPrefSize(100, 20);
     }
-    
+
     public Cliente(Integer idCliente, String nomeCliente, String cni, String contato, String tipoCliente, String descricao) {
         this.idCliente = new SimpleIntegerProperty(idCliente);
         this.nomeCliente = new SimpleStringProperty(nomeCliente);
@@ -127,9 +132,9 @@ public class Cliente {
         this.contato = new SimpleStringProperty(contato);
         this.tipoCliente = new SimpleStringProperty(tipoCliente);
         this.descricao = new SimpleStringProperty(descricao);
-        this.remove = new Button("Remover");
-        remove.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFF;");
-        editar.setPrefSize(100, 20);
+        this.remove = new Button(REMOVER);
+        remove.setStyle(FX_BACKGROUND_COLOR_F44336_FX_TEXTFILL_FFF);
+        btnEditar.setPrefSize(100, 20);
     }
 
     public Cliente(Integer idCliente, String nomeCliente, String nif, String contato, String tipoCliente, String descricao, String endereco, String codigoPostal, String localidade) {
@@ -142,12 +147,12 @@ public class Cliente {
         this.endereco = new SimpleStringProperty(endereco);
         this.codigoPostal = new SimpleStringProperty(codigoPostal);
         this.localidade = new SimpleStringProperty(localidade);
-        this.remove = new Button("Remover");
-        remove.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFF;");
+        this.remove = new Button(REMOVER);
+        remove.setStyle(FX_BACKGROUND_COLOR_F44336_FX_TEXTFILL_FFF);
         remove.setPrefSize(100, 20);
-        this.editar = new Button("Editar");
-        editar.setStyle("-fx-background-color: #388E3C; -fx-text-fill: #fff;");
-        editar.setPrefSize(100, 20);
+        this.btnEditar = new Button(EDITAR);
+        btnEditar.setStyle(FX_BACKGROUND_COLOR_388E3C_FX_TEXTFILL_FFF);
+        btnEditar.setPrefSize(100, 20);
         
     }
     public Cliente(Integer idCliente, String nomeCliente, String nif, String contato, String tipoCliente, String endereco, String codigoPostal, String localidade) {
@@ -159,12 +164,12 @@ public class Cliente {
         this.endereco = new SimpleStringProperty(endereco);
         this.codigoPostal = new SimpleStringProperty(codigoPostal);
         this.localidade = new SimpleStringProperty(localidade);
-        this.remove = new Button("Remover");
-        remove.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFF;");
+        this.remove = new Button(REMOVER);
+        remove.setStyle(FX_BACKGROUND_COLOR_F44336_FX_TEXTFILL_FFF);
         remove.setPrefSize(100, 20);
-        this.editar = new Button("Editar");
-        editar.setStyle("-fx-background-color: #388E3C; -fx-text-fill: #fff;");
-        editar.setPrefSize(100, 20);
+        this.btnEditar = new Button(EDITAR);
+        btnEditar.setStyle(FX_BACKGROUND_COLOR_388E3C_FX_TEXTFILL_FFF);
+        btnEditar.setPrefSize(100, 20);
     }
 
     @Override
@@ -186,16 +191,12 @@ public class Cliente {
             return false;
         }
         final Cliente other = (Cliente) obj;
-        if (!Objects.equals(this.idCliente, other.idCliente)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.idCliente, other.idCliente);
     }
 
     @Override
     public String toString() {
         return nomeCliente.get();
     }
-    
-    
+
 }

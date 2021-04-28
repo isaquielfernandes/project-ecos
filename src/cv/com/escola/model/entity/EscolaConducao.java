@@ -196,10 +196,7 @@ public class EscolaConducao {
         if (!Objects.equals(this.idEscola, other.idEscola)) {
             return false;
         }
-        if (!Objects.equals(this.nif, other.nif)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.nif, other.nif);
     }
 
 }

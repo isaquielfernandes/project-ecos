@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Level;
 
 public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
     
@@ -34,7 +33,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
     
@@ -56,7 +55,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
 
@@ -73,7 +72,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
 
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
     }
    
@@ -92,7 +91,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return dadosDesignacao;
     }
@@ -113,13 +112,13 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return dadosCargoSalario;
     }
 
     @Override
-    public boolean isCargo_salario(String nome, int id) {
+    public boolean isCargoSalario(String nome, int id) {
         try(Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT cargo FROM ").append(db).append(".tb_cargo_salario WHERE cargo =? AND id_cargo_salario !=? ");
@@ -134,7 +133,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
 
         return false;
@@ -154,7 +153,7 @@ public class CargoSalarioDAOImpl extends DAO implements CargoSalarioDAO {
             preparedStatement.close();
             rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return 0;
     }

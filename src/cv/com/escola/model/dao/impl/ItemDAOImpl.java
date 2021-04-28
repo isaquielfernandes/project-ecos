@@ -36,11 +36,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
             try (PreparedStatement pstmt = connection.prepareStatement(
                     INSERT_QUERY.toString()
             )) {
-                pstmt.setInt(1, item.getQuantidade());
-                pstmt.setBigDecimal(2, item.getValorUnitario());
-                pstmt.setLong(3, item.getArtigo().getId());
-                pstmt.setInt(4, item.getVenda().getIdVenda());
-                pstmt.executeUpdate();
+                mapToSave(pstmt, item);
             } catch (SQLException e) {
                 throw new DataAccessException(e);
             }
@@ -50,35 +46,34 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
     @Override
     public void update(Item item) {
         UPDATE_QUERY.append("UPDATE ").append(db)
-                .append(".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?");
+            .append(".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
                     UPDATE_QUERY.toString()
             )) {
-                pstmt.setInt(1, item.getQuantidade());
-                pstmt.setBigDecimal(2, item.getValorUnitario());
-                pstmt.setLong(3, item.getArtigo().getId());
-                pstmt.setInt(4, item.getVenda().getIdVenda());
-                pstmt.setLong(5, item.getIdItem());
-                pstmt.executeUpdate();
+                mapToSave(pstmt, item);
             } catch (SQLException ex) {
                 throw new DataAccessException(Level.ERROR.toString(), ex);
             }
         });
     }
 
+    private void mapToSave(final PreparedStatement pstmt, Item item) throws SQLException {
+        pstmt.setInt(1, item.getQuantidade());
+        pstmt.setBigDecimal(2, item.getValorUnitario());
+        pstmt.setLong(3, item.getArtigo().getId());
+        pstmt.setInt(4, item.getVenda().getIdVenda());
+        if (item.getIdItem() != 0) {
+            pstmt.setLong(5, item.getIdItem());
+        }
+        pstmt.executeUpdate();
+    }
+
     @Override
     public void delete(Integer idVenda) {
         DELETE_QUERY.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
-        try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
-            preparedStatement = conector.prepareStatement(DELETE_QUERY.toString());
-            preparedStatement.setInt(1, idVenda);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
-        }
+        remove(DELETE_QUERY.toString(), idVenda);
     }
 
     @Override

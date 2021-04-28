@@ -19,7 +19,7 @@ public class Dialogo {
     
     private static final Screen SCREEN = Screen.getPrimary();
     private static final Rectangle2D WINDOWS = SCREEN.getVisualBounds();
-    private static Dialog dialogo;
+    private static Dialog dialog;
     private static Resposta resposta = Resposta.CANCEL;
 
     private Dialogo() {
@@ -83,7 +83,7 @@ public class Dialogo {
         box.getStyleClass().add("box-acao-dialog");
 
         Button ok = new Button("OK");
-        ok.setOnAction((ActionEvent e) ->  dialogo.close());
+        ok.setOnAction((ActionEvent e) ->  dialog.close());
 
         ok.getStyleClass().add("bt-ok");
         box.getChildren().addAll(ok);
@@ -114,14 +114,14 @@ public class Dialogo {
 
         Button yes = new Button("SIM");
         yes.setOnAction((ActionEvent e) -> {
-            dialogo.close();
+            dialog.close();
             resposta = Resposta.YES;
         });
         yes.getStyleClass().add("bt-sim");
 
         Button no = new Button("NÃO");
         no.setOnAction((ActionEvent e) -> {
-            dialogo.close();
+            dialog.close();
             resposta = Resposta.NO;
         });
         no.getStyleClass().add("bt-nao");
@@ -167,8 +167,8 @@ public class Dialogo {
         scene.getStylesheets().add("cv/com/escola/view/css/dialog.css");
         scene.setFill(Color.TRANSPARENT);
 
-        dialogo = new Dialog(new Stage(), scene);
-        dialogo.exibir();
+        dialog = new Dialog(new Stage(), scene);
+        dialog.exibir();
     }
 
     public enum Resposta {
@@ -195,4 +195,10 @@ public class Dialogo {
             showAndWait();
         }
     }
+
+    @SuppressWarnings("NonPublicExported")
+    public static Dialog getDialog() {
+        return dialog;
+    }
+    
 }

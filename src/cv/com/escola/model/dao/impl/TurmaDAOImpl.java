@@ -6,6 +6,6 @@ import cv.com.escola.model.dao.DAO;
  *
  * @author Isaquiel Fernandes
  */
-public class TurmaDAOImpl extends DAO{
-    
+public class TurmaDAOImpl extends DAO {
+
 }

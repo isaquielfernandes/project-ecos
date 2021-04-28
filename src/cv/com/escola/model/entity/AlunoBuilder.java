@@ -27,6 +27,7 @@ public class AlunoBuilder {
     private String freguesia;
 
     public AlunoBuilder() {
+        super();
     }
 
     public AlunoBuilder setIdAluno(int idAluno) {

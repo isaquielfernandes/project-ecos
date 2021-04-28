@@ -169,7 +169,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().getCargoSalarioDAO().isCargo_salario(cargo, idCargoSalario)) {
+        } else if (DAOFactory.daoFactury().getCargoSalarioDAO().isCargoSalario(cargo, idCargoSalario)) {
             Nota.alerta("Cargo já cadastrada!");
         } else {
             CargoSalario cargoSalario = new CargoSalario(idCargoSalario, cargo, salario, descricao);

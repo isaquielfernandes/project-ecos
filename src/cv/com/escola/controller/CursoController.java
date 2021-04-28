@@ -171,7 +171,7 @@ public class CursoController extends AnchorPane implements Initializable {
         curso.getClass();
 
         telaCadastro(null);
-        txtNomeCurso.setText(curso.getCurso());
+        txtNomeCurso.setText(curso.getNome());
         cbCategoria.setValue(curso.getCategoria());
         txtDuracao.setText(String.valueOf(curso.getDuracao()));
         txtDescricao.setText(curso.getDescricao());
@@ -187,7 +187,7 @@ public class CursoController extends AnchorPane implements Initializable {
         try {
             Curso curso = tbCurso.getSelectionModel().getSelectedItem();
 
-            Dialogo.Resposta response = Mensagem.confirmar("Excluir curso " + curso.getCurso() + " ?");
+            Dialogo.Resposta response = Mensagem.confirmar("Excluir curso " + curso.getNome() + " ?");
 
             if (response == Dialogo.Resposta.YES) {
                 DAOFactory.daoFactury().cursosDAO().delete(curso.getCodigo());
@@ -229,7 +229,7 @@ public class CursoController extends AnchorPane implements Initializable {
     private void tabela() {
         ObservableList dados = FXCollections.observableArrayList(listaCurso);
         colId.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(Long.toString(obj.getValue().getCodigo())));
-        colCurso.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(obj.getValue().getCurso()));
+        colCurso.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
         colCategoria.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(obj.getValue().getCategoria().getNome()));
         colDuracao.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(Long.toString(obj.getValue().getDuracao())));
         colDescricao.setCellValueFactory((TableColumn.CellDataFeatures<Curso, String> obj) -> new SimpleStringProperty(obj.getValue().getDescricao()));
@@ -240,7 +240,7 @@ public class CursoController extends AnchorPane implements Initializable {
     public void filtro(String valor, ObservableList<Curso> listaCurso) {
         FilteredList<Curso> dadosFiltrados = new FilteredList<>(listaCurso, curso -> true);
         dadosFiltrados.setPredicate(curso -> 
-                curso.getCurso().toLowerCase().startsWith(valor.toLowerCase()) || 
+                curso.getNome().toLowerCase().startsWith(valor.toLowerCase()) || 
                 curso.getCategoria().getNome().toLowerCase().startsWith(valor.toLowerCase())
         );
         SortedList<Curso> dadosOrdenados = new SortedList<>(dadosFiltrados);

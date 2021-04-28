@@ -15,7 +15,7 @@ public abstract class Actions extends GridPane {
     protected final Button button1;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
-    public Actions() {
+    protected Actions() {
 
         columnConstraints = new ColumnConstraints();
         columnConstraints1 = new ColumnConstraints();

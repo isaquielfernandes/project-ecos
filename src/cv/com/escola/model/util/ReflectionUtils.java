@@ -1,6 +1,7 @@
 
 package cv.com.escola.model.util;
 
+import java.lang.reflect.InvocationTargetException;
 import org.apache.log4j.Logger;
 
 public class ReflectionUtils {
@@ -26,11 +27,15 @@ public class ReflectionUtils {
     public static <T> T newInstance(String className) {
         try {
             Class<T> classT = getClass(className);
-            return classT.newInstance();
+            return classT.getConstructor().newInstance();
         } catch (InstantiationException ex) {
             throw handleException(className, ex);
-        } catch (IllegalAccessException ex) {
-            throw handleException(className, ex);
+        } catch (IllegalAccessException e) {
+            throw handleException(className, e);
+        } catch (NoSuchMethodException noSuEX) {
+            throw handleException(className, noSuEX);
+        }catch (InvocationTargetException er) {
+            throw handleException(className, er);
         }
     }
     
@@ -46,6 +51,16 @@ public class ReflectionUtils {
     
     private static IllegalArgumentException handleException(String className, InstantiationException e) {
         LOG.error("Couldn't instantiate class " + className, e);
+        return new IllegalArgumentException(e);
+    }
+    
+    private static IllegalArgumentException handleException(String className, NoSuchMethodException e) {
+        LOG.error("NoSuchMethodException: Couldn't instantiate class " + className, e);
+        return new IllegalArgumentException(e);
+    }
+    
+    private static IllegalArgumentException handleException(String className, InvocationTargetException e) {
+        LOG.error("InvocationTargetException: Couldn't instantiate class " + className, e);
         return new IllegalArgumentException(e);
     }
 }

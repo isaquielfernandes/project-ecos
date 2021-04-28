@@ -6,6 +6,6 @@ import java.util.List;
 public interface CargoSalarioDAO extends CrudDAO<CargoSalario, Integer> {
     
     List<CargoSalario> combo();
-    boolean isCargo_salario(String nome, int id);
+    boolean isCargoSalario(String nome, int id);
     
 }

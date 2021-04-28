@@ -4,8 +4,9 @@ import java.util.Objects;
 
 
 public class Curso {
+    
     private Long codigo;
-    private String curso;
+    private String nome;
     private Categoria categoria;
     private int duracao;
     private String descricao;
@@ -13,9 +14,9 @@ public class Curso {
     public Curso() {
     }
 
-    public Curso(Long codigo, String curso, int duracao, String descricao, Categoria categoria) {
+    public Curso(Long codigo, String nome, int duracao, String descricao, Categoria categoria) {
         this.codigo = codigo;
-        this.curso = curso;
+        this.nome = nome;
         this.categoria = categoria;
         this.duracao = duracao;
         this.descricao = descricao;
@@ -23,13 +24,13 @@ public class Curso {
 
     public Curso(Long codigo, String curso, Categoria categoria) {
         this.codigo = codigo;
-        this.curso = curso;
+        this.nome = curso;
         this.categoria = categoria;
     }
     
     public Curso(Long codigo, String curso) {
         this.codigo = codigo;
-        this.curso = curso;
+        this.nome = curso;
     }
 
     public Long getCodigo() {
@@ -40,12 +41,12 @@ public class Curso {
         this.codigo = codigo;
     }
 
-    public String getCurso() {
-        return curso;
+    public String getNome() {
+        return nome;
     }
 
-    public void setCurso(String curso) {
-        this.curso = curso;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public Categoria getCategoria() {
@@ -76,7 +77,7 @@ public class Curso {
     public int hashCode() {
         int hash = 5;
         hash = 97 * hash + Objects.hashCode(this.codigo);
-        hash = 97 * hash + Objects.hashCode(this.curso);
+        hash = 97 * hash + Objects.hashCode(this.nome);
         hash = 97 * hash + Objects.hashCode(this.categoria);
         hash = 97 * hash + this.duracao;
         hash = 97 * hash + Objects.hashCode(this.descricao);
@@ -98,7 +99,7 @@ public class Curso {
         if (this.duracao != other.duracao) {
             return false;
         }
-        if (!Objects.equals(this.curso, other.curso)) {
+        if (!Objects.equals(this.nome, other.nome)) {
             return false;
         }
         if (!Objects.equals(this.descricao, other.descricao)) {
@@ -107,15 +108,12 @@ public class Curso {
         if (!Objects.equals(this.codigo, other.codigo)) {
             return false;
         }
-        if (!Objects.equals(this.categoria, other.categoria)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.categoria, other.categoria);
     }
 
     @Override
     public String toString() {
-        return curso ;
+        return nome ;
     }
     
 }

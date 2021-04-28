@@ -187,10 +187,7 @@ public class Venda {
             return false;
         }
         final Venda other = (Venda) obj;
-        if (!Objects.equals(this.idVenda, other.idVenda)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.idVenda, other.idVenda);
     }
 
 }

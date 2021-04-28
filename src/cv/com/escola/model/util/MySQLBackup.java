@@ -32,15 +32,15 @@ public class MySQLBackup extends DAO {
 
     // Lista dos bancos de dados a serem "backupeados"; se desejar adicionar mais,
     // basta colocar o nome separado por espaços dos outros nomes
-    private final String DATABASES = db;
+    private String dataBase = db;
 
     private List<String> dbList = new ArrayList<>();
 
     @SuppressWarnings("CallToPrintStackTrace")
     public MySQLBackup() {
         
-        String command = MYSQL_PATH;//"C:\\reports"+ SEPARATOR +"Backup" + SEPARATOR + "mysqldump.exe";
-        String[] databases = DATABASES.split(" ");
+        String command = MYSQL_PATH;
+        String[] databases = dataBase.split(" ");
 
         dbList.addAll(Arrays.asList(databases));
 
@@ -52,8 +52,9 @@ public class MySQLBackup extends DAO {
         int i = 1;
 
         // Tempo
-        long time1, time2, time;
-
+        long time1;
+        long time2;
+        long time;
         // Início
         time1 = System.currentTimeMillis();
 

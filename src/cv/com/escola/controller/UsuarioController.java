@@ -14,7 +14,6 @@ import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -24,91 +23,18 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
  *
  * @author Isaquiel Fernandes
  */
-public class UsuarioController extends AnchorPane implements Initializable{
+public class UsuarioController extends UserCommunField implements Initializable {
 
     private static final String QUANTIDADE_DE_USUARIOS_ENCONTRADOS = "Quantidade de usuários encontrados";
-    private List<Usuario> listaUsuario;
-    private int idUsuario = 0;
 
-    @FXML
-    private Label lbTitulo;
-    @FXML
-    private TextField txtPesquisar;
-    @FXML
-    private ToggleGroup menu;
-    @FXML
-    private GridPane telaCadastro;
-    @FXML
-    private TextField txtNome;
-    @FXML
-    private ComboBox<String> cbStatus;
-    @FXML
-    private ComboBox<TipoUsuario> cbPermissaoUsuario;
-    @FXML
-    private TextField txtLogin;
-    @FXML
-    private TextField txtEmail;
-    @FXML
-    private PasswordField txtSenha;
-    @FXML
-    private PasswordField txtConfirmarSenha;
-    @FXML
-    private TextArea txtDescricao;
-    @FXML
-    private AnchorPane telaEdicao;
-    @FXML
-    private TableView<Usuario> tbUsuario;
-    @FXML
-    private TableColumn<Usuario, Integer> colId;
-    @FXML
-    private TableColumn<Usuario, String> colNome;
-    @FXML
-    private TableColumn<Usuario, String> colLogin;
-    @FXML
-    private TableColumn<Usuario, String> colEmail;
-    @FXML
-    private TableColumn<Usuario, String> colStatus;
-    @FXML
-    private TableColumn<Usuario, String> colTipo;
-    @FXML
-    private TableColumn<Usuario, String> colDescricao;
-    @FXML
-    private Button btSalvar;
-    @FXML
-    private Button btEditar;
-    @FXML
-    private Button btExcluir;
-    @FXML
-    private Label legenda;
-    @FXML
-    private AnchorPane anchorPane;
-
-    /**
-     * Initializes the controller class.
-     *
-     * @param url
-     * @param rb
-     */
-   
-    //@Override
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         telaCadastro(null);
@@ -122,7 +48,6 @@ public class UsuarioController extends AnchorPane implements Initializable{
         );
     }
 
-    @SuppressWarnings("LeakingThisInConstructor")
     public UsuarioController() {
         try {
             GenericFXXMLLoader.loadFXML(this, "usuario");

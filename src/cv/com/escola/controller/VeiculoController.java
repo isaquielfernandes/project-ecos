@@ -55,15 +55,15 @@ public class VeiculoController extends AnchorPane implements Initializable {
     @FXML
     private TextField txtPlaca;
     @FXML
-    private TextField txtAno_fabrico;
+    private TextField txtAnoFabrico;
     @FXML
-    private TextField txtNome_propretario;
+    private TextField txtNomePropretario;
     @FXML
-    private TextField txtEmail_propretario;
+    private TextField txtEmailPropretario;
     @FXML
-    private TextField txtAno_Modelo;
+    private TextField txtAnoModelo;
     @FXML
-    private TextField txtLavor;
+    private TextField txtValor;
     @FXML
     private TextArea txtEspecificacao;
     @FXML
@@ -73,7 +73,7 @@ public class VeiculoController extends AnchorPane implements Initializable {
     @FXML
     private TextField txtModelo;
     @FXML
-    private TextField txtTelefone_propretario;
+    private TextField txtTelefonePropretario;
     @FXML
     private DatePicker dtCadastro;
     @FXML
@@ -93,21 +93,21 @@ public class VeiculoController extends AnchorPane implements Initializable {
     @FXML
     private TableColumn<?, ?> colModelo;
     @FXML
-    private TableColumn<?, ?> colAno_fabrico;
+    private TableColumn<?, ?> colAnoFabrico;
     @FXML
-    private TableColumn<?, ?> colAno_Modelo;
+    private TableColumn<?, ?> colAnoModelo;
     @FXML
     private TableColumn<Veiculo, String> colPropretario;
     @FXML
     private TableColumn<?, ?> colValor;
     @FXML
-    private TableColumn<?, ?> colTipo_Combustivel;
+    private TableColumn<?, ?> colTipoCombustivel;
     @FXML
-    private TableColumn<?, ?> colData_Cadastro;
+    private TableColumn<?, ?> colDataCadastro;
     @FXML
     private TableColumn<?, ?> colEspecificacao;
     @FXML
-    private TableColumn<?, ?> colData_Modificacao;
+    private TableColumn<?, ?> colDataModificacao;
     @FXML
     private Button btSalvar;
     @FXML
@@ -193,25 +193,25 @@ public class VeiculoController extends AnchorPane implements Initializable {
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean emptyFields = checkEmptyFields(txtPlaca, txtAno_fabrico, txtAno_Modelo, txtModelo, txtFabricante, txtIlha, txtLavor, txtNome_propretario, dtCadastro);
+        boolean emptyFields = checkEmptyFields(txtPlaca, txtAnoFabrico, txtAnoModelo, txtModelo, txtFabricante, txtIlha, txtValor, txtNomePropretario, dtCadastro);
         
         String placa = txtPlaca.getText();
         String ilha = txtIlha.getText();
         String fabricante = txtFabricante.getText();
         String modelo = txtModelo.getText();
-        int anoFabricacao = Integer.parseInt(txtAno_fabrico.getText().trim().isEmpty() ? "0" : txtAno_fabrico.getText());
-        int anoModelo = Integer.parseInt(txtAno_Modelo.getText().trim().isEmpty() ? "0" : txtAno_Modelo.getText());
-        String valor = txtLavor.getText();
+        int anoFabricacao = Integer.parseInt(txtAnoFabrico.getText().trim().isEmpty() ? "0" : txtAnoFabrico.getText());
+        int anoModelo = Integer.parseInt(txtAnoModelo.getText().trim().isEmpty() ? "0" : txtAnoModelo.getText());
+        String valor = txtValor.getText();
         String tipoCombustivel = cbTipoCombustivel.getSelectionModel().getSelectedItem();
 
-        Proprietario proprietario = new Proprietario(txtNome_propretario.getText(), txtTelefone_propretario.getText(), txtEmail_propretario.getText());
+        Proprietario proprietario = new Proprietario(txtNomePropretario.getText(), txtTelefonePropretario.getText(), txtEmailPropretario.getText());
 
         LocalDate dataCadastro = dtCadastro.getValue();
         String especificacao = txtEspecificacao.getText();
         Veiculo veiculos = new Veiculo(placa, ilha);
 
         if (emptyFields){
-            Veiculo veiculo = new Veiculo(idVeiculo, placa, ilha, fabricante, modelo, anoFabricacao, anoModelo, txtLavor.getText(), tipoCombustivel, proprietario, dataCadastro, especificacao);
+            Veiculo veiculo = new Veiculo(idVeiculo, placa, ilha, fabricante, modelo, anoFabricacao, anoModelo, valor, tipoCombustivel, proprietario, dataCadastro, especificacao);
             if (idVeiculo == 0) {
                 if (DAOFactory.daoFactury().veiculoDAO().findAll().contains(veiculos)) {
                     Nota.alerta("Veiculo já cadastrada!");
@@ -241,13 +241,13 @@ public class VeiculoController extends AnchorPane implements Initializable {
             txtIlha.setText(veiculo.getCidade());
             txtFabricante.setText(veiculo.getFabricante());
             txtModelo.setText(veiculo.getModelo());
-            txtAno_fabrico.setText(String.valueOf(veiculo.getAnoFabricacao()));
-            txtAno_Modelo.setText(String.valueOf(veiculo.getAnoModelo()));
-            txtLavor.setText("" + veiculo.getChassi());
+            txtAnoFabrico.setText(String.valueOf(veiculo.getAnoFabricacao()));
+            txtAnoModelo.setText(String.valueOf(veiculo.getAnoModelo()));
+            txtValor.setText("" + veiculo.getChassi());
             cbTipoCombustivel.setValue(veiculo.getTipoCombustivel());
-            txtNome_propretario.setText(veiculo.getProprietario().getNomePropretario());
-            txtEmail_propretario.setText(veiculo.getProprietario().getEmailPropertario());
-            txtTelefone_propretario.setText(veiculo.getProprietario().getTelefonePropretario());
+            txtNomePropretario.setText(veiculo.getProprietario().getNomePropretario());
+            txtEmailPropretario.setText(veiculo.getProprietario().getEmailPropertario());
+            txtTelefonePropretario.setText(veiculo.getProprietario().getTelefonePropretario());
             dtCadastro.setValue(veiculo.getDataCadastro());
             txtEspecificacao.setText(veiculo.getEspecificacoes());
 
@@ -278,8 +278,8 @@ public class VeiculoController extends AnchorPane implements Initializable {
     }
 
     private void limparCampo() {
-        Campo.limpar(txtAno_Modelo, txtLavor, txtAno_fabrico, txtFabricante, txtModelo, txtPlaca,
-                txtIlha, txtNome_propretario, txtTelefone_propretario, txtEmail_propretario);
+        Campo.limpar(txtAnoModelo, txtValor, txtAnoFabrico, txtFabricante, txtModelo, txtPlaca,
+                txtIlha, txtNomePropretario, txtTelefonePropretario, txtEmailPropretario);
         Campo.limpar(txtEspecificacao);
         Campo.limpar(dtCadastro);
         Campo.limpar(cbTipoCombustivel);
@@ -292,12 +292,12 @@ public class VeiculoController extends AnchorPane implements Initializable {
         colIlha.setCellValueFactory((TableColumn.CellDataFeatures<Veiculo, String> obj) -> new SimpleStringProperty(obj.getValue().getCidade()));
         colFabricante.setCellValueFactory(new PropertyValueFactory<>("fabricante"));
         colModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
-        colAno_fabrico.setCellValueFactory(new PropertyValueFactory<>("anoFabricacao"));
-        colAno_Modelo.setCellValueFactory(new PropertyValueFactory<>("anoModelo"));
+        colAnoFabrico.setCellValueFactory(new PropertyValueFactory<>("anoFabricacao"));
+        colAnoModelo.setCellValueFactory(new PropertyValueFactory<>("anoModelo"));
         colValor.setCellValueFactory(new PropertyValueFactory<>("chassi"));
-        colTipo_Combustivel.setCellValueFactory(new PropertyValueFactory<>("tipoCombustivel"));
+        colTipoCombustivel.setCellValueFactory(new PropertyValueFactory<>("tipoCombustivel"));
         colPropretario.setCellValueFactory((TableColumn.CellDataFeatures<Veiculo, String> obj) -> new SimpleStringProperty(obj.getValue().getProprietario().getNomePropretario()));
-        colData_Cadastro.setCellValueFactory(new PropertyValueFactory<>("dataCadastro"));
+        colDataCadastro.setCellValueFactory(new PropertyValueFactory<>("dataCadastro"));
 
         colEspecificacao.setCellValueFactory(new PropertyValueFactory<>("especificacao"));
 
@@ -306,7 +306,7 @@ public class VeiculoController extends AnchorPane implements Initializable {
 
     private void filtro(String novo, ObservableList<Veiculo> listaVeiculo) {
         FilteredList<Veiculo> dadosFiltrados = new FilteredList<>(listaVeiculo, veivulo -> true);
-        dadosFiltrados.setPredicate((veiculo) -> 
+        dadosFiltrados.setPredicate(veiculo -> 
                 veiculo.getPlaca().toLowerCase().startsWith(novo.toUpperCase()) || 
                 veiculo.getProprietario().getNomePropretario().toLowerCase().startsWith(novo.toUpperCase()) || 
                 veiculo.getFabricante().toLowerCase().startsWith(novo.toUpperCase()) || 

@@ -23,7 +23,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             final StringBuilder query = new StringBuilder();
             query.append("INSERT INTO ").append(db).append(".tb_curso (nome_curso, duracao, descricao, fk_categoria)VALUES(?,?,?,?)");
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setString(1, curso.getCurso());
+            preparedStatement.setString(1, curso.getNome());
             preparedStatement.setInt(2, curso.getDuracao());
             preparedStatement.setString(3, curso.getDescricao());
             preparedStatement.setInt(4, curso.getCategoria().getId());
@@ -42,7 +42,7 @@ public class CursoDAOImpl extends DAO implements CursoDAO {
             final StringBuilder query = new StringBuilder();
             query.append("UPDATE ").append(db).append(".tb_curso SET nome_curso=?, duracao=?, descricao=?, fk_categoria=? WHERE codigo =?");
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setString(1, curso.getCurso());
+            preparedStatement.setString(1, curso.getNome());
             preparedStatement.setInt(2, curso.getDuracao());
             preparedStatement.setString(3, curso.getDescricao());
             preparedStatement.setInt(4, curso.getCategoria().getId());

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import javafx.scene.image.ImageView;
 
 public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
 
-    private final String sep = File.separator;
+    private static final String SEP = File.separator;
     private final File diretorio = new File("public/img/instrutor/");
 
     public InstrutorDAOImpl() {
@@ -29,10 +30,10 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
 
     @Override
     public void create(Instrutor instrutor) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO ").append(db).append(".`tb_instrutor` (`nome`, `admissao`, `email`, `telefone`, `movel`, `foto`, `pai`, `mae`, `grauAcademico`, `tipoSanguineo`, `morada`, `cidadeIlha`, `numeroDeIndentificacao`, `naturalidade`, `nacionalidade`, `nascimento`, `cartaConducao`, `banco`, `agencia`,`numDeConta`, `obsercacao`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+        final StringBuilder query = new StringBuilder();
+        query.append("INSERT INTO ").append(db).append(".`tb_instrutor` (`nome`, `admissao`, `email`, `telefone`, `movel`, `foto`, `pai`, `mae`, `grauAcademico`, `tipoSanguineo`, `morada`, `cidadeIlha`, `numeroDeIndentificacao`, `naturalidade`, `nacionalidade`, `nascimento`, `cartaConducao`, `banco`, `agencia`,`numDeConta`, `obsercacao`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 
+        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             preparedStatement = conn.prepareStatement(query.toString());
 
             mapToSave(instrutor);
@@ -41,7 +42,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("CREATE: ", ex);
+            throw new DataAccessException(ex);
         }
     }
 
@@ -84,24 +85,15 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
             conn.commit();
             preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+            throw new DataAccessException(ex);
         }
     }
 
     @Override
     public void delete(Long idInstrutor) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_instrutor WHERE id=?");
-
-            preparedStatement = conn.prepareStatement(query.toString());
-
-            preparedStatement.setLong(1, idInstrutor);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("DLETE: ", ex);
-        }
+        final StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_instrutor WHERE id=?");
+        remove(query.toString(), idInstrutor);
     }
 
     @Override
@@ -124,7 +116,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
                         rs.getString(16), rs.getDate(17).toLocalDate(), rs.getString(18),
                         rs.getString(19), rs.getString(20), rs.getString(21), rs.getString(22));
                 if (instrutor.getFoto() != null) {
-                    Image image = new Image(new FileInputStream(diretorio.getPath() + sep + instrutor.getFoto()));
+                    Image image = new Image(new FileInputStream(diretorio.getPath() + SEP + instrutor.getFoto()));
                     img = new ImageView(image);
                     img.setPreserveRatio(true);//setting the fit height and width of the image view 
                     img.setFitHeight(68);
@@ -139,12 +131,10 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
                 }
                 instrutores.add(instrutor);
             }
-
-            preparedStatement.close();
             rs.close();
-
+            preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(InstrutorDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -159,16 +149,17 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
         try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
             preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setLong(1, instrutor.getId());
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                instrutor.setNome(rs.getString("nome"));
-                instrutor.setNumeroDeIndentificacao(rs.getString("numeroDeIndentificacao"));
-                instrutor.setContactoMovel(rs.getString("movel"));
-                instrutor.setEmail(rs.getString("email"));
-                retorno = instrutor;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    instrutor.setNome(resultSet.getString("nome"));
+                    instrutor.setNumeroDeIndentificacao(resultSet.getString("numeroDeIndentificacao"));
+                    instrutor.setContactoMovel(resultSet.getString("movel"));
+                    instrutor.setEmail(resultSet.getString("email"));
+                    retorno = instrutor;
+                }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
         return retorno;
     }
