@@ -14,51 +14,51 @@ import org.springframework.data.annotation.Id;
 public class Artigo {
     
     @Id
-    private LongProperty idArtigo;
-    private StringProperty nomeArtigo;
+    private LongProperty id;
+    private StringProperty nome;
     private ObjectProperty<BigDecimal> preco;
     private StringProperty descricao;
 
     public Artigo() {
     }
 
-    public Artigo(Long idArtigo, String nomeArtigo, BigDecimal preco) {
-        this.idArtigo = new SimpleLongProperty(idArtigo);
-        this.nomeArtigo = new SimpleStringProperty(nomeArtigo);
+    public Artigo(Long id, String nome, BigDecimal preco) {
+        this.id = new SimpleLongProperty(id);
+        this.nome = new SimpleStringProperty(nome);
         this.preco = new SimpleObjectProperty(preco);
     }
 
-    public Artigo(Long idArtigo, String nomeArtigo, BigDecimal preco, String descricao) {
-        this.idArtigo = new SimpleLongProperty(idArtigo);
-        this.nomeArtigo = new SimpleStringProperty(nomeArtigo);
+    public Artigo(Long id, String nome, BigDecimal preco, String descricao) {
+        this.id = new SimpleLongProperty(id);
+        this.nome = new SimpleStringProperty(nome);
         this.preco = new SimpleObjectProperty(preco);
         this.descricao = new SimpleStringProperty(descricao);
     }
 
-    public long getIdArtigo() {
-        return idArtigoProperty().get();
+    public long getId() {
+        return idProperty().get();
     }
 
-    public void setIdArtigo(long value) {
-        idArtigoProperty().set(value);
+    public void setId(long value) {
+        idProperty().set(value);
     }
 
-    public LongProperty idArtigoProperty() {
-        if(idArtigo == null) idArtigo = new SimpleLongProperty(this, "idArtigo");
-        return idArtigo;
+    public LongProperty idProperty() {
+        if(id == null) id = new SimpleLongProperty(this, "id");
+        return id;
     }
 
-    public final String getNomeArtigo() {
+    public final String getNome() {
         return nomeArtigoProperty().get();
     }
 
-    public void setNomeArtigo(String value) {
+    public void setNome(String value) {
         nomeArtigoProperty().set(value);
     }
 
     public StringProperty nomeArtigoProperty() {
-        if(nomeArtigo == null) nomeArtigo = new SimpleStringProperty(this, "nomeArtigo");
-        return nomeArtigo;
+        if(nome == null) nome = new SimpleStringProperty(this, "nome");
+        return nome;
     }
 
     public BigDecimal getPreco() {
@@ -90,7 +90,7 @@ public class Artigo {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.idArtigo);
+        hash = 53 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -106,11 +106,11 @@ public class Artigo {
             return false;
         }
         final Artigo other = (Artigo) obj;
-        return Objects.equals(this.idArtigo, other.idArtigo);
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return nomeArtigo.get();
+        return nome.get();
     }
 }

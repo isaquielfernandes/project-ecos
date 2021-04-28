@@ -9,6 +9,7 @@ import cv.com.escola.model.util.Print;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,13 +81,14 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
             StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_categoria");
             preparedStatement = connection.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery(query.toString());
-            while (rs.next()) {
-                Categoria categ = new Categoria(rs.getInt(1), rs.getString(2), rs.getString(3));
-                categorias.add(categ);
+            try (ResultSet resultSet = preparedStatement.executeQuery(query.toString())) {
+                while (resultSet.next()) {
+                    Categoria categ = new Categoria(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+                    categorias.add(categ);
+                }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
         return categorias;
     }

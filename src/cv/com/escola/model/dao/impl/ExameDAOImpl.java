@@ -13,6 +13,7 @@ import cv.com.escola.model.util.Tempo;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,58 +38,55 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
 
     @Override
     public void create(Exame marcar) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO ").append(db).append(".tb_exame (tipo_exame, dia, hora, descricao,");
-            query.append("fk_categoria, fk_aluno, registroCriminal, atestadoMedico) ");
-            query.append("VALUES(?,?,?,?,?,?,?,?)");
+        final StringBuilder insertQuery = new StringBuilder();
+        insertQuery.append("INSERT INTO ").append(db).append(".tb_exame (tipo_exame, dia, hora, descricao,");
+        insertQuery.append("fk_categoria, fk_aluno, registroCriminal, atestadoMedico) ");
+        insertQuery.append("VALUES(?,?,?,?,?,?,?,?)");
 
-            preparedStatement = conector.prepareStatement(query.toString());
-
-            preparedStatement.setString(1, marcar.getTipoExame());
-            preparedStatement.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
-            preparedStatement.setString(3, marcar.getHoraDeExame().toString());
-            preparedStatement.setString(4, marcar.getDescricao());
-            preparedStatement.setInt(5, marcar.getCategoria().getId());
-            preparedStatement.setInt(6, marcar.getAluno().getIdAluno());
-            preparedStatement.setString(7, marcar.getRegistroCriminal());
-            preparedStatement.setString(8, marcar.getAtestadoMedico());
-
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("CREATE: ", ex);
-        }
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    insertQuery.toString()
+            )) {
+                mapToSave(pstmt, marcar);
+            } catch (SQLException e) {
+                throw new DataAccessException(e);
+            }
+        });
     }
 
     @Override
     public void update(Exame marcar) {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db).append(".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,fk_categoria=?, fk_aluno=? WHERE id_exame=?");
-            preparedStatement = conector.prepareStatement(query.toString());
+        StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,fk_categoria=?, fk_aluno=? WHERE id_exame=?");
 
-            preparedStatement.setString(1, marcar.getTipoExame());
-            preparedStatement.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
-            preparedStatement.setString(3, marcar.getHoraDeExame().toString());
-            preparedStatement.setString(4, marcar.getDescricao());
-            preparedStatement.setInt(5, marcar.getCategoria().getId());
-            preparedStatement.setInt(6, marcar.getAluno().getIdAluno());
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    updateQuery.toString()
+            )) {
+                mapToSave(pstmt, marcar);
+            } catch (SQLException e) {
+                throw new DataAccessException(e);
+            }
+        });
+    }
 
-            preparedStatement.setLong(7, marcar.getIdExame());
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+    private void mapToSave(final PreparedStatement pstmt, Exame marcar) throws SQLException {
+        pstmt.setString(1, marcar.getTipoExame());
+        pstmt.setTimestamp(2, Tempo.toTimestamp(marcar.getDataExame()));
+        pstmt.setString(3, marcar.getHoraDeExame().toString());
+        pstmt.setString(4, marcar.getDescricao());
+        pstmt.setInt(5, marcar.getCategoria().getId());
+        pstmt.setInt(6, marcar.getAluno().getIdAluno());
+        if (marcar.getIdExame() != 0) {
+            pstmt.setLong(7, marcar.getIdExame());
         }
+        pstmt.executeUpdate();
     }
 
     @Override
     public void delete(Long idExame) {
         final StringBuilder query = new StringBuilder();
-        query.append("DELETE FROM ").append(db).append(".`tb_exame` WHERE id_exame =?");
+        query.append("DELETE FROM ").append(db).append(".tb_exame WHERE id_exame =?");
         remove(query.toString(), idExame);
     }
 
@@ -97,7 +95,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
         List<Exame> dadosExame = new ArrayList<>();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             final StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM ").append(db).append(".exame_view order by Dia desc");
+            query.append("SELECT * FROM ").append(db).append(".exame_view order by dia desc");
             preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
 
@@ -108,28 +106,18 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
                         new Aluno(rs.getInt(8), rs.getString(9)));
                 dadosExame.add(marcado);
             }
-            preparedStatement.close();
             rs.close();
+            preparedStatement.close();
         } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
+            throw new DataAccessException(ex);
         }
         return dadosExame;
     }
 
     @Override
     public int total() {
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_exame");
-            preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException("FIND: ", ex);
-        }
-        return 0;
+        StringBuilder query = new StringBuilder();
+        return count(query.toString());
     }
 
     @Override
@@ -149,7 +137,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
         } catch (JRException ex) {
             Logger.getLogger(ExameDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            throw new DataAccessException("UPDATE: ", ex);
+            throw new DataAccessException(ex);
         }
     }
 
@@ -168,9 +156,9 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
             jasperViewer.viewReport("Exame", jasperPrint);
 
         } catch (JRException ex) {
-            throw new ReportException("IMPRIMIR: ", ex);
+            throw new ReportException(ex);
         } catch (SQLException ex) {
-            throw new DataAccessException("IMPRIMIR: ", ex);
+            throw new DataAccessException(ex);
         }
     }
 }

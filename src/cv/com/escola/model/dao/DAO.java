@@ -105,8 +105,8 @@ public abstract class DAO {
         });
     }
     
-    protected int count(Connection connection, String sql) {
-        try (PreparedStatement statement = connection.prepareStatement(sql);) {
+    protected int count(String sql) {
+        try (PreparedStatement statement = connect.prepareStatement(sql);) {
             statement.setQueryTimeout(1);
             try (ResultSet resultSet = statement.executeQuery();) {
                 if(!resultSet.next())

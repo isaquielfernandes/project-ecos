@@ -21,40 +21,42 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     @Override
     public void create(Artigo artigo) {
-        final StringBuilder query = new StringBuilder();
-        query.append("INSERT INTO ").append(db).append(".tb_artigo (nomeArtigo, preco, descricao)");
-        query.append(" VALUES (?,?,?)");
+        final StringBuilder insert = new StringBuilder();
+        insert.append("INSERT INTO ").append(db).append(".tb_artigo (nomeArtigo, preco, descricao)");
+        insert.append(" VALUES (?,?,?)");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    insert.toString()
             )) {
-                pstmt.setString(1, artigo.getNomeArtigo());
-                pstmt.setBigDecimal(2, artigo.getPreco());
-                pstmt.setString(3, artigo.getDescricao());
-                pstmt.executeUpdate();
+                mapToSave(pstmt, artigo);
             } catch (SQLException ex) {
-                throw new DataAccessException(Level.ERROR.toString(), ex);
+                throw new DataAccessException(ex);
             }
         });
     }
 
+    private void mapToSave(final PreparedStatement pstmt, Artigo artigo) throws SQLException {
+        pstmt.setString(1, artigo.getNome());
+        pstmt.setBigDecimal(2, artigo.getPreco());
+        pstmt.setString(3, artigo.getDescricao());
+        if (artigo.getId() != 0) {
+            pstmt.setLong(4, artigo.getId());
+        }
+        pstmt.executeUpdate();
+    }
+
     @Override
     public void update(Artigo artigo) {
-        StringBuilder query = new StringBuilder();
-        query.append("UPDATE ").append(db)
-                .append(".tb_artigo SET nomeArtigo=?, preco=?, descricao=? ");
-        query.append(" WHERE id_artigo =?;");
-        
+        StringBuilder update = new StringBuilder();
+        update.append("UPDATE ").append(db).append(".tb_artigo SET nomeArtigo=?, preco=?, descricao=? ");
+        update.append(" WHERE id_artigo = ?;");
+
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    query.toString()
+                    update.toString()
             )) {
-                pstmt.setString(1, artigo.getNomeArtigo());
-                pstmt.setBigDecimal(2, artigo.getPreco());
-                pstmt.setString(3, artigo.getDescricao());
-                pstmt.setLong(4, artigo.getIdArtigo());
-                pstmt.executeUpdate();
+                mapToSave(pstmt, artigo);
             } catch (SQLException e) {
                 throw new DataAccessException(e);
             }
@@ -63,16 +65,9 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     @Override
     public void delete(Integer idArtigo) {
-        final StringBuilder query = new StringBuilder();
-            query.append("DELETE FROM ").append(db).append(".tb_artigo WHERE id_artigo=?");
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idArtigo);
-            preparedStatement.execute();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
-        }
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ").append(db).append(".tb_artigo WHERE id_artigo=?");
+        remove(query.toString(), idArtigo);
     }
 
     @Override
@@ -97,15 +92,15 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
     @Override
     public Artigo buscar(Artigo artigo) {
         final StringBuilder query = new StringBuilder();
-            query.append("SELECT id_artigo, nomeArtigo, preco FROM ").append(db).append(".tb_artigo WHERE id_artigo=?");
+        query.append("SELECT id_artigo, nomeArtigo, preco FROM ").append(db).append(".tb_artigo WHERE id_artigo=?");
         Artigo retorno = new Artigo();
         try (Connection conector = ConnectionManager.getInstance().begin();) {
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, (int) artigo.getIdArtigo());
+            preparedStatement.setInt(1, (int) artigo.getId());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                retorno.setIdArtigo(rs.getInt("id_artigo"));
-                retorno.setNomeArtigo(rs.getString("nomeArtigo"));
+                retorno.setId(rs.getInt("id_artigo"));
+                retorno.setNome(rs.getString("nomeArtigo"));
                 retorno.setPreco(rs.getBigDecimal("preco"));
             }
         } catch (SQLException ex) {
@@ -116,8 +111,8 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
 
     public Artigo mapRowToObject(ResultSet resultSet) throws SQLException {
         Artigo artigo = new Artigo();
-        artigo.setIdArtigo(resultSet.getLong(1));
-        artigo.setNomeArtigo(resultSet.getString(2));
+        artigo.setId(resultSet.getLong(1));
+        artigo.setNome(resultSet.getString(2));
         artigo.setPreco(resultSet.getBigDecimal(3));
         artigo.setDescricao(resultSet.getString(4));
         return artigo;

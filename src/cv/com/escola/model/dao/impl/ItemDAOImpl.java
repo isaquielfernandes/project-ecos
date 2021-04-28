@@ -38,7 +38,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
             )) {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
-                pstmt.setLong(3, item.getArtigo().getIdArtigo());
+                pstmt.setLong(3, item.getArtigo().getId());
                 pstmt.setInt(4, item.getVenda().getIdVenda());
                 pstmt.executeUpdate();
             } catch (SQLException e) {
@@ -58,7 +58,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
             )) {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
-                pstmt.setLong(3, item.getArtigo().getIdArtigo());
+                pstmt.setLong(3, item.getArtigo().getId());
                 pstmt.setInt(4, item.getVenda().getIdVenda());
                 pstmt.setLong(5, item.getIdItem());
                 pstmt.executeUpdate();

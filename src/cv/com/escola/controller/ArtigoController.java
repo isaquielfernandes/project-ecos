@@ -179,15 +179,15 @@ public class ArtigoController extends AnchorPane implements Initializable {
             artigo.getClass();
             telaCadastro(null);
 
-            txtCodigo.setText(String.valueOf(artigo.getIdArtigo()));
-            txtNome.setText(artigo.getNomeArtigo());
+            txtCodigo.setText(String.valueOf(artigo.getId()));
+            txtNome.setText(artigo.getNome());
             txtPreco.setText(artigo.getPreco().toString());
             txtDescricao.setText(artigo.getDescricao());
 
             lbTitulo.setText("Editar Artigo");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idArtigo = artigo.getIdArtigo();
+            idArtigo = artigo.getId();
         } catch (NullPointerException ex) {
             Nota.alerta("Selecione um artigo na tabela para edição!");
         }
@@ -205,9 +205,9 @@ public class ArtigoController extends AnchorPane implements Initializable {
     }
 
     private void removeObject(Artigo artigo) {
-        Dialogo.Resposta response = Mensagem.confirmar("Excluir Artigo:: " + artigo.getNomeArtigo() + " ?");
+        Dialogo.Resposta response = Mensagem.confirmar("Excluir Artigo:: " + artigo.getNome() + " ?");
         if (response == Dialogo.Resposta.YES) {
-            DAOFactory.daoFactury().artigoDAO().delete((int) artigo.getIdArtigo());
+            DAOFactory.daoFactury().artigoDAO().delete((int) artigo.getId());
             sincronizarBase();
             tabela();
         }
@@ -216,7 +216,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     private void tabela() {
         ObservableList data = FXCollections.observableArrayList(listaArtigo);
         colCodigo.setCellValueFactory((CellDataFeatures<Artigo, Long> obj)
-                -> obj.getValue().idArtigoProperty().asObject());
+                -> obj.getValue().idProperty().asObject());
         colNome.setCellValueFactory((CellDataFeatures<Artigo, String> obj)
                 -> obj.getValue().nomeArtigoProperty());
         colDescricao.setCellValueFactory((CellDataFeatures<Artigo, String> obj)
@@ -289,7 +289,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     
     private void filtro(String valor, ObservableList<Artigo> listaArtigo) {
         FilteredList<Artigo> dadosFiltrados = new FilteredList<>(listaArtigo, artigo -> true);
-        dadosFiltrados.setPredicate(artigo -> artigo.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase()) ||
+        dadosFiltrados.setPredicate(artigo -> artigo.getNome().toLowerCase().startsWith(valor.toLowerCase()) ||
             artigo.getPreco().toString().toLowerCase().startsWith(valor.toLowerCase()));
 
         SortedList<Artigo> dadosOrdenados = new SortedList<>(dadosFiltrados);

@@ -12,6 +12,7 @@ import cv.com.escola.model.util.Print;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,46 +34,52 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     @Override
     public void create(ExameResultado resultado) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO ").append(db).append(".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);");
-            preparedStatement = connection.prepareStatement(query.toString());
-            preparedStatement.setLong(1, resultado.getExame().getIdExame());
-            preparedStatement.setString(2, resultado.getResultado());
-            preparedStatement.executeUpdate();
-            connection.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(Level.SEVERE.getName(), ex);
-        }
+        StringBuilder insert = new StringBuilder();
+        insert.append("INSERT INTO ").append(db).append(".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);");
+
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    insert.toString()
+            )) {
+                mapToSave(pstmt, resultado);
+            } catch (SQLException e) {
+                throw new DataAccessException(e);
+            }
+        });
     }
 
     @Override
     public void update(ExameResultado resultado) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db).append(".`tb_exame_resultado` SET ");
-            query.append("`fk_exame` = ?, `resultado` = ?");
-            query.append(" WHERE `id_exame_resultado` = ? AND `fk_exame` = ?");
-            preparedStatement = connection.prepareStatement(query.toString());
+        StringBuilder update = new StringBuilder();
+        update.append("UPDATE ").append(db).append(".`tb_exame_resultado` SET ");
+        update.append("resultado = ?");
+        update.append(" WHERE id_exame_resultado = ? ");
+        
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    update.toString()
+            )) {
+                mapToSave(pstmt, resultado);
+            } catch (SQLException e) {
+                throw new DataAccessException(e);
+            }
+        });
+    }
 
-            preparedStatement.setLong(1, resultado.getExame().getIdExame());
-            preparedStatement.setString(2, resultado.getResultado());
-            preparedStatement.setLong(3, resultado.getIdExameResultado());
-            preparedStatement.setLong(4, resultado.getExame().getIdExame());
-            preparedStatement.executeUpdate();
-            connection.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+    private void mapToSave(final PreparedStatement pstmt, ExameResultado resultado) throws SQLException {
+        pstmt.setLong(1, resultado.getExame().getIdExame());
+        pstmt.setString(2, resultado.getResultado());
+        if (resultado.getIdExameResultado() != 0) {
+            pstmt.setLong(3, resultado.getIdExameResultado());
         }
+        pstmt.executeUpdate();
     }
 
     @Override
     public void delete(Long idExameResultado) {
         final StringBuilder query = new StringBuilder();
         query.append("DELETE FROM ").append(db).append(".`tb_exame_resultado` WHERE id_exame_resultado =?");
-        this.remove(query.toString(), idExameResultado);
+        remove(query.toString(), idExameResultado);
     }
 
     @Override

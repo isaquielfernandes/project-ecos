@@ -46,15 +46,17 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         INSERT_QUERY.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
         INSERT_QUERY.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
         INSERT_QUERY.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(INSERT_QUERY.toString());
-            mapToSave(aluno, preparedStatement);
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
+        
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    INSERT_QUERY.toString()
+            )) {
+                mapToSave(aluno, pstmt);
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
@@ -63,17 +65,18 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         updateQuery.append("UPDATE ").append(db).append(".tb_aluno SET nome=?, dataNascimento=?, numBI=?, dataEmisao=?, resedencia=?, conselho=?,");
         updateQuery.append("naturalidade=?, email=?, contato=?, habilitacaoLit=?, nacionalidade=?, ");
         updateQuery.append("foto=?, fotocopiaBI=?, descricao=?, nomeDaMae=?, nomeDoPai=?, professao=?, estadoCivil=?, localDeEmisao=?, freguesia=? WHERE id_aluno =?");
-
-        try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement(updateQuery.toString());
-            mapToSave(aluno, preparedStatement);
-            preparedStatement.setInt(21, aluno.getIdAluno());
-            preparedStatement.executeUpdate();
-            conector.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
+        
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    updateQuery.toString()
+            )) {
+                mapToSave(aluno, pstmt);
+                pstmt.setInt(21, aluno.getIdAluno());
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override

@@ -451,7 +451,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 super.updateItem(item, empty);
                 Artigo artigo = (Artigo) item;
                 if (artigo  != null) {
-                    setText("N: " + artigo .getNomeArtigo() + "\n" + "P: " + artigo .getPreco() + " $00");
+                    setText("N: " + artigo .getNome() + "\n" + "P: " + artigo .getPreco() + " $00");
                     setMaxSize(48, 48);
                 }
             }
@@ -776,7 +776,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     // setando dados de item na tableView
     public void viewAll() {
         colCodigo.setCellValueFactory((CellDataFeatures<Item, Long> p)
-                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idProperty().get()));
         colNomeArtigo.setCellValueFactory((CellDataFeatures<Item, Artigo> p)
                 -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
         colDescricao.setCellValueFactory((CellDataFeatures<Item, String> p)
@@ -831,7 +831,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      */
     private void tabelaItemsVenda() {
         colItemsID.setCellValueFactory((CellDataFeatures<Item, Long> p)
-                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idArtigoProperty().get()));
+                -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().idProperty().get()));
         colItemsNomeArtigo.setCellValueFactory((CellDataFeatures<Item, String> p)
                 -> new ReadOnlyObjectWrapper(p.getValue().getArtigo().nomeArtigoProperty().get()));
         colItemsDescricao.setCellValueFactory((CellDataFeatures<Item, String> p)
@@ -1081,7 +1081,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     // funcao para remover item da tabela items
     public void removerItem(Item itens, TableView<Item> tb) {
         try {
-            Dialogo.Resposta response = Mensagem.confirmar("Excluir item: " + itens.getArtigo().getNomeArtigo() + "?");
+            Dialogo.Resposta response = Mensagem.confirmar("Excluir item: " + itens.getArtigo().getNome() + "?");
             if (response == Dialogo.Resposta.YES) {
                 tb.getItems().remove(tb.getSelectionModel().getSelectedIndex());
                 tb.getSelectionModel().clearSelection();
@@ -1441,7 +1441,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      */
     private void filtros(String valor, ObservableList<Artigo> listaProduto) {
         FilteredList<Artigo> dadosFiltrados = new FilteredList<>(listaProduto, produto -> true);
-        dadosFiltrados.setPredicate(produto -> produto.getNomeArtigo().toLowerCase().startsWith(valor.toLowerCase()));
+        dadosFiltrados.setPredicate(produto -> produto.getNome().toLowerCase().startsWith(valor.toLowerCase()));
         SortedList<Artigo> dadosOrdenados = new SortedList<>(dadosFiltrados);
         dadosOrdenados.comparatorProperty().get();
         listViewProduto.setItems(dadosOrdenados);
