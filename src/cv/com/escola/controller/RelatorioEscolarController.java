@@ -103,18 +103,18 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
     public void relatorioGeral() {
         Year ano = Year.now();
 
-        totalTeorica = DAOFactory.daoFactury().relatorioEscolaDAO().count(TEORICA, ano);
-        totalPratica = DAOFactory.daoFactury().relatorioEscolaDAO().count(PRATICA, ano);
-        totalTecnica = DAOFactory.daoFactury().relatorioEscolaDAO().count(TECNICA, ano);
-        totalCap = DAOFactory.daoFactury().relatorioEscolaDAO().count(CAP, ano);
+        totalTeorica = DAOFactory.daoFactory().relatorioEscolaDAO().count(TEORICA, ano);
+        totalPratica = DAOFactory.daoFactory().relatorioEscolaDAO().count(PRATICA, ano);
+        totalTecnica = DAOFactory.daoFactory().relatorioEscolaDAO().count(TECNICA, ano);
+        totalCap = DAOFactory.daoFactory().relatorioEscolaDAO().count(CAP, ano);
 
-        int totalTeoricaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+        int totalTeoricaAprovado = DAOFactory.daoFactory().relatorioEscolaDAO()
                 .countResultadoPorTipoExame(TEORICA, APROVADO, ano.toString());
-        int totalPraticaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+        int totalPraticaAprovado = DAOFactory.daoFactory().relatorioEscolaDAO()
                 .countResultadoPorTipoExame(PRATICA, APROVADO, ano.toString());
-        int totalCapAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+        int totalCapAprovado = DAOFactory.daoFactory().relatorioEscolaDAO()
                 .countResultadoPorTipoExame(CAP, APROVADO, ano.toString());
-        int totalTecnicaAprovado = DAOFactory.daoFactury().relatorioEscolaDAO()
+        int totalTecnicaAprovado = DAOFactory.daoFactory().relatorioEscolaDAO()
                 .countResultadoPorTipoExame(TECNICA, APROVADO, ano.toString());
 
         lblAprovadoTeorica.setText(totalTeoricaAprovado + "");
@@ -152,7 +152,7 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
         // setup chart
         pc.setId("BasicPie");
         pc.setTitle("QUANTIDADE DE EXAME POR TIPO");
-        GraficoPie.info(pc, DAOFactory.daoFactury().relatorioEscolaDAO().count(ano));
+        GraficoPie.info(pc, DAOFactory.daoFactory().relatorioEscolaDAO().count(ano));
         return pc;
     }
 
@@ -177,27 +177,28 @@ public class RelatorioEscolarController extends AnchorPane implements Initializa
         series3.setName(FALTOU);
         // create sample data
         series1.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(APROVADO, anoAgora)));
+                .daoFactory().relatorioEscolaDAO().countResultado(APROVADO, anoAgora)));
         series1.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(APROVADO, anoPassUm)));
+                .daoFactory().relatorioEscolaDAO().countResultado(APROVADO, anoPassUm)));
         series1.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(APROVADO, anoPassDois)));
+                .daoFactory().relatorioEscolaDAO().countResultado(APROVADO, anoPassDois)));
         series2.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(REPROVADO, anoAgora)));
+                .daoFactory().relatorioEscolaDAO().countResultado(REPROVADO, anoAgora)));
         series2.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(REPROVADO, anoPassUm)));
+                .daoFactory().relatorioEscolaDAO().countResultado(REPROVADO, anoPassUm)));
         series2.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(REPROVADO, anoPassDois)));
+                .daoFactory().relatorioEscolaDAO().countResultado(REPROVADO, anoPassDois)));
         series3.getData().add(new XYChart.Data<>(years[0], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(FALTOU, anoAgora)));
+                .daoFactory().relatorioEscolaDAO().countResultado(FALTOU, anoAgora)));
         series3.getData().add(new XYChart.Data<>(years[1], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(FALTOU, anoPassUm)));
+                .daoFactory().relatorioEscolaDAO().countResultado(FALTOU, anoPassUm)));
         series3.getData().add(new XYChart.Data<>(years[2], (int) DAOFactory
-                .daoFactury().relatorioEscolaDAO().countResultado(FALTOU, anoPassDois)));
+                .daoFactory().relatorioEscolaDAO().countResultado(FALTOU, anoPassDois)));
         
         bc.getData().add(series1);
         bc.getData().add(series2);
         bc.getData().add(series3);
+        bc.setLegendVisible(true);
         return bc;
     }
 

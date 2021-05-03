@@ -10,6 +10,6 @@ public class JdbcTemplateConfig {
     
     @Bean
     public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(HikariCPDataSource.getInstance().dataSource());
+        return new JdbcTemplate(HikariCPDataSource.dataSource());
     }
 }

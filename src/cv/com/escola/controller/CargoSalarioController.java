@@ -99,7 +99,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
             filtro(novo, FXCollections.observableArrayList(cargoSalarios))
         );
     }   
-    @SuppressWarnings("LeakingThisInConstructor")
+    
     public CargoSalarioController() {
         try {
             GenericFXXMLLoader.loadFXML(this, "cargosalario");
@@ -113,7 +113,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        cargoSalarios = DAOFactory.daoFactury().getCargoSalarioDAO().findAll();
+        cargoSalarios = DAOFactory.daoFactory().getCargoSalarioDAO().findAll();
     }
 
     /**
@@ -169,16 +169,16 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().getCargoSalarioDAO().isCargoSalario(cargo, idCargoSalario)) {
+        } else if (DAOFactory.daoFactory().getCargoSalarioDAO().isCargoSalario(cargo, idCargoSalario)) {
             Nota.alerta("Cargo já cadastrada!");
         } else {
             CargoSalario cargoSalario = new CargoSalario(idCargoSalario, cargo, salario, descricao);
 
             if (idCargoSalario == 0) {
-                DAOFactory.daoFactury().getCargoSalarioDAO().create(cargoSalario);
+                DAOFactory.daoFactory().getCargoSalarioDAO().create(cargoSalario);
                 Mensagem.info("Cargo cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().getCargoSalarioDAO().update(cargoSalario);
+                DAOFactory.daoFactory().getCargoSalarioDAO().update(cargoSalario);
                 Mensagem.info("Cargo atualizada com sucesso!");
             }
 
@@ -215,7 +215,7 @@ public class CargoSalarioController extends AnchorPane implements Initializable 
             CargoSalario cargo = tbCargoSalario.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir cargo " + cargo.getNomeCargo()+ " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().getCargoSalarioDAO().delete(cargo.getIdcargoSalario());
+                DAOFactory.daoFactory().getCargoSalarioDAO().delete(cargo.getIdcargoSalario());
                 sincronizarBase();
                 tabela();
             }

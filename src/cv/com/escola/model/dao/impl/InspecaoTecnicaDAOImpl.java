@@ -29,7 +29,22 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
                     insertQuery.toString()
             )) {
                 mapToSave(pstmt, inspecao);
-                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
+    }
+
+    @Override
+    public void update(InspecaoTecnica inspecao) {
+        StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".`tb_inspecao_tecnica` SET `veiculo` = ?, `tipoInspecao` = ?, `dataInspecao` = ?, `duracao` = ?, `resultado` = ?, `validade` = ? WHERE `id` = ?");
+
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    updateQuery.toString()
+            )) {
+                mapToSave(pstmt, inspecao);
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
             }
@@ -43,25 +58,10 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
         pstmt.setInt(4, inspecao.getMesDeDuracao());
         pstmt.setString(5, inspecao.getResultado());
         pstmt.setString(6, inspecao.getValidade());
-        if (inspecao.getId() != 0 )
+        if (inspecao.getId() != 0) {
             pstmt.setLong(7, inspecao.getId());
-    }
-
-    @Override
-    public void update(InspecaoTecnica inspecao) {
-        StringBuilder updateQury = new StringBuilder();
-        updateQury.append("UPDATE ").append(db).append(".`tb_inspecao_tecnica` SET `veiculo` = ?, `tipoInspecao` = ?, `dataInspecao` = ?, `duracao` = ?, `resultado` = ?, `validade` = ? WHERE `id` = ?");
-
-        transact((Connection connection) -> {
-            try (PreparedStatement pstmt = connection.prepareStatement(
-                    updateQury.toString()
-            )) {
-                mapToSave(pstmt, inspecao);
-                pstmt.executeUpdate();
-            } catch (SQLException ex) {
-                throw new DataAccessException(ex);
-            }
-        });
+        }
+        pstmt.executeUpdate();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class InspecaoTecnicaDAOImpl extends DAO implements InspecaoTecnicaDAO {
     @Override
     public List<InspecaoTecnica> findAll() {
         List<InspecaoTecnica> dadosInspecao = new ArrayList<>();
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection conn = HikariCPDataSource.getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM ").append(db).append(".inspecao_tecnica_view");
 

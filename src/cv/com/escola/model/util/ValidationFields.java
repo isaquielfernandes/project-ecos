@@ -25,132 +25,133 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidationFields {
 
-    private static final String STILE_BORDER_VALIDATION = "-fx-border-color: #FF0000";
-    private static final Tooltip TOOLTIP = new Tooltip("Este Campo é Requerido.");
-
-    private ValidationFields() {
-        
+    public static final String STILE_BORDER_VALIDATION = "-fx-border-color: #FF0000";
+    
+    public ValidationFields() {
+        super();
     }
     
     public static boolean checkEmptyFields(Node... itemToCheck) {
+        Tooltip tooltip = new Tooltip("Este Campo é Requerido.");
         //used to determinate how many fields failed in validation
         List<Node> failedFields = new ArrayList<>();
-        TOOLTIP.setStyle("-fx-background-color: linear-gradient(#FF6B6B , #FFA6A6 );"
+        tooltip.setStyle("-fx-background-color: linear-gradient(#FF6B6B , #FFA6A6 );"
                 + " -fx-font-weight: bold;");
-        hackTooltipStartTiming(TOOLTIP);
-        arrayToList(itemToCheck).forEach(n -> {
+        hackTooltipStartTiming(tooltip);
+        arrayToList(itemToCheck).forEach(node -> {
             // Validate TextFields
-            if (n instanceof TextField) {
+            if (node instanceof TextField) {
                 TextField textField = new TextField();
                 textField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> 
-                    removeToolTipAndBorderColor(textField, TOOLTIP)
+                    removeToolTipAndBorderColor(textField, tooltip)
                 );
                 if (textField.getText() == null || textField.getText().trim().equals("")) {
-                    failedFields.add(n);
-                    addToolTipAndBorderColor(textField, TOOLTIP);
+                    failedFields.add(node);
+                    addToolTipAndBorderColor(textField, tooltip);
                 } else {
-                    removeToolTipAndBorderColor(textField, TOOLTIP);
+                    removeToolTipAndBorderColor(textField, tooltip);
                 }
             } 
             // Validate Combo Box
-            else if (n instanceof ComboBox) {
+            else if (node instanceof ComboBox) {
                 ComboBox comboBox = new ComboBox();
-                comboBox(comboBox, failedFields, n);
+                comboBox(comboBox, failedFields, node, tooltip);
             }
             // Validate TextArea
-            else if (n instanceof TextArea) {
+            else if (node instanceof TextArea) {
                 TextArea textArea = new TextArea();
-                textArea(textArea, failedFields, n);
+                textArea(textArea, failedFields, node, tooltip);
             }
             //Validade DatePicker
-            else if (n instanceof DatePicker) {
+            else if (node instanceof DatePicker) {
                 DatePicker datePicker = new DatePicker();
-                datePicker(datePicker, failedFields, n);
+                datePicker(datePicker, failedFields, node, tooltip);
             }
             //Validade ImageView
-            else if (n instanceof ImageView) {
+            else if (node instanceof ImageView) {
                 ImageView imgView = new ImageView();
-                imageView(imgView, failedFields, n);
+                imageView(imgView, failedFields, node, tooltip);
             }
         });
 
         return failedFields.isEmpty();
     }
 
-    private static void textArea(TextArea textArea, List<Node> failedFields, Node n) {
+    public static void textArea(TextArea textArea, List<Node> failedFields, Node n, Tooltip tooltip) {
         textArea.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-                removeToolTipAndBorderColor(textArea, TOOLTIP)
+                removeToolTipAndBorderColor(textArea, tooltip)
         );
         if (textArea.getText() == null || textArea.getText().trim().equals("")) {
             failedFields.add(n);
-            addToolTipAndBorderColor(textArea, TOOLTIP);
+            addToolTipAndBorderColor(textArea, tooltip);
         } else {
-            removeToolTipAndBorderColor(textArea, TOOLTIP);
+            removeToolTipAndBorderColor(textArea, tooltip);
         }
     }
 
-    private static void comboBox(ComboBox comboBox, List<Node> failedFields, Node n) {
+    public static void comboBox(ComboBox comboBox, List<Node> failedFields, Node n, Tooltip tooltip) {
         comboBox.valueProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) ->
-                removeToolTipAndBorderColor(comboBox, TOOLTIP)
+                removeToolTipAndBorderColor(comboBox, tooltip)
         );
         if (comboBox.getValue() == null) {
             failedFields.add(n);
-            addToolTipAndBorderColor(comboBox, TOOLTIP);
+            addToolTipAndBorderColor(comboBox, tooltip);
         } else {
-            removeToolTipAndBorderColor(comboBox, TOOLTIP);
+            removeToolTipAndBorderColor(comboBox, tooltip);
         }
     }
 
-    private static void datePicker(DatePicker datePicker, List<Node> failedFields, Node n) {
+    public static void datePicker(DatePicker datePicker, List<Node> failedFields, Node n, Tooltip tooltip) {
         datePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) ->
-                removeToolTipAndBorderColor(datePicker, TOOLTIP)
+                removeToolTipAndBorderColor(datePicker, tooltip)
         );
         if (datePicker.getValue() == null) {
             failedFields.add(n);
-            addToolTipAndBorderColor(datePicker, TOOLTIP);
+            addToolTipAndBorderColor(datePicker, tooltip);
         } else {
-            removeToolTipAndBorderColor(datePicker, TOOLTIP);
+            removeToolTipAndBorderColor(datePicker, tooltip);
         }
     }
 
-    private static void imageView(ImageView imageView, List<Node> failedFields, Node n) {
+    public static void imageView(ImageView imageView, List<Node> failedFields, Node n, Tooltip tooltip) {
         imageView.imageProperty().addListener((observable, oldValue, newValue) ->
-                removeToolTipAndBorderColor(imageView, TOOLTIP)
+                removeToolTipAndBorderColor(imageView, tooltip)
         );
         if (imageView.getImage() == null) {
             failedFields.add(n);
-            addToolTipAndBorderColor(imageView, TOOLTIP);
+            addToolTipAndBorderColor(imageView, tooltip);
         } else {
-            removeToolTipAndBorderColor(imageView, TOOLTIP);
+            removeToolTipAndBorderColor(imageView, tooltip);
         }
     }
 
     /**
      * *******ADD AND REMOVE STYLES********
+     * @param n
+     * @param t
      */
-    private static void addToolTipAndBorderColor(Node n, Tooltip t) {
+    public static void addToolTipAndBorderColor(Node n, Tooltip t) {
         Tooltip.install(n, t);
         n.setStyle(STILE_BORDER_VALIDATION);
     }
 
-    private static void removeToolTipAndBorderColor(Node n, Tooltip t) {
+    public static void removeToolTipAndBorderColor(Node n, Tooltip t) {
         Tooltip.uninstall(n, t);
         n.setStyle(null);
     }
 
     /**
      * ***********ARRAY TO LIST UTILITY************
+     * @param n
+     * @return 
      */
-    private static List<Node> arrayToList(Node[] n) {
+    public static List<Node> arrayToList(Node[] n) {
         List<Node> listItems = new ArrayList<>();
         listItems.addAll(Arrays.asList(n));
         return listItems;
     }
 
-    /**
-     * ***********FORCE TOOL TIP TO BE DISPLAYED FASTER************
-     */
-    private static void hackTooltipStartTiming(Tooltip tooltip) {
+    public static void hackTooltipStartTiming(Tooltip tooltip) {
         try {
             Field fieldBehavior = tooltip.getClass().getDeclaredField("BEHAVIOR");
             Object objBehavior = fieldBehavior.get(tooltip);
@@ -164,5 +165,6 @@ public class ValidationFields {
             log.error(e.getMessage());
         }    
     }
+  
 }
 

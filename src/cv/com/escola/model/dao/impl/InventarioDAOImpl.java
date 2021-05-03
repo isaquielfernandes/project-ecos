@@ -10,6 +10,8 @@ import cv.com.escola.model.util.JasperViewerFX;
 import cv.com.escola.model.util.Tempo;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,83 +25,87 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
+    private static final StringBuilder INSERT_QUERY = new StringBuilder();
+    private static final StringBuilder UPDATE_QUERY = new StringBuilder();
+
     public InventarioDAOImpl() {
         super();
     }
 
     @Override
     public void create(Inventario inventario) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("insert into ").append(db).append(".tb_inventario ( num_serie, fk_categoria, item, responsavel, ");
-            query.append("fk_area, local, data_compra, meses_desde_compra, valor, estado_consrvacao, ");
-            query.append("vida_util_ano, valor_atual, depreciacao ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        INSERT_QUERY.append("insert into ").append(db).append(".tb_inventario ( num_serie, fk_categoria, item, responsavel, ");
+        INSERT_QUERY.append("fk_area, local, data_compra, meses_desde_compra, valor, estado_consrvacao, ");
+        INSERT_QUERY.append("vida_util_ano, valor_atual, depreciacao ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-            preparedStatement = conn.prepareStatement(query.toString());
-            mapToSave(inventario);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    INSERT_QUERY.toString()
+            )) {
+                mapToSave(pstmt, inventario);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
-    private void mapToSave(Inventario inventario) throws SQLException {
-        preparedStatement.setString(1, inventario.getNumSerie());
-        preparedStatement.setString(2, inventario.getCategoria());
-        preparedStatement.setString(3, inventario.getItem());
-        preparedStatement.setString(4, inventario.getResponsavel());
-        preparedStatement.setString(5, inventario.getArea());
-        preparedStatement.setString(6, inventario.getLocal());
-        preparedStatement.setTimestamp(7, Tempo.toTimestamp(inventario.getDataCompra()));
-        preparedStatement.setInt(8, inventario.getMesesDesdeCompra());
-        preparedStatement.setDouble(9, inventario.getValor());
-        preparedStatement.setString(10, inventario.getEstadoConservacao());
-        preparedStatement.setInt(11, inventario.getVidaUtilAno());
-        preparedStatement.setDouble(12, inventario.getValorAtual());
-        preparedStatement.setString(13, inventario.getDepreciacao());
+    private void mapToSave(final PreparedStatement statement, Inventario inventario) throws SQLException {
+        statement.setString(1, inventario.getNumSerie());
+        statement.setString(2, inventario.getCategoria());
+        statement.setString(3, inventario.getItem());
+        statement.setString(4, inventario.getResponsavel());
+        statement.setString(5, inventario.getArea());
+        statement.setString(6, inventario.getLocal());
+        statement.setTimestamp(7, Tempo.toTimestamp(inventario.getDataCompra()));
+        statement.setInt(8, inventario.getMesesDesdeCompra());
+        statement.setDouble(9, inventario.getValor());
+        statement.setString(10, inventario.getEstadoConservacao());
+        statement.setInt(11, inventario.getVidaUtilAno());
+        statement.setDouble(12, inventario.getValorAtual());
+        statement.setString(13, inventario.getDepreciacao());
+        if (inventario.getIdInventario() != 0) {
+            statement.setInt(14, inventario.getIdInventario());
+        }
+        statement.executeUpdate();
     }
 
     @Override
     public void update(Inventario inventario) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db)
-                    .append(".tb_inventario SET num_serie =?, fk_categoria =?, item =?, responsavel =?, fk_area =?, local =?, data_compra =?, meses_desde_compra =?, valor =?, estado_consrvacao =?, vida_util_ano =?, valor_atual =?, depreciacao =? WHERE id_inventario =?");
-            preparedStatement = conn.prepareStatement(query.toString());
-            mapToSave(inventario);
-            preparedStatement.setInt(14, inventario.getIdInventario());
-            preparedStatement.executeUpdate();
-            conn.commit();
-            preparedStatement.close();
+        UPDATE_QUERY.append("UPDATE ").append(db)
+                .append(".tb_inventario SET num_serie =?, fk_categoria =?, item =?, responsavel =?, fk_area =?, local =?, data_compra =?, meses_desde_compra =?, valor =?, estado_consrvacao =?, vida_util_ano =?, valor_atual =?, depreciacao =? WHERE id_inventario =?");
 
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    UPDATE_QUERY.toString()
+            )) {
+                mapToSave(pstmt, inventario);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
     public void delete(Integer idInventario) {
         final StringBuilder query = new StringBuilder();
         query.append("DELETE FROM ").append(db).append(".tb_inventario WHERE id_inventario=?");
-        this.remove(query.toString(), idInventario);
+        remove(query.toString(), idInventario);
     }
 
     @Override
     public List<Inventario> findAll() {
         List<Inventario> inventario = new ArrayList<>();
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT * from ").append(db).append(".tb_inventario");
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * from ").append(db).append(".tb_inventario");
+        try (Connection conn = HikariCPDataSource.getConnection()) {
             preparedStatement = conn.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                Inventario item = new InventarioBuilder().setIdInventario(rs.getInt(1)).setNumSerie(rs.getString(2)).setCategoria(rs.getString(3)).setItem(rs.getString(4)).setResponsavel(rs.getString(5)).setArea(rs.getString(6)).setLocal(rs.getString(7)).setDataDeCompra(Tempo.toDate(rs.getTimestamp(8))).setMesesDesdeCompra(rs.getInt(9)).setValor(rs.getDouble(10)).setEstadoDeConservacao(rs.getString(11)).setVidaUtil(rs.getInt(12)).setValorAtual(rs.getDouble(13)).setDepreciacao(rs.getString(14)).setDataCadastro(Tempo.toDate(rs.getTimestamp(15))).createInventario();
-                inventario.add(item);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Inventario item = new InventarioBuilder().setIdInventario(resultSet.getInt(1)).setNumSerie(resultSet.getString(2)).setCategoria(resultSet.getString(3)).setItem(resultSet.getString(4)).setResponsavel(resultSet.getString(5)).setArea(resultSet.getString(6)).setLocal(resultSet.getString(7)).setDataDeCompra(Tempo.toDate(resultSet.getTimestamp(8))).setMesesDesdeCompra(resultSet.getInt(9)).setValor(resultSet.getDouble(10)).setEstadoDeConservacao(resultSet.getString(11)).setVidaUtil(resultSet.getInt(12)).setValorAtual(resultSet.getDouble(13)).setDepreciacao(resultSet.getString(14)).setDataCadastro(Tempo.toDate(resultSet.getTimestamp(15))).createInventario();
+                    inventario.add(item);
+                }
+                preparedStatement.close();
             }
-            preparedStatement.close();
-            rs.close();
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
@@ -108,19 +114,19 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public boolean isNumSerie(String nome, int id) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT num_serie FROM ").append(db).append(".tb_inventario WHERE num_serie =? AND id_inventario !=? ");
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT num_serie FROM ").append(db).append(".tb_inventario WHERE num_serie =? AND id_inventario !=? ");
+
+        try (Connection conn = HikariCPDataSource.getConnection()) {
             preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setString(1, nome);
             preparedStatement.setInt(2, id);
-            rs = preparedStatement.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString(1).equalsIgnoreCase(nome);
+            try (ResultSet set = preparedStatement.executeQuery()) {
+                if (set.next()) {
+                    return set.getString(1).equalsIgnoreCase(nome);
+                }
             }
             preparedStatement.close();
-            rs.close();
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
@@ -129,23 +135,14 @@ public class InventarioDAOImpl extends DAO implements InventariaDAO {
 
     @Override
     public int total() {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_inventario");
-            preparedStatement = conn.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-        return 0;
+        StringBuilder length = new StringBuilder();
+        length.append("SELECT COUNT(*) FROM ").append(db).append(".tb_inventario");
+        return count(length.toString());
     }
 
     @Override
     public void report() {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection conn = HikariCPDataSource.getConnection()) {
             URL url = getClass().getResource("/cv/com/escola/reports/inventario.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             //null: caso não existem filtros

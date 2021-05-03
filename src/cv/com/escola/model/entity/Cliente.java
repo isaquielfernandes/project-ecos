@@ -1,5 +1,6 @@
 package cv.com.escola.model.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -8,7 +9,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
 
 
-public class Cliente {
+public class Cliente implements Serializable {
     
     private static final String EDITAR = "Editar";
     private static final String REMOVER = "Remover";

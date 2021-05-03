@@ -98,7 +98,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     @FXML
     private Label legenda;
 
-    @SuppressWarnings("LeakingThisInConstructor")
+
     public ArtigoController() {
         try {
             GenericFXXMLLoader.loadFXML(this, "artigo");
@@ -150,19 +150,20 @@ public class ArtigoController extends AnchorPane implements Initializable {
         String nome = txtNome.getText();
         String descricao = txtDescricao.getText();
         BigDecimal preco = new BigDecimal(txtPreco.getText().trim().isEmpty() ? "0" : txtPreco.getText());
+        final boolean anyMatch = DAOFactory.daoFactory().artigoDAO().findAll().stream().anyMatch(a -> a.getId() == idArtigo);
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().artigoDAO().findAll().contains(idArtigo)) {
+        } else if (anyMatch) {
             Nota.alerta("Artigo ja Cadastrado!");
         } else {
             Artigo artigo = new Artigo(idArtigo, nome, preco, descricao);
 
             if (idArtigo == 0) {
-                DAOFactory.daoFactury().artigoDAO().create(artigo);
+                DAOFactory.daoFactory().artigoDAO().create(artigo);
                 Mensagem.info("Artigo cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().artigoDAO().update(artigo);
+                DAOFactory.daoFactory().artigoDAO().update(artigo);
                 Mensagem.info("Artigo atualizada com sucesso!");
             }
 
@@ -207,7 +208,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     private void removeObject(Artigo artigo) {
         Dialogo.Resposta response = Mensagem.confirmar("Excluir Artigo:: " + artigo.getNome() + " ?");
         if (response == Dialogo.Resposta.YES) {
-            DAOFactory.daoFactury().artigoDAO().delete((int) artigo.getId());
+            DAOFactory.daoFactory().artigoDAO().delete((int) artigo.getId());
             sincronizarBase();
             tabela();
         }
@@ -228,7 +229,7 @@ public class ArtigoController extends AnchorPane implements Initializable {
     }
 
     private void sincronizarBase() {
-        listaArtigo = DAOFactory.daoFactury().artigoDAO().findAll();
+        listaArtigo = DAOFactory.daoFactory().artigoDAO().findAll();
     }
 
     private void configTela(String tituloTela, String msg, int grupoMenu) {

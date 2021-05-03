@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,60 +34,60 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
         final StringBuilder query = new StringBuilder();
         query.append("INSERT INTO ").append(db).append(".`tb_instrutor` (`nome`, `admissao`, `email`, `telefone`, `movel`, `foto`, `pai`, `mae`, `grauAcademico`, `tipoSanguineo`, `morada`, `cidadeIlha`, `numeroDeIndentificacao`, `naturalidade`, `nacionalidade`, `nascimento`, `cartaConducao`, `banco`, `agencia`,`numDeConta`, `obsercacao`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
 
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            preparedStatement = conn.prepareStatement(query.toString());
-
-            mapToSave(instrutor);
-
-            preparedStatement.executeUpdate();
-            conn.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-    }
-
-    private void mapToSave(Instrutor instrutor) throws SQLException {
-        preparedStatement.setString(1, instrutor.getNome());
-        preparedStatement.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
-        preparedStatement.setString(3, instrutor.getEmail());
-        preparedStatement.setString(4, instrutor.getContactoTelefonico());
-        preparedStatement.setString(5, instrutor.getContactoMovel());
-        preparedStatement.setString(6, instrutor.getFoto());
-        preparedStatement.setString(7, instrutor.getNomeDoPai());
-        preparedStatement.setString(8, instrutor.getNomeDaMae());
-        preparedStatement.setString(9, instrutor.getGrauAcademico());
-        preparedStatement.setString(10, instrutor.getTipoSanguineo());
-        preparedStatement.setString(11, instrutor.getMorada());
-        preparedStatement.setString(12, instrutor.getCidadeIlha());
-        preparedStatement.setString(13, instrutor.getNumeroDeIndentificacao());
-        preparedStatement.setString(14, instrutor.getNaturalidade());
-        preparedStatement.setString(15, instrutor.getNacionalidade());
-        preparedStatement.setTimestamp(16, Tempo.toTimestamp(instrutor.getNascimento()));
-        preparedStatement.setString(17, instrutor.getCartaConducao());
-        preparedStatement.setString(18, instrutor.getBanco());
-        preparedStatement.setString(19, instrutor.getAgencia());
-        preparedStatement.setString(20, instrutor.getNumDeConta());
-        preparedStatement.setString(21, instrutor.getObservacao());
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    query.toString()
+            )) {
+                mapToSave(pstmt, instrutor);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
     }
 
     @Override
     public void update(Instrutor instrutor) {
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("UPDATE ").append(db).append(".`tb_instrutor` SET `nome` = ?, `admissao` = ?, `email` = ?, `telefone` = ?, `movel` = ?, `foto` = ?, `pai` = ?, `mae` = ?, `grauAcademico` = ?, `tipoSanguineo` = ?, `morada` = ?, `cidadeIlha` = ?, `numeroDeIndentificacao` = ?, `naturalidade` = ?, `nacionalidade` = ?, `nascimento` = ?, `cartaConducao` = ?, `banco` = ?, `agencia` = ?, `numDeConta` = ?, `obsercacao` = ? WHERE `id` = ?;");
+        final StringBuilder updateQuery = new StringBuilder();
+        updateQuery.append("UPDATE ").append(db).append(".`tb_instrutor` SET `nome` = ?, `admissao` = ?, `email` = ?, `telefone` = ?, `movel` = ?, `foto` = ?, `pai` = ?, `mae` = ?, `grauAcademico` = ?, `tipoSanguineo` = ?, `morada` = ?, `cidadeIlha` = ?, `numeroDeIndentificacao` = ?, `naturalidade` = ?, `nacionalidade` = ?, `nascimento` = ?, `cartaConducao` = ?, `banco` = ?, `agencia` = ?, `numDeConta` = ?, `obsercacao` = ? WHERE `id` = ?;");
 
-            preparedStatement = conn.prepareStatement(query.toString());
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    updateQuery.toString()
+            )) {
+                mapToSave(pstmt, instrutor);
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
+    }
 
-            mapToSave(instrutor);
+    private void mapToSave(final PreparedStatement pstmt, Instrutor instrutor) throws SQLException {
+        pstmt.setString(1, instrutor.getNome());
+        pstmt.setTimestamp(2, Tempo.toTimestamp(instrutor.getAdmissao()));
+        pstmt.setString(3, instrutor.getEmail());
+        pstmt.setString(4, instrutor.getContactoTelefonico());
+        pstmt.setString(5, instrutor.getContactoMovel());
+        pstmt.setString(6, instrutor.getFoto());
+        pstmt.setString(7, instrutor.getNomeDoPai());
+        pstmt.setString(8, instrutor.getNomeDaMae());
+        pstmt.setString(9, instrutor.getGrauAcademico());
+        pstmt.setString(10, instrutor.getTipoSanguineo());
+        pstmt.setString(11, instrutor.getMorada());
+        pstmt.setString(12, instrutor.getCidadeIlha());
+        pstmt.setString(13, instrutor.getNumeroDeIndentificacao());
+        pstmt.setString(14, instrutor.getNaturalidade());
+        pstmt.setString(15, instrutor.getNacionalidade());
+        pstmt.setTimestamp(16, Tempo.toTimestamp(instrutor.getNascimento()));
+        pstmt.setString(17, instrutor.getCartaConducao());
+        pstmt.setString(18, instrutor.getBanco());
+        pstmt.setString(19, instrutor.getAgencia());
+        pstmt.setString(20, instrutor.getNumDeConta());
+        pstmt.setString(21, instrutor.getObservacao());
 
-            preparedStatement.setLong(22, instrutor.getId());
-            preparedStatement.executeUpdate();
-            conn.commit();
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+        if (instrutor.getId() != 0) {
+            pstmt.setLong(22, instrutor.getId());
         }
+        pstmt.executeUpdate();
     }
 
     @Override
@@ -100,7 +101,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
     public List<Instrutor> findAll() {
         List<Instrutor> instrutores = new ArrayList<>();
         ImageView img;
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection conn = HikariCPDataSource.getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_instrutor");
             preparedStatement = conn.prepareStatement(query.toString());
@@ -146,7 +147,7 @@ public class InstrutorDAOImpl extends DAO implements InstrutorDAO {
         final StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".tb_instrutor WHERE id=?");
         Instrutor retorno = new Instrutor();
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection conn = HikariCPDataSource.getConnection()) {
             preparedStatement = conn.prepareStatement(query.toString());
             preparedStatement.setLong(1, instrutor.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

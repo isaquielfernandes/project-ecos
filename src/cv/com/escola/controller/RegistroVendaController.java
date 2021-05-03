@@ -20,7 +20,6 @@ import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
 import cv.com.escola.model.util.Tempo;
-import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
 import static cv.com.escola.model.util.Mes.retornaNomeMes;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -101,15 +100,14 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private List<Venda> listVendas;
     private List<Item> listaDeItem;
     private List<Artigo> listaProduto;
-    private Item item;
+
     private List<Cliente> listaCliente;
     private int idVenda;
-    
     private int idItemVenda = 0;
-    private int idItens;
+    private int idItem;
     private int quantity = 0;
     private int cod;
-    private static final int QUANTIDADE_PAGINA = 50;
+    private static final int QUANTIDADE_PAGINA = 45;
 
     @FXML
     private AnchorPane anchorPane;
@@ -264,7 +262,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private TextField pesquisarProduto;
 
     private ObservableList<String> observableListMeses = FXCollections.observableArrayList();
-    private ObservableList<Item> dadosItemVenda = FXCollections.observableArrayList();
+    private ObservableList<Item> itensVenda = FXCollections.observableArrayList();
     private String ano;
     private double initX;
     private double initY;
@@ -283,7 +281,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         tabela();
         viewAll();
         tabelaItemsVenda();
-        item = new Item();
 
         Tempo.blockDataAnterior(LocalDate.now().minusYears(7), dtRelatorio);
         dtRelatorio.setValue(LocalDate.now());
@@ -320,7 +317,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         });
 
         cbArtigo.setOnMouseClicked(event -> {
-            ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
+            ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactory().artigoDAO().findAll());
             cbArtigo.setItems(dadoArtigo);
         });
         // Limpa os detalhes do artigo.
@@ -345,7 +342,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colNomeArtigo.setOnEditCommit((TableColumn.CellEditEvent<Item, Artigo> event)
                 -> event.getTableView().getItems().get(event.getTablePosition().getRow()).setArtigo(event.getNewValue())
         );
-        
+
         inserir(txtQuantia);
         realizarVenda(txtDesconto);
 
@@ -404,6 +401,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             return tbVendas;
         });
 
+        atualizarGrade(0);
     }
 
     private void columnStatusCellFactory() {
@@ -435,23 +433,22 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private void comboBoxCliente() {
         cbCliente.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showClienteSelected(newValue));
-        
+
         cbCliente.setOnMouseClicked(event -> {
-            ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
+            ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactory().clienteDAO().findAll());
             cbCliente.setItems(dadoCliente);
         });
     }
 
     private void listViewProdutoCellFactory() {
-        listViewProduto.setCellFactory((ListView<Artigo> param) -> new ListCell() {
+        listViewProduto.setCellFactory(param -> new ListCell<Artigo>() {
             @Override
-            protected void updateItem(Object item, boolean empty) {
+            protected void updateItem(Artigo artigo, boolean empty) {
                 setText(null);
                 setGraphic(null);
-                super.updateItem(item, empty);
-                Artigo artigo = (Artigo) item;
-                if (artigo  != null) {
-                    setText("N: " + artigo .getNome() + "\n" + "P: " + artigo .getPreco() + " $00");
+                super.updateItem(artigo, empty);
+                if (artigo != null) {
+                    setText("Nome: " + artigo.getNome() + "\n" + "Peço: " + artigo.getPreco() + " $00");
                     setMaxSize(48, 48);
                 }
             }
@@ -472,23 +469,23 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 }
             }
         });
-        
+
         colQuantidade.setCellFactory(
                 TextFieldTableCell.forTableColumn(new StringConverter<Integer>() {
                     @Override
                     public String toString(Integer object) {
                         return object.toString();
                     }
-                    
+
                     @Override
                     public Integer fromString(String string) {
                         return Integer.valueOf(string);
                     }
                 })
         );
-        
-        colQuantidade.setOnEditCommit((TableColumn.CellEditEvent<Item, Integer> event) -> 
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setQuantidade(event.getNewValue())
+
+        colQuantidade.setOnEditCommit((TableColumn.CellEditEvent<Item, Integer> event)
+                -> event.getTableView().getItems().get(event.getTablePosition().getRow()).setQuantidade(event.getNewValue())
         );
     }
 
@@ -536,15 +533,16 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //paginação da tabela venda
     private void atualizarGrade(int pagina) {
-        int totalDeVendas;totalDeVendas = DAOFactory.daoFactury().orderDAO().count();
-        pagination.setPageCount(totalDeVendas/ QUANTIDADE_PAGINA);
-        ObservableList observableListDeVenda = DAOFactory.daoFactury().orderDAO().listar(QUANTIDADE_PAGINA, pagina);
+        int totalDeVendas;
+        totalDeVendas = DAOFactory.daoFactory().orderDAO().count();
+        pagination.setPageCount(totalDeVendas / QUANTIDADE_PAGINA);
+        ObservableList observableListDeVenda = DAOFactory.daoFactory().orderDAO().listar(QUANTIDADE_PAGINA, pagina);
         tbVendas.setItems(observableListDeVenda);
     }
 
     //Grafico de Bara (BarChart)
     protected void barChart() {
-        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactory().orderDAO().listarQuantidadeVendaPorMes();
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -563,7 +561,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //Grafico de Bara (StackedBarChart)
     protected void stackedBarChart() {
-        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactory().orderDAO().listarValorTotalVendaPorMes();
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -583,7 +581,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     //Grafico de area (AreaChart)
     protected void areaChart() {
         //AreaChart pra vendas por mes
-        Map<Integer, ArrayList<Number>> area = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorMes();
+        Map<Integer, ArrayList<Number>> area = DAOFactory.daoFactory().orderDAO().listarQuantidadeVendaPorMes();
         area.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -602,7 +600,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     //Creando PieChart
     protected void createPieChart() {
         ano = String.valueOf(dtRelatorio.getValue().getYear());
-        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes(ano);
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactory().orderDAO().listarValorTotalVendaPorMes(ano);
         dados.entrySet().stream().map(dadosItem -> {
             ObservableList<PieChart.Data> pieChartObser = FXCollections.observableArrayList();
             for (int i = 0; i < dadosItem.getValue().size(); i = i + 2) {
@@ -611,13 +609,13 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             }
             return pieChartObser;
         }).forEachOrdered(pieChartObser -> pieChart.setData(pieChartObser));
-        double value = DAOFactory.daoFactury().orderDAO().totalAnual(ano).doubleValue();
+        double value = DAOFactory.daoFactory().orderDAO().totalAnual(ano).doubleValue();
         GraficoPie.info(pieChart, value);
     }
 
     //Grafico de Bara (StackedAreaChart)
     protected void stackedAreaChart() {
-        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarValorTotalVendaPorMes();
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactory().orderDAO().listarValorTotalVendaPorMes();
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<Number, BigDecimal> series = new XYChart.Series<>();
             series.setName(dadosItem.getKey().toString());
@@ -638,7 +636,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         String anoAgora = String.valueOf(dataAgora.getYear());
         lineChartDia.getData().clear();
 
-        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactury().orderDAO().listarQuantidadeVendaPorDia(mes, anoAgora);
+        Map<Integer, ArrayList<Number>> dados = DAOFactory.daoFactory().orderDAO().listarQuantidadeVendaPorDia(mes, anoAgora);
 
         dados.entrySet().stream().map(dadosItem -> {
             XYChart.Series<String, Integer> series = new XYChart.Series<>();
@@ -668,7 +666,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         tbItens.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
 
-        this.idItens = 0;
+        this.idItem = 0;
         this.idVenda = 0;
     }
 
@@ -678,8 +676,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private void combos() {
         cbArtigo.setPromptText("- Selecione um Artigo -");
         cbCliente.setPromptText("- Selecione um Cliente -");
-        listaCliente = DAOFactory.daoFactury().clienteDAO().findAll();
-        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactury().artigoDAO().findAll());
+        listaCliente = DAOFactory.daoFactory().clienteDAO().findAll();
+        ObservableList dadoArtigo = FXCollections.observableArrayList(DAOFactory.daoFactory().artigoDAO().findAll());
         ObservableList dadoCliente = FXCollections.observableArrayList(listaCliente);
         cbArtigo.setItems(dadoArtigo);
         cbCliente.setItems(dadoCliente);
@@ -694,10 +692,10 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         }
     }
 
-    public void selecionarItemTableViewItens(Item iten) {
+    public void selecionarItemTableViewItens(Item item) {
         if (item != null) {
-            txtQuantia.setText(iten.getQuantidade().toString());
-            cbArtigo.setValue(iten.getArtigo());
+            txtQuantia.setText(item.getQuantidade().toString());
+            cbArtigo.setValue(item.getArtigo());
         } else {
             txtQuantia.setText(null);
             cbArtigo.setValue(null);
@@ -732,11 +730,11 @@ public class RegistroVendaController extends AnchorPane implements Initializable
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listVendas = DAOFactory.daoFactury().orderDAO().findAll();
-        listaDeItem = DAOFactory.daoFactury().itemDAO().findAll();
-        listaCliente = DAOFactory.daoFactury().clienteDAO().findAll();
-        listaProduto = DAOFactory.daoFactury().artigoDAO().findAll();
-        cod = DAOFactory.daoFactury().orderDAO().ultimoRegisto(LocalDate.now().getYear());
+        listVendas = DAOFactory.daoFactory().orderDAO().findAll();
+        listaDeItem = DAOFactory.daoFactory().itemDAO().findAll();
+        listaCliente = DAOFactory.daoFactory().clienteDAO().findAll();
+        listaProduto = DAOFactory.daoFactory().artigoDAO().findAll();
+        cod = DAOFactory.daoFactory().orderDAO().ultimoRegisto(LocalDate.now().getYear());
     }
 
     // Função para inserir item na tabela quando click em enter
@@ -765,7 +763,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     public boolean isNotNull() {
         boolean isNotNull = false;
         if (txtPrecoDeVenda.getText().trim().isEmpty() || txtQuantia.getText().trim().matches("")) {
-            Nota.erro("Por favor, Selecione um artigo...");
+            Nota.alerta("Por favor, a quantidade nao pode ser vazio...");
             return isNotNull;
         } else {
             isNotNull = true;
@@ -896,7 +894,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Recibo/Fatura n°:: " + vendas.getNumFatura() + "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().orderDAO().reportReciboFatura(vendas.getIdVenda());
+                DAOFactory.daoFactory().orderDAO().reportReciboFatura(vendas.getIdVenda());
             }
             tbVendas.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
@@ -926,6 +924,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         configTela("Excluir Venda", "Quantidade de vendas encontrados", 2);
         Modulo.visualizacao(true, telaEdicao, btExcluir, txtPesquisar, dataPickerAnoMes, btRecibo);
         tabela();
+        atualizarGrade(0);
         gerarNumRecibo();
     }
 
@@ -993,8 +992,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir venda " + vendas.getNumFatura() + "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().itemDAO().delete(vendas.getIdVenda());
-                DAOFactory.daoFactury().orderDAO().delete(vendas.getIdVenda());
+                DAOFactory.daoFactory().itemDAO().delete(vendas.getIdVenda());
+                DAOFactory.daoFactory().orderDAO().delete(vendas.getIdVenda());
                 sincronizarBase();
                 tabela();
                 gerarNumRecibo();
@@ -1002,16 +1001,15 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             }
             tbVendas.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
-            Mensagem.alerta("Selecione venda na tabela para exclusão!");
+            Nota.alerta("Selecione venda na tabela para exclusão!");
         }
     }
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean vazio = Campo.noEmpty(txtUser);
-        boolean emptyFields = checkEmptyFields(cbCliente, cbFormaPag);
+        boolean textIsEmpty = Campo.noEmpty(txtUser);
+        boolean comboIsEmpty = Campo.noEmpty(cbCliente, cbFormaPag);
         try {
-
             Usuario user = new Usuario();
             user.setId(LoginController.getUsuarioLogado().getId());
             String numRecibo = labelNumRecibo.getText();
@@ -1022,40 +1020,29 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             BigDecimal valorSubTotal = new BigDecimal(txtValorSubTotal.getText().trim().isEmpty() ? "0.00" : txtValorSubTotal.getText());
             BigDecimal descontos = new BigDecimal(txtDesconto.getText().trim().isEmpty() ? "0.00" : txtDesconto.getText());
             BigDecimal total = new BigDecimal(txtValorTotal.getText().trim().isEmpty() ? valorSubTotal.toString() : txtValorTotal.getText());
-
-            if (vazio) {
+            
+            if (textIsEmpty && comboIsEmpty) {
                 Nota.alerta("Preencher campos vazios!");
             } else {
-                if (emptyFields && validarDados()) {
-                    Venda vendas = new Venda(idVenda, dataVendas, valorSubTotal, descontos, pago, cliente, user, formaDePagamento, numRecibo, total);
+                if (validarDados()) {
+                    Venda venda = new Venda(idVenda, dataVendas, valorSubTotal, descontos, pago, cliente, user, formaDePagamento, numRecibo, total);
+                    venda.setItens(itensVenda);
+                    
                     if (idVenda == 0) {
-                        DAOFactory.daoFactury().orderDAO().create(vendas);
-
-                        Item items = new Item();
-                        int indexs = tbItens.getItems().size();
-                        for (int i = 0; i < indexs; i++) {
-                            tbItens.getSelectionModel().select(i);
-                            items.setIdItem((long) idItemVenda);
-                            items.setQuantidade(tbItens.getSelectionModel().getSelectedItem().getQuantidade());
-                            items.setValorUnitario(tbItens.getSelectionModel().getSelectedItem().getValorUnitario());
-                            items.setArtigo(tbItens.getSelectionModel().getSelectedItem().getArtigo());
-                            items.setVenda(DAOFactory.daoFactury().orderDAO().buscarUltimaVenda());
-                            DAOFactory.daoFactury().itemDAO().create(items);
-                        }
+                        DAOFactory.daoFactory().orderDAO().create(venda);
                         Mensagem.info("Registro de pagamento feito com sucesso!");
                     } else {
-                        DAOFactory.daoFactury().orderDAO().update(vendas);
+                        DAOFactory.daoFactory().orderDAO().update(venda);
                         Mensagem.info("Registro de pagamento foi atulizado com sucesso!");
                     }
                     telaCadastro(null);
                     sincronizarBase();
                     gerarNumRecibo();
-                    DAOFactory.daoFactury().orderDAO().reportReciboFatura(
-                            DAOFactory.daoFactury().orderDAO().buscarUltimaVenda().getIdVenda());
+                    DAOFactory.daoFactory().orderDAO().reportReciboFatura(DAOFactory.daoFactory().orderDAO().buscarUltimaVenda().getIdVenda());
                 }
             }
         } catch (NumberFormatException ex) {
-            Nota.erro("Erro:\nErro de formatação de campo numerico\n");
+            Nota.erro("Erro de formatação de campo numerico\n");
         }
     }
 
@@ -1075,7 +1062,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     @FXML
     private void onMouseClickedRemoverItem(MouseEvent event) {
-        removerItem(item, tbItens);
+        removerItem(null, tbItens);
     }
 
     // funcao para remover item da tabela items
@@ -1089,7 +1076,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 sumTotalCost();
             }
         } catch (NullPointerException ex) {
-            Mensagem.alerta("Selecione item na tabela para exclusão!\n");
+            Nota.alerta("Selecione item na tabela para exclusão!\n");
         }
     }
 
@@ -1142,7 +1129,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Cliente cliente = new Cliente();
             boolean buttonConfirmarClicked = showCadastrosClientesDialog(cliente);
             if (buttonConfirmarClicked) {
-                DAOFactory.daoFactury().clienteDAO().create(cliente);
+                DAOFactory.daoFactory().clienteDAO().create(cliente);
                 sincronizarBase();
             }
         } catch (IOException ex) {
@@ -1164,7 +1151,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 Venda vendaId = new Venda();
                 vendaId.getIdVenda();
 
-                item = new Item(idItemVenda, artigoList, quantia, valor, vendaId);
+                Item item = new Item(idItemVenda, artigoList, quantia, valor, vendaId);
                 int items = tbItens.getItems().size();
 
                 boolean findByArtigo = tbItens.getItems().stream()
@@ -1172,15 +1159,15 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                         .findFirst()
                         .isPresent();
                 if (!findByArtigo) {
-                    dadosItemVenda.add(item);
-                    tbItens.setItems(dadosItemVenda);
+                    itensVenda.add(item);
+                    tbItens.setItems(itensVenda);
                 } else {
                     for (int i = 0; i < items; i++) {
                         tbItens.getSelectionModel().select(i);
                         String selectedItem = tbItens.getSelectionModel().getSelectedItem().getArtigo().toString();
                         if (item.getArtigo().toString().equals(selectedItem)) {
-                            dadosItemVenda.set(i, item);
-                            tbItens.setItems(dadosItemVenda);
+                            itensVenda.set(i, item);
+                            tbItens.setItems(itensVenda);
                             break;
                         }
                     }
@@ -1196,7 +1183,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
             }
         } catch (NullPointerException ex) {
-            Mensagem.alerta("Campo nao pode ser nulo");
+            Nota.alerta("Campo nao pode ser nulo");
         }
     }
 
@@ -1264,23 +1251,23 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         editor.setHgap(10);
         editor.setVgap(5);
 
-        item = p.getValue();
+        Item item = p.getValue();
 
-        TextField quantiadade = new TextField();
-        quantiadade.setPrefSize(120, 30);
+        TextField quantidade = new TextField();
+        quantidade.setPrefSize(120, 30);
 
         ComboBox<Artigo> artigo = new ComboBox();
-        artigo.setItems((ObservableList<Artigo>) DAOFactory.daoFactury().artigoDAO().findAll());
+        artigo.setItems((ObservableList<Artigo>) DAOFactory.daoFactory().artigoDAO().findAll());
 
         artigo.setPrefSize(200, 30);
         artigo.setValue(item.getArtigo());
 
-        quantiadade.setOnKeyReleased(event -> {
-            txtQuantia.setText(quantiadade.getText());
+        quantidade.setOnKeyReleased(event -> {
+            txtQuantia.setText(quantidade.getText());
             onKeyReleasedQuantia(event);
         });
 
-        editor.addRow(0, new Label("Quantia"), quantiadade);
+        editor.addRow(0, new Label("Quantia"), quantidade);
         editor.addRow(1, new Label("Artigo"), artigo);
 
         Button adcionar = new Button("Adcionar");
@@ -1289,7 +1276,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             item.setArtigo(artigo.getValue());
             onMouseClickedAdcionarItem(null);
             sumTotalCost();
-            quantiadade.clear();
+            quantidade.clear();
             artigo.setValue(null);
             txtQuantia.clear();
             p.toggleExpanded();
@@ -1304,7 +1291,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     public void clienteSelecionadoDialog() {
         Group rootGroup = new Group();
-        Scene scene = new Scene(rootGroup, 520, 420, Color.GOLD);
+        Scene scene = new Scene(rootGroup, 520, 420, Color.GRAY);
 
         // Criando um Estágio de Diálogo (Stage Dialog)
         Stage stage = new Stage();
@@ -1317,22 +1304,20 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         stage.setScene(scene);
 
         listCliente = new ListView();
-        ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactury().clienteDAO().findAll());
+        ObservableList dadoCliente = FXCollections.observableArrayList(DAOFactory.daoFactory().clienteDAO().findAll());
         listCliente.setItems(dadoCliente);
 
-        listCliente.setCellFactory((ListView<Cliente> param) -> new ListCell() {
+        listCliente.setCellFactory(param -> new ListCell<Cliente>() {
             @Override
-            protected void updateItem(Object item, boolean empty) {
+            protected void updateItem(Cliente item, boolean empty) {
                 setText(null);
                 setGraphic(null);
                 super.updateItem(item, empty);
-                Cliente cliente = (Cliente) item;
                 if (item != null) {
-                    setText(cliente.getNomeCliente() + "\n" + cliente.getNif());
+                    setText(item.getNomeCliente() + "\n" + item.getNif());
                 }
             }
-        }
-        );
+        });
 
         listCliente.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> clienteSelectedListView(newValue));
@@ -1414,8 +1399,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                         tbItens.getSelectionModel().clearSelection();
                         sumTotalCost();
                     }
-                }
-                );
+                });
             }
         }
     };
@@ -1461,8 +1445,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         return listaDeItem;
     }
 
-    public int getIdItens() {
-        return idItens;
+    public int getIdItem() {
+        return idItem;
     }
 
     public List<Venda> getListVendas() {
@@ -1476,5 +1460,5 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     public List<Artigo> getListaProduto() {
         return listaProduto;
     }
-    
+
 }

@@ -143,12 +143,12 @@
             </Pane>
           <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="306.0" style="-fx-border-color: gray; -fx-background-radius: 7; -fx-border-radius: 7;" GridPane.columnSpan="2" GridPane.rowIndex="2">
                <children>
-                  <HBox fx:id="root" alignment="CENTER" prefHeight="297.0" prefWidth="521.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <HBox fx:id="root" alignment="CENTER" prefHeight="221.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="308.0" style="-fx-border-color: gray; -fx-background-radius: 7; -fx-border-radius: 7;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
                <children>
-                  <HBox fx:id="rootBar" alignment="CENTER" prefHeight="297.0" prefWidth="521.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <HBox fx:id="rootBar" alignment="CENTER" prefHeight="221.0" prefWidth="575.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <Pane minWidth="200.0" prefHeight="128.0" prefWidth="250.0" style="-fx-background-color: white; -fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0,1.5);" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">

@@ -56,7 +56,7 @@ public class DashVendaController extends AnchorPane implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         String ano = String.valueOf(LocalDate.now().getYear());
-        lbVendasNoAno.setText(DAOFactory.daoFactury().orderDAO().totalAnual(ano) + "$00");
+        lbVendasNoAno.setText(DAOFactory.daoFactory().orderDAO().totalAnual(ano) + "$00");
     }
 
     @SuppressWarnings({"LeakingThisInConstructor", "CallToPrintStackTrace"})

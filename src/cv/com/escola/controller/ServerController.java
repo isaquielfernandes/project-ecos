@@ -97,7 +97,7 @@ public class ServerController implements Initializable {
 
         Dialogo.Resposta resInsert = Mensagem.confirmar("Criar usuario admin");
         if (resInsert == Dialogo.Resposta.YES) {
-            DAOFactory.daoFactury().usuarioDAO().createUserAdminAndUserType();
+            DAOFactory.daoFactory().usuarioDAO().createUserAdminAndUserType();
         }
 
     }

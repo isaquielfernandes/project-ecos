@@ -50,10 +50,10 @@ public class LoginController implements Initializable {
     public void logar(ActionEvent event) {
         String login = txtUsuario.getText();
         String senha = psSenha.getText();
-        if (DAOFactory.daoFactury().loginDAO().autenticarUsername(login)) {
-            if (DAOFactory.daoFactury().loginDAO().autenticarSenha(login, senha)) {
-                setUsuarioLogado(DAOFactory.daoFactury().loginDAO().usuarioLogado(login));
-                if (DAOFactory.daoFactury().empresaDAO().total() == 0) {
+        if (DAOFactory.daoFactory().loginDAO().autenticarUsername(login)) {
+            if (DAOFactory.daoFactory().loginDAO().autenticarSenha(login, senha)) {
+                setUsuarioLogado(DAOFactory.daoFactory().loginDAO().usuarioLogado(login));
+                if (DAOFactory.daoFactory().empresaDAO().total() == 0) {
                     new Configuracao().start(new Stage());
                     Login.getPalco().close();
                 } else {
@@ -97,8 +97,8 @@ public class LoginController implements Initializable {
     }
     
     public void createTypeUser() {
-        if (DAOFactory.daoFactury().usuarioDAO().totalTipoUsuario() == 0) {
-            DAOFactory.daoFactury().usuarioDAO().createUserAdminAndUserType();
+        if (DAOFactory.daoFactory().usuarioDAO().totalTipoUsuario() == 0) {
+            DAOFactory.daoFactory().usuarioDAO().createUserAdminAndUserType();
             LOGGER.info(" Tipo de User criado com sucesso!");
         }
     }

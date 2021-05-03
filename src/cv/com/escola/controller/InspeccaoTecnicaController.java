@@ -178,13 +178,13 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
                 InspecaoTecnica inspecao = new InspecaoTecnica(idInspecaoTecnica, tipoInspecao, resultado, dataInspecao, veiculo, duracao, validade.toString());
 
                 if (idInspecaoTecnica == 0) {
-                    if (DAOFactory.daoFactury().inspecaoTecnicaDAO().findAll().contains(inspecao)) {
+                    if (DAOFactory.daoFactory().inspecaoTecnicaDAO().findAll().contains(inspecao)) {
                         Nota.alerta("Veiculo já cadastrada!");
                     } else {
-                        DAOFactory.daoFactury().inspecaoTecnicaDAO().create(inspecao);
+                        DAOFactory.daoFactory().inspecaoTecnicaDAO().create(inspecao);
                     }
                 } else {
-                    DAOFactory.daoFactury().inspecaoTecnicaDAO().update(inspecao);
+                    DAOFactory.daoFactory().inspecaoTecnicaDAO().update(inspecao);
                 }
 
                 telaCadastro(null);
@@ -227,7 +227,7 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
             Dialogo.Resposta resposta = Mensagem.confirmar("Excluir Inspecao Tecnica : Veiculo -> " + veiculo.getVeiculo().getPlaca() + " Dia :" + veiculo.getDataDeInspeccao());
 
             if (resposta == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().inspecaoTecnicaDAO().delete(veiculo.getId());
+                DAOFactory.daoFactory().inspecaoTecnicaDAO().delete(veiculo.getId());
                 sincronizaBase();
                 tabela();
             }
@@ -256,8 +256,8 @@ public class InspeccaoTecnicaController extends AnchorPane implements Initializa
     }
 
     public void sincronizaBase() {
-        listaInspecaoTecnicao = DAOFactory.daoFactury().inspecaoTecnicaDAO().findAll();
-        listaVeiculo = DAOFactory.daoFactury().veiculoDAO().findAll();
+        listaInspecaoTecnicao = DAOFactory.daoFactory().inspecaoTecnicaDAO().findAll();
+        listaVeiculo = DAOFactory.daoFactory().veiculoDAO().findAll();
     }
 
     /**

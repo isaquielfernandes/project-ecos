@@ -179,14 +179,13 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setInstance(this);
+        AppController.setInstance(this);
         desativarSubmenus();
         Grupo.notEmpty(grupoMenus, grupoRegistro, grupoRelatorio,
                 grupoUtilidades, grupoExame, grupoProcesso);
         menuDashboard(null);
         lbUser.setText(LoginController.getUsuarioLogado().getNome().toUpperCase());
         notificacoes();
-        aniversarioNoMes();
     }
 
     public static void setInstance(AppController instance) {
@@ -509,8 +508,8 @@ public class AppController implements Initializable {
         }
     }
 
-    private void aniversarioNoMes() {
-        List<Aluno> listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
+    public void aniversarioNoMes() {
+        List<Aluno> listaAluno = DAOFactory.daoFactory().alunoDAO().findAll();
         listaAluno.forEach(aluno -> {
             if (aluno.getDataNascimento().getMonthValue() == LocalDate.now().getMonthValue()) {
                 Nota.alertaAniversario("Nome: " + aluno.getNome() + "\nNascido em: " + aluno.getDataNascimento());
@@ -521,8 +520,8 @@ public class AppController implements Initializable {
     }
 
     public void alertaAuto() {
-        List<Seguro> listaSeguroAuto = DAOFactory.daoFactury().seguroAutoDAO().findAll();
-        List<InspecaoTecnica> listaInspecaoTecnicao = DAOFactory.daoFactury().inspecaoTecnicaDAO().findAll();
+        List<Seguro> listaSeguroAuto = DAOFactory.daoFactory().seguroAutoDAO().findAll();
+        List<InspecaoTecnica> listaInspecaoTecnicao = DAOFactory.daoFactory().inspecaoTecnicaDAO().findAll();
 
         listaSeguroAuto.parallelStream()
                 .forEach(seguro -> {

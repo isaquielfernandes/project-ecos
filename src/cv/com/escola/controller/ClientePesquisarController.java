@@ -59,7 +59,7 @@ public class ClientePesquisarController implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaCliente = DAOFactory.daoFactury().clienteDAO().findAll();
+        listaCliente = DAOFactory.daoFactory().clienteDAO().findAll();
     }
 
     /**

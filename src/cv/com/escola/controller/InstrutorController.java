@@ -240,7 +240,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listInstrutor = DAOFactory.daoFactury().instrutorDAO().findAll();
+        listInstrutor = DAOFactory.daoFactory().instrutorDAO().findAll();
     }
 
     /**
@@ -386,10 +386,10 @@ public class InstrutorController extends AnchorPane implements Initializable {
                     contaCorenta, observacao);
 
             if (idInstrutor == 0) {
-                DAOFactory.daoFactury().instrutorDAO().create(instrutor);
+                DAOFactory.daoFactory().instrutorDAO().create(instrutor);
                 listView();
             } else {
-                DAOFactory.daoFactury().instrutorDAO().update(instrutor);
+                DAOFactory.daoFactory().instrutorDAO().update(instrutor);
                 listView();
             }
 
@@ -451,7 +451,7 @@ public class InstrutorController extends AnchorPane implements Initializable {
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Instrutor " + instrutor.getNome() + " ?");
 
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().instrutorDAO().delete(instrutor.getId());
+                DAOFactory.daoFactory().instrutorDAO().delete(instrutor.getId());
                 File diretorios = new File("public/img/instrutor/" + sep + instrutor.getFoto());
                 if (diretorios.exists()) {
                     Files.delete(diretorios.toPath());

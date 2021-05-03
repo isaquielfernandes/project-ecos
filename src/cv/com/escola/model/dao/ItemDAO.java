@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ItemDAO extends CrudDAO<Item, Integer>{
 
-    List<Item> listarItensPorVenda(Venda venda);
+    public void create(List<Item> items);
+    
+    public List<Item> listarItensPorVenda(Venda venda);
     
 }

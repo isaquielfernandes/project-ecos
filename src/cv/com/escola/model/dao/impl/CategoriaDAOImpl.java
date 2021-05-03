@@ -34,6 +34,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
         StringBuilder query = new StringBuilder();
         query.append("INSERT INTO ").append(db)
                 .append(".tb_categoria ( categoria, descricao) VALUES (?, ?)");
+        
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
                     query.toString()
@@ -77,7 +78,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
     @Override
     public List<Categoria> findAll() {
         List<Categoria> categorias = new ArrayList<>();
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection connection = HikariCPDataSource.getConnection()) {
             StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_categoria");
             preparedStatement = connection.prepareStatement(query.toString());
@@ -95,7 +96,7 @@ public class CategoriaDAOImpl extends DAO implements CategoriaDAO {
 
     @Override
     public void report() {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection connection = HikariCPDataSource.getConnection()) {
             URL url = getClass().getResource("/cv/com/escola/reports/Categoria.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, connection);

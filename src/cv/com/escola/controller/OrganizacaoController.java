@@ -151,10 +151,10 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
             Organizacao orgao = new Organizacao(idOrganizacao, nome, sigla, email, fax, telefone, logradouro, bairro, cidade, estado, pais, descricao, null);
 
             if (idOrganizacao == 0) {
-                DAOFactory.daoFactury().organizacaoDAO().create(orgao);
+                DAOFactory.daoFactory().organizacaoDAO().create(orgao);
                 Mensagem.info("Organização cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().organizacaoDAO().update(orgao);
+                DAOFactory.daoFactory().organizacaoDAO().update(orgao);
                 Mensagem.info("Organização atualizada com sucesso!");
             }
 
@@ -199,7 +199,7 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
             Organizacao orgao = tbOrganizacao.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir organização " + orgao.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().organizacaoDAO().delete(orgao.getId());
+                DAOFactory.daoFactory().organizacaoDAO().delete(orgao.getId());
                 sincronizarBase();
                 tabela();
             }
@@ -239,7 +239,7 @@ public class OrganizacaoController extends AnchorPane implements Initializable{
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaOrganizacao = DAOFactory.daoFactury().organizacaoDAO().findAll();
+        listaOrganizacao = DAOFactory.daoFactory().organizacaoDAO().findAll();
     }
 
     /**

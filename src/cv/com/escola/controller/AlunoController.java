@@ -54,7 +54,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -69,7 +68,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 
-public class AlunoController extends AnchorPane implements Initializable {
+public class AlunoController extends HeroActions implements Initializable {
 
     private static final String QUANTIDADE_DE_ALUNOS_ENCONTRADOS = "Quantidade de alunos encontrados";
     private List<Aluno> listaAluno;
@@ -82,23 +81,11 @@ public class AlunoController extends AnchorPane implements Initializable {
     @FXML
     private AnchorPane anchorPane;
     @FXML
-    private Label lbTitulo;
-    @FXML
-    private TextField txtPesquisar;
-    @FXML
-    private ToggleGroup menu;
-    @FXML
-    private ToggleButton btAdcionar;
-    @FXML
-    private ToggleButton btEdit;
-    @FXML
-    private ToggleButton btApagar;
+    private Button btImprimir;
     @FXML
     private ToggleButton btImpr;
     @FXML
     private ToggleButton btAtualizar;
-    @FXML
-    private AnchorPane telaCadastro;
     @FXML
     private TextField txtNome;
     @FXML
@@ -141,8 +128,6 @@ public class AlunoController extends AnchorPane implements Initializable {
     private Hyperlink hlAnexarFoto;
     @FXML
     private TextField txtNacionalidade;
-    @FXML
-    private AnchorPane telaEdicao;
     @FXML
     private TableView<Aluno> tbAluno;
     @FXML
@@ -187,14 +172,6 @@ public class AlunoController extends AnchorPane implements Initializable {
     private TableColumn<Aluno, String> colNomeDaMae;
     @FXML
     private TableColumn<Aluno, String> colNomeDoPai;
-    @FXML
-    private Button btSalvar;
-    @FXML
-    private Button btEditar;
-    @FXML
-    private Button btExcluir;
-    @FXML
-    private Button btImprimir;
     @FXML
     private ToggleButton btView;
     @FXML
@@ -348,10 +325,10 @@ public class AlunoController extends AnchorPane implements Initializable {
             aluno.setFoto(fileInput);
             try {
                 if (idAluno == 0) {
-                    DAOFactory.daoFactury().alunoDAO().create(aluno);
+                    DAOFactory.daoFactory().alunoDAO().create(aluno);
                     Mensagem.info("Aluno salvo com sucesso");
                 } else {
-                    DAOFactory.daoFactury().alunoDAO().update(aluno);
+                    DAOFactory.daoFactory().alunoDAO().update(aluno);
                     Mensagem.info("Aluno atualizado com sucesso");
                 }
             } catch (DataAccessException e) {
@@ -437,7 +414,7 @@ public class AlunoController extends AnchorPane implements Initializable {
             Aluno aluno = alunoSelected(selectionModel);
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Aluno: " + aluno.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().alunoDAO().delete(aluno.getIdAluno());
+                DAOFactory.daoFactory().alunoDAO().delete(aluno.getIdAluno());
                 sincronizarDataBase();
                 mapTableAluno();
             }
@@ -460,7 +437,7 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     private void sincronizarDataBase() {
-        listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
+        listaAluno = DAOFactory.daoFactory().alunoDAO().findAll();
     }
 
     private void configTela(String tituloTela, String msg, int grupoMenu) {
@@ -625,7 +602,7 @@ public class AlunoController extends AnchorPane implements Initializable {
             Aluno aluno = alunoSelected(selectionModel);
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Requiremento para:: " + aluno.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().alunoDAO().reportRequiremento(aluno.getNumBI());
+                DAOFactory.daoFactory().alunoDAO().reportRequiremento(aluno.getNumBI());
             }
             tbAluno.getSelectionModel().clearSelection();
         } else {
@@ -694,7 +671,7 @@ public class AlunoController extends AnchorPane implements Initializable {
     private void loadAlunos() {
         studantDefault = true;
         flowPane.getChildren().clear();
-        totalAluno = DAOFactory.daoFactury().alunoDAO().count();
+        totalAluno = DAOFactory.daoFactory().alunoDAO().count();
         listaAluno.parallelStream()
                 .limit(30)
                 .forEachOrdered(aluno -> {
@@ -715,10 +692,10 @@ public class AlunoController extends AnchorPane implements Initializable {
     }
 
     public void atualizarGrade(int pagina) {
-        totalAluno = DAOFactory.daoFactury().alunoDAO().count();
+        totalAluno = DAOFactory.daoFactory().alunoDAO().count();
         pagination.setPageCount(totalAluno / QUANTIDADE_POR_PAGINA);
         final ObservableList<Aluno> alunos = FXCollections
-                .observableArrayList(DAOFactory.daoFactury().alunoDAO().listar(QUANTIDADE_POR_PAGINA, pagina));
+                .observableArrayList(DAOFactory.daoFactory().alunoDAO().listar(QUANTIDADE_POR_PAGINA, pagina));
         tbAluno.setItems(alunos);
     }
 

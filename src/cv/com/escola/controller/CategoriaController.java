@@ -137,10 +137,10 @@ public class CategoriaController extends AnchorPane implements Initializable {
             Categoria categoria = new Categoria(idCategoria, categ, descricao);
 
             if (idCategoria == 0) {
-                DAOFactory.daoFactury().categoriaDAO().create(categoria);
+                DAOFactory.daoFactory().categoriaDAO().create(categoria);
                 Mensagem.info("Categoria cadastrado com sucesso!");
             } else {
-                DAOFactory.daoFactury().categoriaDAO().update(categoria);
+                DAOFactory.daoFactory().categoriaDAO().update(categoria);
                 Mensagem.info("Categoria atualizado com sucesso!");
             }
 
@@ -176,7 +176,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
             Categoria categoria = this.tbCategoria.getSelectionModel().getSelectedItem();
             Dialogo.Resposta responta = Mensagem.confirmar("Excluir Categoria " + categoria.getNome());
             if (responta == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().categoriaDAO().delete(categoria.getId());
+                DAOFactory.daoFactory().categoriaDAO().delete(categoria.getId());
                 sincronizarBase();
                 tabela();
             }
@@ -188,7 +188,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
 
     @FXML
     private void telaPrint(ActionEvent even) {
-        DAOFactory.daoFactury().categoriaDAO().report();
+        DAOFactory.daoFactory().categoriaDAO().report();
     }
 
     /**
@@ -224,7 +224,7 @@ public class CategoriaController extends AnchorPane implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaCategoria = DAOFactory.daoFactury().categoriaDAO().findAll();
+        listaCategoria = DAOFactory.daoFactory().categoriaDAO().findAll();
     }
 
     /**

@@ -2,4 +2,6 @@
 /dist/
 /nbproject
 /.scannerwork
-/public
+/public/
+/sql/
+database.properties

@@ -164,9 +164,9 @@ public class InscricaoController extends AnchorPane implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
-        listaCurso = DAOFactory.daoFactury().cursosDAO().findAll();
-        listaInscricao = DAOFactory.daoFactury().matriculaDAO().findAll();
+        listaAluno = DAOFactory.daoFactory().alunoDAO().findAll();
+        listaCurso = DAOFactory.daoFactory().cursosDAO().findAll();
+        listaInscricao = DAOFactory.daoFactory().matriculaDAO().findAll();
     }
 
     //limpar campos
@@ -179,7 +179,7 @@ public class InscricaoController extends AnchorPane implements Initializable {
     private void combo() {
         Combo.popular(cbTurma, "CODIGO", "MECANICA", "CARTEIRA", "PESADO", "PUBLICO", "ATRELADO", "INSTRUTORES");
         Combo.popular(cbPeriodo, "MANHA", "TARDE", "NOITE");
-        Combo.popular(cbCurso, DAOFactory.daoFactury().cursosDAO().findAll());
+        Combo.popular(cbCurso, DAOFactory.daoFactory().cursosDAO().findAll());
     }
 
     //Setando lista de aluno na listView
@@ -308,7 +308,7 @@ public class InscricaoController extends AnchorPane implements Initializable {
             Dialogo.Resposta response = Mensagem.confirmar("Excluir inscricao/matricula " + "?");
 
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().matriculaDAO().delete(inscricao.getId());
+                DAOFactory.daoFactory().matriculaDAO().delete(inscricao.getId());
                 sincronizarBase();
                 tabela();
             }
@@ -336,9 +336,9 @@ public class InscricaoController extends AnchorPane implements Initializable {
         if (emptyFields) {
             Matricula inscricao = new Matricula((long) idInscricao, dataInsc, aluno, curso, turma, periodo, observacao);
             if (idInscricao == 0) {
-                DAOFactory.daoFactury().matriculaDAO().create(inscricao);
+                DAOFactory.daoFactory().matriculaDAO().create(inscricao);
             } else {
-                DAOFactory.daoFactury().matriculaDAO().update(inscricao);
+                DAOFactory.daoFactory().matriculaDAO().update(inscricao);
             }
             telaCadastro(null);
             sincronizarBase();

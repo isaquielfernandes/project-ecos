@@ -101,7 +101,7 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaBenificios = DAOFactory.daoFactury().benificioDAO().findAll();
+        listaBenificios = DAOFactory.daoFactory().benificioDAO().findAll();
     }
 
     /**
@@ -157,16 +157,16 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
 
         if (vazio) {
             Nota.alerta("Preencher campos vazios!");
-        } else if (DAOFactory.daoFactury().benificioDAO().isBanificio(benificio, idBenificio)) {
+        } else if (DAOFactory.daoFactory().benificioDAO().isBanificio(benificio, idBenificio)) {
             Nota.alerta("Benificio já cadastrada!");
         } else {
             Benificio aux = new Benificio(idBenificio, benificio, descricao);
 
             if (idBenificio == 0) {
-                DAOFactory.daoFactury().benificioDAO().create(aux);
+                DAOFactory.daoFactory().benificioDAO().create(aux);
                 Mensagem.info("Despesa cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().benificioDAO().update(aux);
+                DAOFactory.daoFactory().benificioDAO().update(aux);
                 Mensagem.info("Despesa atualizada com sucesso!");
             }
 
@@ -202,7 +202,7 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
             Benificio benificio = tbBenificios.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir benificio " + benificio.getNomeBenificio() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().benificioDAO().delete(benificio.getIdBenificio());
+                DAOFactory.daoFactory().benificioDAO().delete(benificio.getIdBenificio());
                 sincronizarBase();
                 tabela();
             }
@@ -221,7 +221,7 @@ public class ListaBenificiosController extends AnchorPane implements Initializab
     }
     
     private void listView() {
-        ObservableList data = FXCollections.observableArrayList(DAOFactory.daoFactury().benificioDAO().combo());
+        ObservableList data = FXCollections.observableArrayList(DAOFactory.daoFactory().benificioDAO().combo());
         listaBenificio.setItems(data);
     }
 

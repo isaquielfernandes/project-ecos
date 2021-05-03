@@ -16,24 +16,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Slf4j
 public abstract class DAO {
-
-    protected Connection connect = null;
+    
+    protected final JdbcTemplate jdbcTemplate;
     protected ResultSet rs;
     protected PreparedStatement preparedStatement = null;
     protected String db = DBProperties.loadPropertiesDB();
     protected String user = DBProperties.loadPropertiesFileUser();
     protected String pass = DBProperties.loadPropertiesFilePass();
     
-    protected DAO() {}
-
+    protected DAO() {
+        super();
+        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.dataSource());
+    }
+    
     protected void transact(Consumer<Connection> callback) {
+        transact(callback, null);
+    }
+    
+    protected void transact(Consumer<Connection> callback, Consumer<Connection> before) {
         Connection connection = null;
         try {
-            connection = HikariCPDataSource.getInstance().getConnection();
+            connection = HikariCPDataSource.getConnection();
+            if(before != null) 
+                before.accept(connection);
+            connection.setAutoCommit(false);
             callback.accept(connection);
             connection.commit();
         } catch (SQLException e) {
@@ -43,7 +53,7 @@ public abstract class DAO {
             close(connection);
         }
     }
-
+    
     private void rollBack(Connection connection) throws DataAccessException {
         if (connection != null) {
             try {
@@ -53,8 +63,8 @@ public abstract class DAO {
             }
         }
     }
-
-    protected void close(Connection connection) throws DataAccessException{
+    
+    protected void close(Connection connection) throws DataAccessException {
         if (connection != null) {
             try {
                 connection.close();
@@ -63,13 +73,14 @@ public abstract class DAO {
             }
         }
     }
-
+    
     protected int update(Connection connection, String sql, Object[] params) {
         try {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setQueryTimeout(1);
-                for(int i=0; i < params.length; i++)
+                for (int i = 0; i < params.length; i++) {
                     statement.setObject(i + 1, params[i]);
+                }
                 return statement.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -79,7 +90,7 @@ public abstract class DAO {
     
     protected void executeStatement(Connection connection, String sql) {
         try {
-            try(Statement statement = connection.createStatement()) {
+            try (Statement statement = connection.createStatement()) {
                 statement.setQueryTimeout(1);
                 statement.execute(sql);
             }
@@ -95,20 +106,35 @@ public abstract class DAO {
             )) {
                 pstmt.setQueryTimeout(1);
                 pstmt.setObject(1, id);
-                log.debug(MessageFormat.format("SQL: {0}.", query));
                 pstmt.execute();
+                log.info(MessageFormat.format("SQL: {0}.", query));
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
             }
         });
     }
     
+    protected void find(Consumer<Connection> callback) {
+        Connection connection = null;
+        try {
+            connection = HikariCPDataSource.getConnection();
+            callback.accept(connection);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        } finally {
+            close(connection);
+        }
+    }
+    
     protected int count(String sql) {
-        try (PreparedStatement statement = connect.prepareStatement(sql);) {
+        try (Connection connection = HikariCPDataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);) {
             statement.setQueryTimeout(1);
             try (ResultSet resultSet = statement.executeQuery();) {
-                if(!resultSet.next())
+                if (!resultSet.next()) {
                     throw new IllegalArgumentException("There was no row to be selected!");
+                }
                 return ((Number) resultSet.getObject(1)).intValue();
             }
         } catch (SQLException ex) {
@@ -116,15 +142,16 @@ public abstract class DAO {
         }
     }
     
-    protected List<Map<String, String>> parseResultSet(ResultSet resultSet) {
-        List<Map<String, String>> rows = new ArrayList<>();
+    protected List<Map<String, Object>> parseResultSet(ResultSet resultSet) {
+        List<Map<String, Object>> rows = new ArrayList<>();
         try {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (resultSet.next()) {
-                Map<String, String> row = new LinkedHashMap<>();
-                for (int i = 0; i < columnCount; i++)
-                    row.put(metaData.getColumnName(i), resultSet.getString(i));
+                Map<String, Object> row = new LinkedHashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(metaData.getColumnName(i), resultSet.getObject(i));
+                }
                 rows.add(row);
             }
         } catch (SQLException ex) {

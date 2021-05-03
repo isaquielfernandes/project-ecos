@@ -86,18 +86,6 @@ public class Nota {
     public static void alerta(String mensagem) {
         nota(AppController.getInstance().boxNotas(), mensagem, "ALERTA");
     }
-    
-    public static void alertaAlerta(String mensagem) {
-        nota(AppController.getInstance().boxAlerta(), mensagem, "");
-    }
-    
-    public static void alertaAniversario(String mensagem) {
-        nota(AppController.getInstance().boxAniversario(), mensagem, "");
-    }
-    
-    public static void alertaNotific(String mensagem) {
-        nota(AppController.getInstance().boxNotific(), mensagem, "");
-    }
 
     public static void info(String mensagem) {
         nota(AppController.getInstance().boxNotas(), mensagem, "INFO");
@@ -110,4 +98,17 @@ public class Nota {
     public static void confirma(String mensagem) {
         nota(AppController.getInstance().boxNotas(), mensagem, "CONFIRMAR");
     }
+    
+    public static void alertaAlerta(String mensagem) {
+        nota(AppController.getInstance().boxAlerta(), mensagem, "");
+    }
+    
+    public static void alertaAniversario(String mensagem) {
+        nota(AppController.getInstance().boxAniversario(), mensagem, "");
+    }
+
+    public static void alertaNotific(String mensagem) {
+        nota(AppController.getInstance().boxNotific(), mensagem, "");
+    }
+    
 }

@@ -146,7 +146,7 @@ public class VeiculoController extends AnchorPane implements Initializable {
     }
 
     public void sincronizaBase() {
-        listaVeiculo = DAOFactory.daoFactury().veiculoDAO().findAll();
+        listaVeiculo = DAOFactory.daoFactory().veiculoDAO().findAll();
     }
 
     /**
@@ -213,14 +213,14 @@ public class VeiculoController extends AnchorPane implements Initializable {
         if (emptyFields){
             Veiculo veiculo = new Veiculo(idVeiculo, placa, ilha, fabricante, modelo, anoFabricacao, anoModelo, valor, tipoCombustivel, proprietario, dataCadastro, especificacao);
             if (idVeiculo == 0) {
-                if (DAOFactory.daoFactury().veiculoDAO().findAll().contains(veiculos)) {
+                if (DAOFactory.daoFactory().veiculoDAO().findAll().contains(veiculos)) {
                     Nota.alerta("Veiculo já cadastrada!");
                 } else {
-                    DAOFactory.daoFactury().veiculoDAO().create(veiculo);
+                    DAOFactory.daoFactory().veiculoDAO().create(veiculo);
                     Mensagem.info("Veiculo cadastrada com sucesso!"); 
                 }
             } else {
-                DAOFactory.daoFactury().veiculoDAO().update(veiculo);
+                DAOFactory.daoFactory().veiculoDAO().update(veiculo);
                 Mensagem.info("Veiculo atualizada com sucesso!");
             }
 
@@ -267,7 +267,7 @@ public class VeiculoController extends AnchorPane implements Initializable {
             Dialogo.Resposta resposta = Mensagem.confirmar("Excluir Veiculo ->> " + veiculo.getPlaca());
 
             if (resposta == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().veiculoDAO().delete(veiculo.getCodigo());
+                DAOFactory.daoFactory().veiculoDAO().delete(veiculo.getCodigo());
                 sincronizaBase();
                 tebela();
             }

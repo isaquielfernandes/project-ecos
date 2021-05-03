@@ -68,7 +68,7 @@ public class ConfiguracaoController implements Initializable {
     }
 
     private void sincronizarDataBase() {
-        listaEmpresa = DAOFactory.daoFactury().empresaDAO().findAll();
+        listaEmpresa = DAOFactory.daoFactory().empresaDAO().findAll();
     }
 
     private void limparCampos() {
@@ -79,8 +79,7 @@ public class ConfiguracaoController implements Initializable {
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean vazio = checkEmptyFields(txtCidade, txtNomeEscola, txtNif, txtEmail,
-                txtContato, txtEndereco);
+        checkEmptyFields(txtCidade, txtNomeEscola, txtNif, txtEmail, txtContato, txtEndereco);
 
         txtCidade.getText();
         txtNomeEscola.getText();
@@ -174,6 +173,5 @@ public class ConfiguracaoController implements Initializable {
     public void setFileAssinatura(File fileAssinatura) {
         this.fileAssinatura = fileAssinatura;
     }
-    
     
 }

@@ -15,13 +15,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Level;
 
 public class ItemDAOImpl extends DAO implements ItemDAO {
 
-    private static final StringBuilder INSERT_QUERY = new StringBuilder();
-    private static final StringBuilder UPDATE_QUERY = new StringBuilder();
-    private static final StringBuilder DELETE_QUERY = new StringBuilder();
+    private static final StringBuilder INSERT_ITEM = new StringBuilder();
+    private static final StringBuilder UPDATE_ITEM = new StringBuilder();
+    private static final StringBuilder DELETE_ITEM = new StringBuilder();
 
     public ItemDAOImpl() {
         super();
@@ -29,14 +28,19 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
     @Override
     public void create(Item item) {
-        INSERT_QUERY.append("INSERT INTO ").append(db)
-                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?)");
+        INSERT_ITEM.append("INSERT INTO ").append(db)
+                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?);");
 
-        transact((Connection connection) -> {
+        transact(connection -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    INSERT_QUERY.toString()
+                    INSERT_ITEM.toString()
             )) {
-                mapToSave(pstmt, item);
+                pstmt.setInt(1, item.getQuantidade());
+                pstmt.setBigDecimal(2, item.getValorUnitario());
+                pstmt.setLong(3, item.getArtigo().getId());
+                pstmt.setInt(4, item.getVenda().getIdVenda());
+                
+                pstmt.executeUpdate();
             } catch (SQLException e) {
                 throw new DataAccessException(e);
             }
@@ -44,17 +48,38 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
     }
 
     @Override
+    public void create(List<Item> items) {
+        INSERT_ITEM.append("INSERT INTO ").append(db)
+                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?);");
+
+        items.forEach(item -> {
+            transact((Connection connection) -> {
+                try (PreparedStatement pstmt = connection.prepareStatement(
+                        INSERT_ITEM.toString()
+                )) {
+                    mapToSave(pstmt, item);
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    throw new DataAccessException(e);
+                }
+            });
+        });
+    }
+
+    @Override
     public void update(Item item) {
-        UPDATE_QUERY.append("UPDATE ").append(db)
-            .append(".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?");
+        UPDATE_ITEM.append("UPDATE ").append(db)
+                .append(".tb_item_venda SET quantidade=?, valor=?, id_artigo=? where id_item_venda=? and id_venda =?");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    UPDATE_QUERY.toString()
+                    UPDATE_ITEM.toString()
             )) {
                 mapToSave(pstmt, item);
+                pstmt.setLong(5, item.getIdItem());
+                pstmt.executeUpdate();
             } catch (SQLException ex) {
-                throw new DataAccessException(Level.ERROR.toString(), ex);
+                throw new DataAccessException(ex);
             }
         });
     }
@@ -64,16 +89,12 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         pstmt.setBigDecimal(2, item.getValorUnitario());
         pstmt.setLong(3, item.getArtigo().getId());
         pstmt.setInt(4, item.getVenda().getIdVenda());
-        if (item.getIdItem() != 0) {
-            pstmt.setLong(5, item.getIdItem());
-        }
-        pstmt.executeUpdate();
     }
 
     @Override
     public void delete(Integer idVenda) {
-        DELETE_QUERY.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?");
-        remove(DELETE_QUERY.toString(), idVenda);
+        DELETE_ITEM.append("DELETE FROM ").append(db).append(".tb_item_venda WHERE id_venda=?;");
+        remove(DELETE_ITEM.toString(), idVenda);
     }
 
     @Override
@@ -81,7 +102,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".item_de_venda_view;");
         List<Item> itens = new ArrayList<>();
-        try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -90,7 +111,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return itens;
     }
@@ -100,7 +121,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".item_de_venda_view where item_de_venda_view.id_vendas = ?;");
         List<Item> itens = new ArrayList<>();
-        try (Connection conector = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setInt(1, idVenda.getIdVenda());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -110,7 +131,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return itens;
     }

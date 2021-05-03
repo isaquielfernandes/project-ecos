@@ -175,13 +175,13 @@ public class SeguroController extends AnchorPane implements Initializable {
                 Seguro seguro = new Seguro((long) idSeguroAuto, compania, veiculo, desde, ate, emissao);
 
                 if (idSeguroAuto == 0) {
-                    if (DAOFactory.daoFactury().seguroAutoDAO().findAll().contains(seguro)) {
+                    if (DAOFactory.daoFactory().seguroAutoDAO().findAll().contains(seguro)) {
                         Nota.alerta("Veiculo já cadastrada!");
                     } else {
-                        DAOFactory.daoFactury().seguroAutoDAO().create(seguro);
+                        DAOFactory.daoFactory().seguroAutoDAO().create(seguro);
                     }
                 } else {
-                    DAOFactory.daoFactury().seguroAutoDAO().update(seguro);
+                    DAOFactory.daoFactory().seguroAutoDAO().update(seguro);
                 }
 
                 telaCadastro(null);
@@ -224,7 +224,7 @@ public class SeguroController extends AnchorPane implements Initializable {
             Dialogo.Resposta resposta = Mensagem.confirmar("Excluir Seguro Auto : Veiculo -> " + veiculo.getVeiculo().getPlaca() + " Dia :" + veiculo.getEmissao());
 
             if (resposta == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().inspecaoTecnicaDAO().delete(veiculo.getId());
+                DAOFactory.daoFactory().inspecaoTecnicaDAO().delete(veiculo.getId());
                 sincronizaBase();
                 tabela();
             }
@@ -250,8 +250,8 @@ public class SeguroController extends AnchorPane implements Initializable {
     }
 
     public void sincronizaBase() {
-        listaSeguroAuto = DAOFactory.daoFactury().seguroAutoDAO().findAll();
-        listaVeiculo = DAOFactory.daoFactury().veiculoDAO().findAll();
+        listaSeguroAuto = DAOFactory.daoFactory().seguroAutoDAO().findAll();
+        listaVeiculo = DAOFactory.daoFactory().veiculoDAO().findAll();
     }
 
     /**

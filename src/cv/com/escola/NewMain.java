@@ -11,7 +11,7 @@ public class NewMain {
     
     public static void main(String[] args) {
         
-        LOGGER.info(Criptografia.converter("ecos"));
+        LOGGER.debug("hash: { }", Criptografia.converter("test"));
     }
     
 }

@@ -141,7 +141,7 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
     }
 
     private void sincronizarDataBase() {
-        listaEmpresa = DAOFactory.daoFactury().empresaDAO().findAll();
+        listaEmpresa = DAOFactory.daoFactory().empresaDAO().findAll();
     }
 
     /**
@@ -206,10 +206,10 @@ public class EscolaConducaoController extends AnchorPane implements Initializabl
             escolaConducao.setAssinatura(inputStreamAssinatura);
 
             if (idEmpresa == 0) {
-                DAOFactory.daoFactury().empresaDAO().create(escolaConducao);
+                DAOFactory.daoFactory().empresaDAO().create(escolaConducao);
                 Mensagem.info("Configuracao da empresa cadastrada com sucesso!");
             } else {
-                DAOFactory.daoFactury().empresaDAO().update(escolaConducao);
+                DAOFactory.daoFactory().empresaDAO().update(escolaConducao);
                 Mensagem.info("Empresa atualizada com sucesso!");
             }
             telaCadastro(null);

@@ -86,6 +86,7 @@ public class CursoController extends AnchorPane implements Initializable {
     @FXML
     private TextField txtDuracao;
 
+    
     @SuppressWarnings("LeakingThisInConstructor")
     public CursoController() {
         try {
@@ -100,7 +101,7 @@ public class CursoController extends AnchorPane implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaCurso = DAOFactory.daoFactury().cursosDAO().findAll();
+        listaCurso = DAOFactory.daoFactory().cursosDAO().findAll();
     }
 
     /**
@@ -115,7 +116,7 @@ public class CursoController extends AnchorPane implements Initializable {
         combos();
         sincronizarBase();
         cbCategoria.setOnMouseClicked(event -> 
-            Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll())
+            Combo.popular(cbCategoria, DAOFactory.daoFactory().categoriaDAO().findAll())
         );
     }
 
@@ -152,13 +153,13 @@ public class CursoController extends AnchorPane implements Initializable {
         if (vazio) {
             Curso cursos = new Curso(codigoCurso, curso, duracao, descricao, categoria);
             if (codigoCurso == 0) {
-                if (DAOFactory.daoFactury().cursosDAO().findAll().contains(cursos)) {
+                if (DAOFactory.daoFactory().cursosDAO().findAll().contains(cursos)) {
                     Nota.alerta("Curso ja se encrotra cadastrado!");
                 } else {
-                    DAOFactory.daoFactury().cursosDAO().create(cursos);
+                    DAOFactory.daoFactory().cursosDAO().create(cursos);
                 }
             } else {
-                DAOFactory.daoFactury().cursosDAO().update(cursos);
+                DAOFactory.daoFactory().cursosDAO().update(cursos);
             }
             telaCadastro(null);
             sincronizarBase();
@@ -190,7 +191,7 @@ public class CursoController extends AnchorPane implements Initializable {
             Dialogo.Resposta response = Mensagem.confirmar("Excluir curso " + curso.getNome() + " ?");
 
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().cursosDAO().delete(curso.getCodigo());
+                DAOFactory.daoFactory().cursosDAO().delete(curso.getCodigo());
                 sincronizarBase();
                 tabela();
             }
@@ -201,7 +202,7 @@ public class CursoController extends AnchorPane implements Initializable {
     }
 
     public void combos() {
-        Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll());
+        Combo.popular(cbCategoria, DAOFactory.daoFactory().categoriaDAO().findAll());
     }
 
     /**

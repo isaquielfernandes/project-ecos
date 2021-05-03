@@ -297,7 +297,7 @@
                               <Insets left="4.0" right="4.0" />
                            </GridPane.margin>
                         </Separator>
-                        <Label prefHeight="30.0" prefWidth="134.0" styleClass="lb-info-requerido" text="Pago(Sim/Não)" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                        <Label prefHeight="30.0" prefWidth="134.0" styleClass="lb-info-requerido" text="Pago" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                         <RadioButton fx:id="rbSituacao" mnemonicParsing="false" prefHeight="35.0" prefWidth="140.0" selected="true" text="Pago" GridPane.columnIndex="7" GridPane.rowIndex="3">
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -309,7 +309,7 @@
                         </Separator>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="3">
                            <children>
-                              <Button fx:id="btnAdcionar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#onMouseClickedAdcionarItem" prefHeight="35.0" prefWidth="167.0" style="-fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6; -fx-background-color: #fff;" text="Adcionar">
+                              <Button fx:id="btnAdcionar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#onMouseClickedAdcionarItem" prefHeight="35.0" prefWidth="121.0" style="-fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-radius: 6; -fx-background-color: #fff;" text="Adcionar">
                                  <HBox.margin>
                                     <Insets left="2.0" right="2.0" />
                                  </HBox.margin>

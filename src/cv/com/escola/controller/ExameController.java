@@ -199,7 +199,7 @@ public class ExameController extends AnchorPane implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaExame = DAOFactory.daoFactury().exameDAO().findAll();
+        listaExame = DAOFactory.daoFactory().exameDAO().findAll();
     }
 
     /**
@@ -234,7 +234,7 @@ public class ExameController extends AnchorPane implements Initializable {
     private void combos() {
         Combo.popular(cbTipo, "", "TEORICA", "PRATICA", "TECNICA", "CAP");
         Combo.popular(cbTipoExame, "", "TEORICA", "PRATICA", "TECNICA", "CAP");
-        Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll());
+        Combo.popular(cbCategoria, DAOFactory.daoFactory().categoriaDAO().findAll());
     }
 
     @FXML
@@ -282,10 +282,10 @@ public class ExameController extends AnchorPane implements Initializable {
             exame.setAtestadoMedico(copyAtestadoMedico());
 
             if (idMarcar == 0) {
-                DAOFactory.daoFactury().exameDAO().create(exame);
+                DAOFactory.daoFactory().exameDAO().create(exame);
                 Mensagem.info("Exame marcada com sucesso!");
             } else {
-                DAOFactory.daoFactury().exameDAO().update(exame);
+                DAOFactory.daoFactory().exameDAO().update(exame);
                 Mensagem.info("Exame atualizada com sucesso!");
             }
             telaCadastro(null);
@@ -323,7 +323,7 @@ public class ExameController extends AnchorPane implements Initializable {
             Exame exame = tbExame.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Exame " + exame.getTipoExame() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().exameDAO().delete(exame.getIdExame());
+                DAOFactory.daoFactory().exameDAO().delete(exame.getIdExame());
                 sincronizarBase();
                 tabela();
             }
@@ -354,7 +354,7 @@ public class ExameController extends AnchorPane implements Initializable {
         Dialogo.Resposta responses = Mensagem.confirmar("Deseja imprimir lista de candidato para o exame?");
         if (responses == Dialogo.Resposta.YES) {
             if (cbTipoExame.getValue() != null && datePickerDia.getEditor().getText() != null) {
-                DAOFactory.daoFactury().exameDAO().reportListCandidadtoParaExame(tipo, dia);
+                DAOFactory.daoFactory().exameDAO().reportListCandidadtoParaExame(tipo, dia);
             } else {
                 Mensagem.alerta(":::");
             }
@@ -374,7 +374,7 @@ public class ExameController extends AnchorPane implements Initializable {
         combos();
 
         // **************************************************************************
-        listaAluno = DAOFactory.daoFactury().alunoDAO().findAll();
+        listaAluno = DAOFactory.daoFactory().alunoDAO().findAll();
         tabelaAluno();
         txtBuscar.textProperty().addListener((obs, old, novo) -> 
             filtroAluno(novo, FXCollections.observableArrayList(listaAluno)));
@@ -386,12 +386,12 @@ public class ExameController extends AnchorPane implements Initializable {
                 (observable, oldValue, newValue) -> showAlunoSelected(newValue));
 
         cbAluno.setOnMouseClicked(event -> 
-            Combo.popular(cbAluno, DAOFactory.daoFactury().alunoDAO().findAll())
+            Combo.popular(cbAluno, DAOFactory.daoFactory().alunoDAO().findAll())
         );
         // ****************************************************************************
 
         cbCategoria.setOnMouseClicked(event -> 
-            Combo.popular(cbCategoria, DAOFactory.daoFactury().categoriaDAO().findAll())
+            Combo.popular(cbCategoria, DAOFactory.daoFactory().categoriaDAO().findAll())
         );
 
         hlinkAtestadoMedico.setOnMouseClicked(event -> {

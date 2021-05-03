@@ -1,5 +1,6 @@
 package cv.com.escola.model.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -7,7 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
-public class Venda {
+public class Venda implements Serializable{
 
     private Integer idVenda;
     private String numFatura;
@@ -22,7 +23,7 @@ public class Venda {
     private String meioDePagamento;
 
     public Venda() {
-        
+        super();
     }
 
     public Venda(Integer idVenda, LocalDate data, BigDecimal valor, BigDecimal desconto, boolean pago, Cliente cliente, Usuario usuario, String meioDePagamento, String numFatura, BigDecimal valorTotal) {
@@ -30,18 +31,6 @@ public class Venda {
         this.data = data;
         this.valor = valor;
         this.desconto = desconto;
-        this.pago = pago;
-        this.cliente = cliente;
-        this.usuario = usuario;
-        this.meioDePagamento = meioDePagamento;
-        this.numFatura = numFatura;
-        this.valorTotal = valorTotal;
-    }
-
-    public Venda(Integer idVenda, LocalDate data, BigDecimal valor, boolean pago, Cliente cliente, Usuario usuario, String meioDePagamento, String numFatura, BigDecimal valorTotal) {
-        this.idVenda = idVenda;
-        this.data = data;
-        this.valor = valor;
         this.pago = pago;
         this.cliente = cliente;
         this.usuario = usuario;

@@ -110,7 +110,7 @@ public class ClienteController extends AnchorPane implements Initializable {
     @FXML
     private Label legenda;
 
-    @SuppressWarnings("LeakingThisInConstructor")
+    
     public ClienteController() {
         try {
             GenericFXXMLLoader.loadFXML(this, "cliente");
@@ -172,9 +172,9 @@ public class ClienteController extends AnchorPane implements Initializable {
             Cliente cliente = new Cliente(idCliente, nome, nif, contato, tipoCliente, descricao, endereco, codigoPostal, localidade);
 
             if (idCliente == 0) {
-                DAOFactory.daoFactury().clienteDAO().create(cliente);
+                DAOFactory.daoFactory().clienteDAO().create(cliente);
             } else {
-                DAOFactory.daoFactury().clienteDAO().update(cliente);
+                DAOFactory.daoFactory().clienteDAO().update(cliente);
             }
             telaCadastro(null);
             sincronizarBase();
@@ -213,7 +213,7 @@ public class ClienteController extends AnchorPane implements Initializable {
             Cliente cliente = tbCliente.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Cliente:: " + cliente.getNomeCliente()+ "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().clienteDAO().delete(cliente.getIdCliente());
+                DAOFactory.daoFactory().clienteDAO().delete(cliente.getIdCliente());
                 sincronizarBase();
                 tabela();
             }
@@ -241,7 +241,7 @@ public class ClienteController extends AnchorPane implements Initializable {
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaCliente = DAOFactory.daoFactury().clienteDAO().findAll();
+        listaCliente = DAOFactory.daoFactory().clienteDAO().findAll();
     }
 
     /**

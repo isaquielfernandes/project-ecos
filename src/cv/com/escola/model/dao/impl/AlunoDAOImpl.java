@@ -37,7 +37,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     public AlunoDAOImpl() {
         super();
-        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.getInstance().dataSource());
+        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.dataSource());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         INSERT_QUERY.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
         INSERT_QUERY.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
         INSERT_QUERY.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
-        
+
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
                     INSERT_QUERY.toString()
@@ -65,7 +65,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         updateQuery.append("UPDATE ").append(db).append(".tb_aluno SET nome=?, dataNascimento=?, numBI=?, dataEmisao=?, resedencia=?, conselho=?,");
         updateQuery.append("naturalidade=?, email=?, contato=?, habilitacaoLit=?, nacionalidade=?, ");
         updateQuery.append("foto=?, fotocopiaBI=?, descricao=?, nomeDaMae=?, nomeDoPai=?, professao=?, estadoCivil=?, localDeEmisao=?, freguesia=? WHERE id_aluno =?");
-        
+
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
                     updateQuery.toString()
@@ -99,7 +99,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         query.append("SELECT * FROM ").append(db).append(".tb_aluno LIMIT ? OFFSET ? ");
 
         ObservableList listaAluno = FXCollections.observableArrayList();
-        try (Connection conn = HikariCPDataSource.getInstance().getConnection();
+        try (Connection conn = HikariCPDataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(query.toString());) {
             ps.setInt(1, limit);
             ps.setInt(2, offset);
@@ -117,9 +117,9 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public List<Aluno> autoCompletion() {
         List<Aluno> alunos = new ArrayList<>();
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT id_aluno, nome, numBI from ").append(db).append(".tb_aluno ORDER BY nome");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT id_aluno, nome, numBI from ").append(db).append(".tb_aluno ORDER BY nome");
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -140,18 +140,18 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public int totalSearchStudent(String param) {
         int total = 0;
+        StringBuilder query = new StringBuilder();
+        query.append("select count(id_aluno) from ").append(db).append(".tb_aluno where nome like ? or contato like ? or numBI like ?");
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.
-                    prepareStatement("select count(id_aluno) from " + db + ".tb_aluno "
-                            + "where nome like ? or contato like ? or numBI like ?");
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, param + "%");
             preparedStatement.setString(2, param + "%");
             preparedStatement.setString(3, param + "%");
-            rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                total = rs.getInt(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    total = resultSet.getInt(1);
+                }
             }
-            rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
@@ -162,19 +162,20 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     @Override
     public ObservableList<Aluno> searchStudent(Pagina pagina, String params) {
         ObservableList<Aluno> alunos = FXCollections.observableArrayList();
+        StringBuilder query = new StringBuilder();
+        query.append("select * from ").append(db).append(".tb_aluno where nome like ? or contato like ? or email like ? ");
+        query.append("or numBI like ? limit ").append(pagina.getInicio()).append(",").append(pagina.getFim());
         try (Connection conector = ConnectionManager.getInstance().begin();) {
-            preparedStatement = conector.prepareStatement("select * from " + db
-                    + ".tb_aluno where nome like ? or contato like ? or email like ? "
-                    + "or numBI like ? limit " + pagina.getInicio() + "," + pagina.getFim());
+            preparedStatement = conector.prepareStatement(query.toString());
             preparedStatement.setString(1, params + "%");
             preparedStatement.setString(2, params + "%");
             preparedStatement.setString(3, params + "%");
             preparedStatement.setString(4, params + "%");
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                alunos.add(mapRowToObject(rs));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    alunos.add(mapRowToObject(resultSet));
+                }
             }
-            rs.close();
             preparedStatement.close();
         } catch (SQLException ex) {
             throw new DataAccessException(ex);

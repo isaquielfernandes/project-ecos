@@ -10,17 +10,16 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FXML Controller class
  *
  * @author Isaquiel Fernandes
  */
-public class RelatoriosGeraisController extends AnchorPane implements Initializable {
+@Slf4j
+public class RelatoriosGeraisController extends SubMenusConfig implements Initializable {
 
     private static RelatoriosGeraisController instance;
     @FXML
@@ -28,14 +27,9 @@ public class RelatoriosGeraisController extends AnchorPane implements Initializa
     @FXML
     private AnchorPane anchorPaneRelGeral;
 
-    /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        log.debug("loading ...");
     }    
     
     @SuppressWarnings("LeakingThisInConstructor")
@@ -54,46 +48,6 @@ public class RelatoriosGeraisController extends AnchorPane implements Initializa
    
     public AnchorPane getBoxConteudo() {
         return anchorPaneRelGeral;
-    }
-
-    /**
-     * Exibir e ocultar submenus
-     *
-     * @param menu
-     * @param box
-     * @param submenus
-     */
-    public void submenus(ToggleButton menu, VBox box, ToggleButton... submenus) {
-        if (box.getChildren().isEmpty()) {
-            box.getChildren().addAll(submenus);
-            Animacao.fade(box);
-            estilo(menu, "menu-grupo");
-        } else {
-            desativarSubmenus(box);
-            estilo(menu, "menu-grupo-inativo");
-        }
-    }
-
-    /**
-     * Desativar e esconder todos submenus
-     *
-     * @param boxes
-     */
-    public void desativarSubmenus(VBox... boxes) {
-        for (VBox box : boxes) {
-            box.getChildren().clear();
-        }
-    }
-
-    /**
-     * Aplicar estilo para mostrar/ocultar submenus
-     *
-     * @param no
-     * @param estilo
-     */
-    public void estilo(Node no, String estilo) {
-        no.getStyleClass().remove(3);
-        no.getStyleClass().add(estilo);
     }
 
     @FXML

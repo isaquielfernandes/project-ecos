@@ -100,16 +100,16 @@ public class RegistrarController extends UserCommunField implements Initializabl
             Mensagem.alerta("Permissão do Usuário não encontrada!");
         } else if (!senha.equals(confirmar)) {
             Mensagem.alerta("Senha inválida, verifique se senhas são iguais!");
-        } else if (DAOFactory.daoFactury().usuarioDAO().isUsuario(idUsuario, login)) {
+        } else if (DAOFactory.daoFactory().usuarioDAO().isUsuario(idUsuario, login)) {
             Mensagem.alerta("Login já cadastrado na base de dados!");
         } else {
             Usuario user = new Usuario(idUsuario, nome, login, Criptografia.converter(senha), email, status, null, descricao, tipo);
 
             if (idUsuario == 0) {
-                DAOFactory.daoFactury().usuarioDAO().create(user);
+                DAOFactory.daoFactory().usuarioDAO().create(user);
                 Mensagem.info("Usuário cadastrado com sucesso!");
             } else {
-                DAOFactory.daoFactury().usuarioDAO().update(user);
+                DAOFactory.daoFactory().usuarioDAO().update(user);
                 Mensagem.info("Usuário atualizado com sucesso!");
             }
             sincronizarBase();
@@ -181,7 +181,7 @@ public class RegistrarController extends UserCommunField implements Initializabl
             Usuario usuario = tbUsuario.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir usuário " + usuario.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().usuarioDAO().delete(usuario.getId());
+                DAOFactory.daoFactory().usuarioDAO().delete(usuario.getId());
                 sincronizarBase();
                 tabela();
             }
@@ -197,7 +197,7 @@ public class RegistrarController extends UserCommunField implements Initializabl
      */
     private void combos() {
         Combo.popular(cbStatus, "Ativo", "Inativo");
-        Combo.popular(cbPermissaoUsuario, DAOFactory.daoFactury().usuarioDAO().usuariosTipo());
+        Combo.popular(cbPermissaoUsuario, DAOFactory.daoFactory().usuarioDAO().usuariosTipo());
     }
 
     /**
@@ -218,7 +218,7 @@ public class RegistrarController extends UserCommunField implements Initializabl
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaUsuario = DAOFactory.daoFactury().usuarioDAO().findAll();
+        listaUsuario = DAOFactory.daoFactory().usuarioDAO().findAll();
     }
 
     /**

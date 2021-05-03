@@ -85,7 +85,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public List<ExameResultado> findAll() {
         List<ExameResultado> dadosExame = new ArrayList<>();
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection connection = HikariCPDataSource.getConnection()) {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM ").append(db).append(".resultado_de_exame_view order by Dia desc ");
             preparedStatement = connection.prepareStatement(query.toString());
@@ -109,7 +109,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
 
     @Override
     public void reportFichaAulaPratica(Integer id, String nome) {
-        try (Connection connection = HikariCPDataSource.getInstance().getConnection()) {
+        try (Connection connection = HikariCPDataSource.getConnection()) {
             Map<String, Object> filtro = new HashMap<>();
             filtro.put("id", id);
             URL url = getClass().getResource("/cv/com/escola/reports/fechaAulaPratica.jasper");

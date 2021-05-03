@@ -1,9 +1,11 @@
 package cv.com.escola.model.entity;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 
-public class Usuario {
+public class Usuario implements Serializable {
+    
     private int id;
     private String nome;
     private String login;

@@ -16,10 +16,10 @@ import javafx.scene.paint.Color;
  */
 public class Campo {
 
-    private static final String VERIFICAR_VALOR_VAZIO = "Verificar valor vazio!";
+    private static final String MENSAGEM = "Este campo é obrigatorio!";
 
     private Campo() {
-        
+
     }
 
     /**
@@ -29,13 +29,14 @@ public class Campo {
      * @return
      */
     public static boolean noEmpty(TextField... field) {
-
         boolean vazio = false;
 
         for (TextField campo : field) {
             if (campo.getText().trim().isEmpty()) {
-                erro(campo, VERIFICAR_VALOR_VAZIO);
+                erro(campo, MENSAGEM);
                 vazio = true;
+            } else {
+                origem(campo);
             }
         }
 
@@ -75,9 +76,11 @@ public class Campo {
     public static boolean noEmpty(DatePicker... datePicker) {
         boolean vazio = false;
         for (DatePicker campo : datePicker) {
-            if (campo.getEditor().getText().trim().isEmpty() || campo.getValue() == null) {
-                erro(campo, VERIFICAR_VALOR_VAZIO);
+            if (campo.getValue() == null) {
+                erro(campo, MENSAGEM);
                 vazio = true;
+            } else {
+                origem(campo);
             }
         }
         return vazio;
@@ -115,13 +118,14 @@ public class Campo {
      * @return
      */
     public static boolean noEmpty(ComboBox... combobox) {
-
         boolean vazio = false;
 
         for (ComboBox campo : combobox) {
-            if (campo.getEditor().getText().trim().isEmpty() || campo.getValue() == null) {
-                erro(campo, VERIFICAR_VALOR_VAZIO);
+            if (campo.getValue() == null) {
+                erro(campo, MENSAGEM);
                 vazio = true;
+            } else {
+                origem(campo);
             }
         }
 
@@ -152,7 +156,6 @@ public class Campo {
             if (no != null) {
                 no.setStyle("-fx-border-color: #ff7575;");
                 Tooltip.install(no, new Tooltip(mensagem));
-                origem(no);
             }
         } catch (Exception ex) {
             Nota.erro("Erro erro campo");
@@ -163,11 +166,12 @@ public class Campo {
      * Ao clicar no campo voltar ao estilo padrão do campo
      */
     private static void origem(Node no) {
-        no.setOnMouseClicked((MouseEvent me) -> 
-            no.setStyle("-fx-border-color: #eaeaea;")
+        Tooltip.uninstall(no, null);
+        no.setOnMouseClicked((MouseEvent me)
+                -> no.setStyle("-fx-border-color: #eaeaea;")
         );
-        no.setOnMouseReleased((MouseEvent me) -> 
-            no.setStyle("-fx-border-color: #eaeaea;")
+        no.setOnMouseReleased((MouseEvent me)
+                -> no.setStyle("-fx-border-color: #eaeaea;")
         );
     }
 
@@ -178,8 +182,8 @@ public class Campo {
      */
     public static void erroLogin(Node no) {
         no.setStyle("-fx-border-color: #ff8b8b;");
-        no.setOnMouseClicked((MouseEvent me) -> 
-            no.setStyle("-fx-border-color: transparent transparent #e8e8e8 transparent;")
+        no.setOnMouseClicked((MouseEvent me)
+                -> no.setStyle("-fx-border-color: transparent transparent #e8e8e8 transparent;")
         );
     }
 }

@@ -58,7 +58,7 @@ public class DAOFactory {
     private final InstrutorDAOImpl instrutorDAO = new InstrutorDAOImpl();
     private final TurmaDAOImpl turmaDAO = new TurmaDAOImpl();
 
-    public static DAOFactory daoFactury() {
+    public static DAOFactory daoFactory() {
         return BANCO;
     }
 

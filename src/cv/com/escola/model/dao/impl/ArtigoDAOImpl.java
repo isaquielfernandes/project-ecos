@@ -11,10 +11,9 @@ import cv.com.escola.model.dao.exception.DataAccessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import org.apache.log4j.Level;
 
 public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
-
+      
     public ArtigoDAOImpl() {
         super();
     }
@@ -77,14 +76,14 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
             final StringBuilder query = new StringBuilder();
             query.append("SELECT * from ").append(db).append(".tb_artigo;");
             preparedStatement = conector.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                artigosList.add(mapRowToObject(rs));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    artigosList.add(mapRowToObject(resultSet));
+                }
+                preparedStatement.close();
             }
-            preparedStatement.close();
-            rs.close();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return artigosList;
     }
@@ -104,7 +103,7 @@ public class ArtigoDAOImpl extends DAO implements ArtigoDAO {
                 retorno.setPreco(rs.getBigDecimal("preco"));
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return retorno;
     }

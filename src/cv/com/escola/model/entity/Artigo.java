@@ -1,5 +1,6 @@
 package cv.com.escola.model.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javafx.beans.property.LongProperty;
@@ -11,7 +12,7 @@ import javafx.beans.property.StringProperty;
 import org.springframework.data.annotation.Id;
 
 
-public class Artigo {
+public class Artigo implements Serializable {
     
     @Id
     private LongProperty id;
@@ -20,6 +21,7 @@ public class Artigo {
     private StringProperty descricao;
 
     public Artigo() {
+        super();
     }
 
     public Artigo(Long id, String nome, BigDecimal preco) {

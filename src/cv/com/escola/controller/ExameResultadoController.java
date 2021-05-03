@@ -177,10 +177,10 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
             ExameResultado exameResultado = new ExameResultado(idResultado, exame, resultado);
 
             if (idResultado == 0) {
-                DAOFactory.daoFactury().exameResultadoDAO().create(exameResultado);
+                DAOFactory.daoFactory().exameResultadoDAO().create(exameResultado);
                 Mensagem.info("Exame marcada com sucesso!");
             } else {
-                DAOFactory.daoFactury().exameResultadoDAO().update(exameResultado);
+                DAOFactory.daoFactory().exameResultadoDAO().update(exameResultado);
                 Mensagem.info("Exame atualizada com sucesso!");
             }
 
@@ -217,7 +217,7 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
             ExameResultado resultado = tbExameResultado.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Resultado de exame do aluno " + resultado.getExame().getAluno().getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().exameResultadoDAO().delete(resultado.getIdExameResultado());
+                DAOFactory.daoFactory().exameResultadoDAO().delete(resultado.getIdExameResultado());
                 Mensagem.info("Resultado de exame apagado com sucesso!");
                 sincronizarBase();
                 tabela();
@@ -238,7 +238,7 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
             ExameResultado aluno = tbExameResultado.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Ficha Aula Pratica para:: " + aluno.getExame().getAluno().getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactury().exameResultadoDAO().reportFichaAulaPratica(aluno.getExame().getAluno().getIdAluno(), aluno.getExame().getAluno().getNome());
+                DAOFactory.daoFactory().exameResultadoDAO().reportFichaAulaPratica(aluno.getExame().getAluno().getIdAluno(), aluno.getExame().getAluno().getNome());
             }
             tbExameResultado.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
@@ -260,8 +260,8 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
      * Sincronizar dados com banco de dados
      */
     private void sincronizarBase() {
-        listaExame = DAOFactory.daoFactury().exameDAO().findAll();
-        listaExameResultado = DAOFactory.daoFactury().exameResultadoDAO().findAll();
+        listaExame = DAOFactory.daoFactory().exameDAO().findAll();
+        listaExameResultado = DAOFactory.daoFactory().exameResultadoDAO().findAll();
     }
 
     /**

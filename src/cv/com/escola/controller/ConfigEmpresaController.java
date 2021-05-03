@@ -32,6 +32,7 @@ public class ConfigEmpresaController extends SubMenusConfig implements Initializ
         menuConfigEmpresa(null);
     }  
     
+    
     @SuppressWarnings("LeakingThisInConstructor")
     public ConfigEmpresaController(){
         try {
