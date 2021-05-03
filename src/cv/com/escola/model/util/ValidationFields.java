@@ -27,7 +27,7 @@ public class ValidationFields {
 
     public static final String STILE_BORDER_VALIDATION = "-fx-border-color: #FF0000";
     
-    public ValidationFields() {
+    private ValidationFields() {
         super();
     }
     
