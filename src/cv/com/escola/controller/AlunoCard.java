@@ -49,7 +49,7 @@ public class AlunoCard extends AnchorPane {
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public AlunoCard(Aluno aluno) {
 
-        alunoID = aluno.getIdAluno();
+        alunoID = aluno.getId();
         
         anchorPane = new AnchorPane();
         anchorPaneImag = new AnchorPane();

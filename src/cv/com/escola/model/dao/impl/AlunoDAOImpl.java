@@ -32,12 +32,12 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate template;
     private static final StringBuilder INSERT_QUERY = new StringBuilder();
 
     public AlunoDAOImpl() {
         super();
-        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.dataSource());
+        template = new JdbcTemplate(HikariCPDataSource.dataSource());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
                     updateQuery.toString()
             )) {
                 mapToSave(aluno, pstmt);
-                pstmt.setInt(21, aluno.getIdAluno());
+                pstmt.setInt(21, aluno.getId());
                 pstmt.executeUpdate();
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
@@ -90,7 +90,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
     public List<Aluno> findAll() {
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM ").append(db).append(".tb_aluno order by nome");
-        return jdbcTemplate.query(query.toString(), new AlunoMapper());
+        return template.query(query.toString(), new AlunoMapper());
     }
 
     @Override
@@ -124,7 +124,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Aluno aluno = new Aluno();
-                    aluno.setIdAluno(resultSet.getInt("id_aluno"));
+                    aluno.setId(resultSet.getInt("id_aluno"));
                     aluno.setNome(resultSet.getString("nome"));
                     aluno.setNumBI(resultSet.getString("numBI"));
                     alunos.add(aluno);
@@ -237,7 +237,7 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     private Aluno mapRowToObject(ResultSet resultSet) throws SQLException {
         Aluno aluno = new Aluno();
-        aluno.setIdAluno(resultSet.getInt("id_aluno"));
+        aluno.setId(resultSet.getInt("id_aluno"));
         aluno.setNome(resultSet.getString("nome"));
         aluno.setDataNascimento(Tempo.toDate(resultSet.getTimestamp("dataNascimento")));
         aluno.setNumBI(resultSet.getString("numBI"));

@@ -3,16 +3,14 @@ package cv.com.escola;
 
 import cv.com.escola.model.util.Criptografia;
 import java.text.MessageFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class NewMain {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NewMain.class);
     
     public static void main(String[] args) {
         
-        LOGGER.debug(MessageFormat.format("hash: {0}", Criptografia.converter("test")));
+        log.info(MessageFormat.format("hash: {0}", Criptografia.converter("test")));
     }
     
 }

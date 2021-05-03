@@ -6,14 +6,15 @@ import java.time.LocalDate;
 import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import lombok.AllArgsConstructor;
 
-
+@AllArgsConstructor
 public class Venda implements Serializable{
 
-    private Integer idVenda;
+    private Integer id;
     private String numFatura;
     private LocalDate data;
-    private BigDecimal valor;
+    private BigDecimal subTotal;
     private BigDecimal desconto;
     private BigDecimal valorTotal;
     private boolean pago;
@@ -26,22 +27,9 @@ public class Venda implements Serializable{
         super();
     }
 
-    public Venda(Integer idVenda, LocalDate data, BigDecimal valor, BigDecimal desconto, boolean pago, Cliente cliente, Usuario usuario, String meioDePagamento, String numFatura, BigDecimal valorTotal) {
-        this.idVenda = idVenda;
+    public Venda(LocalDate data, BigDecimal subTotal, boolean pago, Cliente cliente, Usuario usuario, String meioDePagamento, String numFatura) {
         this.data = data;
-        this.valor = valor;
-        this.desconto = desconto;
-        this.pago = pago;
-        this.cliente = cliente;
-        this.usuario = usuario;
-        this.meioDePagamento = meioDePagamento;
-        this.numFatura = numFatura;
-        this.valorTotal = valorTotal;
-    }
-
-    public Venda(LocalDate data, BigDecimal valor, boolean pago, Cliente cliente, Usuario usuario, String meioDePagamento, String numFatura) {
-        this.data = data;
-        this.valor = valor;
+        this.subTotal = subTotal;
         this.pago = pago;
         this.cliente = cliente;
         this.usuario = usuario;
@@ -52,9 +40,9 @@ public class Venda implements Serializable{
     public Venda(int idVenda, LocalDate data, BigDecimal valor, boolean pago,
             String meioDePagamento, BigDecimal desconto, String numFatura,
             Cliente cliente, Usuario usuario, BigDecimal valorTotal) {
-        this.idVenda = idVenda;
+        this.id = idVenda;
         this.data = data;
-        this.valor = valor;
+        this.subTotal = valor;
         this.pago = pago;
         this.meioDePagamento = meioDePagamento;
         this.desconto = desconto;
@@ -64,12 +52,12 @@ public class Venda implements Serializable{
         this.valorTotal = valorTotal;
     }
 
-    public Integer getIdVenda() {
-        return idVenda;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdVenda(Integer idVenda) {
-        this.idVenda = idVenda;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public LocalDate getData() {
@@ -80,12 +68,12 @@ public class Venda implements Serializable{
         this.data = data;
     }
 
-    public BigDecimal getValor() {
-        return valor;
+    public BigDecimal getSubTotal() {
+        return subTotal;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
+    public void setSubTotal(BigDecimal subTotal) {
+        this.subTotal = subTotal;
     }
 
     public BigDecimal getDesconto() {
@@ -160,7 +148,7 @@ public class Venda implements Serializable{
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.idVenda);
+        hash = 59 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -176,7 +164,7 @@ public class Venda implements Serializable{
             return false;
         }
         final Venda other = (Venda) obj;
-        return Objects.equals(this.idVenda, other.idVenda);
+        return Objects.equals(this.id, other.id);
     }
 
 }

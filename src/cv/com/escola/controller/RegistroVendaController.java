@@ -818,7 +818,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colFormaPag.setCellValueFactory(new PropertyValueFactory<>("meioDePagamento"));
         colDataVenda.setCellValueFactory(new PropertyValueFactory<>("data"));
         colSituacao.setCellValueFactory((CellDataFeatures<Venda, Boolean> p) -> new ReadOnlyObjectWrapper(p.getValue().isPago()));
-        colSubTotalV.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValor()));
+        colSubTotalV.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getSubTotal()));
         colValorTotal.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValorTotal()));
         colDesconto.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getDesconto()));
 
@@ -894,7 +894,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Recibo/Fatura n°:: " + vendas.getNumFatura() + "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().orderDAO().reportReciboFatura(vendas.getIdVenda());
+                DAOFactory.daoFactory().orderDAO().reportReciboFatura(vendas.getId());
             }
             tbVendas.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
@@ -958,7 +958,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             telaCadastro(null);
 
             dataVenda.setValue(dadosVenda.getData());
-            txtValorSubTotal.setText(dadosVenda.getValor().toString());
+            txtValorSubTotal.setText(dadosVenda.getSubTotal().toString());
             txtValorTotal.setText(dadosVenda.getValorTotal().toString());
             txtDesconto.setText(dadosVenda.getDesconto().toString());
             txtUser.setText(dadosVenda.getUsuario().getNome());
@@ -979,7 +979,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             lbTitulo.setText("Vendas Realizadas");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idVenda = dadosVenda.getIdVenda();
+            idVenda = dadosVenda.getId();
 
         } catch (NullPointerException ex) {
             Nota.alerta("Selecione uma venda na tabela para edição!");
@@ -992,8 +992,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir venda " + vendas.getNumFatura() + "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().itemDAO().delete(vendas.getIdVenda());
-                DAOFactory.daoFactory().orderDAO().delete(vendas.getIdVenda());
+                DAOFactory.daoFactory().itemDAO().delete(vendas.getId());
+                DAOFactory.daoFactory().orderDAO().delete(vendas.getId());
                 sincronizarBase();
                 tabela();
                 gerarNumRecibo();
@@ -1016,7 +1016,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Cliente cliente = cbCliente.getValue();
             String formaDePagamento = cbFormaPag.getValue();
             boolean pago = rbSituacao.isSelected();
-            LocalDate dataVendas = dataVenda.getValue();
+            LocalDate data = dataVenda.getValue();
             BigDecimal valorSubTotal = new BigDecimal(txtValorSubTotal.getText().trim().isEmpty() ? "0.00" : txtValorSubTotal.getText());
             BigDecimal descontos = new BigDecimal(txtDesconto.getText().trim().isEmpty() ? "0.00" : txtDesconto.getText());
             BigDecimal total = new BigDecimal(txtValorTotal.getText().trim().isEmpty() ? valorSubTotal.toString() : txtValorTotal.getText());
@@ -1025,7 +1025,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 Nota.alerta("Preencher campos vazios!");
             } else {
                 if (validarDados()) {
-                    Venda venda = new Venda(idVenda, dataVendas, valorSubTotal, descontos, pago, cliente, user, formaDePagamento, numRecibo, total);
+                    Venda venda = new Venda(idVenda, data, valorSubTotal, pago, formaDePagamento, descontos, numRecibo, cliente, user, total);
                     venda.setItens(itensVenda);
                     
                     if (idVenda == 0) {
@@ -1038,7 +1038,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                     telaCadastro(null);
                     sincronizarBase();
                     gerarNumRecibo();
-                    DAOFactory.daoFactory().orderDAO().reportReciboFatura(DAOFactory.daoFactory().orderDAO().buscarUltimaVenda().getIdVenda());
+                    DAOFactory.daoFactory().orderDAO().reportReciboFatura(DAOFactory.daoFactory().orderDAO().buscarUltimaVenda().getId());
                 }
             }
         } catch (NumberFormatException ex) {
@@ -1149,7 +1149,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                 Integer quantia = Integer.parseInt(txtQuantia.getText());
                 BigDecimal valor = new BigDecimal(txtCustoItem.getText());
                 Venda vendaId = new Venda();
-                vendaId.getIdVenda();
+                vendaId.getId();
 
                 Item item = new Item(idItemVenda, artigoList, quantia, valor, vendaId);
                 int items = tbItens.getItems().size();

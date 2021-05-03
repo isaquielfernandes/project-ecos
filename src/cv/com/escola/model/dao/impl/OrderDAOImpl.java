@@ -71,7 +71,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             )) {
                 int index = 0;
                 orderStatement.setTimestamp(++index, Tempo.toTimestamp(venda.getData()));
-                orderStatement.setBigDecimal(++index, venda.getValor());
+                orderStatement.setBigDecimal(++index, venda.getSubTotal());
                 orderStatement.setBoolean(++index, venda.isPago());
                 orderStatement.setInt(++index, venda.getCliente().getIdCliente());
                 orderStatement.setInt(++index, venda.getUsuario().getId());
@@ -125,7 +125,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     private void mapToSave(final PreparedStatement pstmt, Venda venda) throws SQLException {
         int index = 0;
         pstmt.setTimestamp(++index, Tempo.toTimestamp(venda.getData()));
-        pstmt.setBigDecimal(++index, venda.getValor());
+        pstmt.setBigDecimal(++index, venda.getSubTotal());
         pstmt.setBoolean(++index, venda.isPago());
         pstmt.setInt(++index, venda.getCliente().getIdCliente());
         pstmt.setInt(++index, venda.getUsuario().getId());
@@ -134,8 +134,8 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         pstmt.setString(++index, venda.getNumFatura());
         pstmt.setBigDecimal(++index, venda.getValorTotal());
 
-        if (venda.getIdVenda() != 0) {
-            pstmt.setInt(++index, venda.getIdVenda());
+        if (venda.getId() != 0) {
+            pstmt.setInt(++index, venda.getId());
         }
         pstmt.executeUpdate();
     }
@@ -252,7 +252,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    retorno.setIdVenda(resultSet.getInt("last_id"));
+                    retorno.setId(resultSet.getInt("last_id"));
                 }
             }
             preparedStatement.closeOnCompletion();
@@ -270,7 +270,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         Venda retorno = null;
         try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, venda.getIdVenda());
+            preparedStatement.setInt(1, venda.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Cliente cliente = new Cliente(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10),

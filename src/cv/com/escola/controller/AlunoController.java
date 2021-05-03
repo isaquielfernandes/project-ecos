@@ -376,7 +376,7 @@ public class AlunoController extends HeroActions implements Initializable {
         txtFreguesia.setText(aluno.getFreguesia());
         lbTitulo.setText("Editar Aluno");
         menu.selectToggle(menu.getToggles().get(1));
-        idAluno = aluno.getIdAluno();
+        idAluno = aluno.getId();
     }
 
     private File writeBinaryIntoFile(Aluno aluno) {
@@ -414,7 +414,7 @@ public class AlunoController extends HeroActions implements Initializable {
             Aluno aluno = alunoSelected(selectionModel);
             Dialogo.Resposta response = Mensagem.confirmar("Excluir Aluno: " + aluno.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().alunoDAO().delete(aluno.getIdAluno());
+                DAOFactory.daoFactory().alunoDAO().delete(aluno.getId());
                 sincronizarDataBase();
                 mapTableAluno();
             }

@@ -21,7 +21,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Slf4j
 public abstract class DAO {
     
-    protected final JdbcTemplate template;
+    protected final JdbcTemplate jdbcTemplate;
     protected ResultSet rs;
     protected PreparedStatement preparedStatement = null;
     protected String db = DBProperties.loadPropertiesDB();
@@ -30,7 +30,7 @@ public abstract class DAO {
     
     protected DAO() {
         super();
-        template = new JdbcTemplate(HikariCPDataSource.dataSource());
+        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.dataSource());
     }
     
     protected void transact(Consumer<Connection> callback) {

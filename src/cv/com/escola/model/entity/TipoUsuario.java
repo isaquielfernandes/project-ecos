@@ -1,7 +1,10 @@
 package cv.com.escola.model.entity;
 
-public class TipoUsuario {
-     private int id;
+import java.io.Serializable;
+
+public class TipoUsuario implements Serializable {
+
+    private int id;
     private String nome;
 
     public TipoUsuario(int id, String nome) {

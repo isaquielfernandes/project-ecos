@@ -53,7 +53,7 @@ public class MatriculaDAOImpl extends DAO implements MatriculaDAO {
 
     private void mspToSave(final PreparedStatement pstmt, Matricula matricula) throws SQLException {
         pstmt.setTimestamp(1, Tempo.toTimestamp(matricula.getData()));
-        pstmt.setLong(2, matricula.getAluno().getIdAluno());
+        pstmt.setLong(2, matricula.getAluno().getId());
         pstmt.setLong(3, matricula.getCursoPretendido().getCodigo());
         pstmt.setString(4, matricula.getTurma());
         pstmt.setString(5, matricula.getPeriodo());

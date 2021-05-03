@@ -38,7 +38,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
                 pstmt.setLong(3, item.getArtigo().getId());
-                pstmt.setInt(4, item.getVenda().getIdVenda());
+                pstmt.setInt(4, item.getVenda().getId());
                 
                 pstmt.executeUpdate();
             } catch (SQLException e) {
@@ -52,7 +52,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         INSERT_ITEM.append("INSERT INTO ").append(db)
                 .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?);");
 
-        items.forEach(item -> {
+        items.forEach(item -> 
             transact((Connection connection) -> {
                 try (PreparedStatement pstmt = connection.prepareStatement(
                         INSERT_ITEM.toString()
@@ -62,8 +62,8 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 } catch (SQLException e) {
                     throw new DataAccessException(e);
                 }
-            });
-        });
+            })
+        );
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         pstmt.setInt(1, item.getQuantidade());
         pstmt.setBigDecimal(2, item.getValorUnitario());
         pstmt.setLong(3, item.getArtigo().getId());
-        pstmt.setInt(4, item.getVenda().getIdVenda());
+        pstmt.setInt(4, item.getVenda().getId());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         List<Item> itens = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idVenda.getIdVenda());
+            preparedStatement.setInt(1, idVenda.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     mapResultSet(itens, resultSet);

@@ -155,7 +155,7 @@ public class ExameController extends AnchorPane implements Initializable {
     private void tabelaAluno() {
         ObservableList data = FXCollections.observableArrayList(listaAluno);
         colAlunoID.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> 
-                new SimpleStringProperty(Integer.toString(obj.getValue().getIdAluno())));
+                new SimpleStringProperty(Integer.toString(obj.getValue().getId())));
         colAlunoNome.setCellValueFactory((TableColumn.CellDataFeatures<Aluno, String> obj) -> new SimpleStringProperty(obj.getValue().getNome()));
         tbAluno.setItems(data);
         cbAluno.setItems(data);
@@ -163,7 +163,7 @@ public class ExameController extends AnchorPane implements Initializable {
 
     public void showAlunoSelected(Aluno aluno) {
         if (aluno != null) {
-            txtIdAluno.setText(String.valueOf(aluno.getIdAluno()));
+            txtIdAluno.setText(String.valueOf(aluno.getId()));
             txtNomeAluno.setText(aluno.getNome());
         } else {
             txtIdAluno.setText("");
@@ -301,7 +301,7 @@ public class ExameController extends AnchorPane implements Initializable {
             telaCadastro(null);
 
             cbAluno.setValue(exame.getAluno());
-            txtIdAluno.setText(exame.getAluno().getIdAluno().toString());
+            txtIdAluno.setText(exame.getAluno().getId().toString());
             cbTipo.setValue(exame.getTipoExame());
             cbCategoria.setValue(exame.getCategoria());
             dtExame.setValue(exame.getDataExame());

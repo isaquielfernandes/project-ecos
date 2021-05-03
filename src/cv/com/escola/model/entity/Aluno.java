@@ -18,12 +18,12 @@ import org.apache.poi.util.IOUtils;
 
 public class Aluno {
     
-    private IntegerProperty idAluno;
-    public Integer getIdAluno() { return idAlunoProperty().get(); }
-    public void setIdAluno(int value) { idAlunoProperty().set(value);}
+    private IntegerProperty id;
+    public Integer getId() { return idAlunoProperty().get(); }
+    public void setId(int value) { idAlunoProperty().set(value);}
     public IntegerProperty idAlunoProperty(){
-        if(idAluno == null) idAluno = new SimpleIntegerProperty(this, "idAluno");
-        return idAluno;
+        if(id == null) id = new SimpleIntegerProperty(this, "id");
+        return id;
     }
     
     private StringProperty nome;
@@ -204,23 +204,23 @@ public class Aluno {
         this.nome = new SimpleStringProperty(nome);
     }
     public Aluno(Integer idAluno, String nome, String value) {
-        this.idAluno = new SimpleIntegerProperty(idAluno);
+        this.id = new SimpleIntegerProperty(idAluno);
         this.nome = new SimpleStringProperty(nome);
         this.numBI = new SimpleStringProperty(value);
     }
     
     public Aluno(int idAluno, String nome) {
-        this.idAluno = new SimpleIntegerProperty(idAluno);
+        this.id = new SimpleIntegerProperty(idAluno);
         this.nome = new SimpleStringProperty(nome);
     }
 
-    public Aluno(int idAluno, String nome, LocalDate dataNascimento, String numBI, 
+    public Aluno(int id, String nome, LocalDate dataNascimento, String numBI, 
             LocalDate dataEmisao, String residencia, String conselho, String natural, 
             String email, String contato, String habilitacaoLit, 
             String nacionalidade, String descricao, String nomeDaMae, 
             String nomeDoPai, String professao, String estadoCivil, 
             String localDeEmisao, String freguesia) {
-        this.idAluno = new SimpleIntegerProperty(idAluno);
+        this.id = new SimpleIntegerProperty(id);
         this.nome = new SimpleStringProperty(nome);
         this.dataNascimento = new SimpleObjectProperty(dataNascimento);
         this.numBI = new SimpleStringProperty(numBI);
@@ -258,7 +258,7 @@ public class Aluno {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.idAluno);
+        hash = 97 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -274,7 +274,7 @@ public class Aluno {
             return false;
         }
         final Aluno other = (Aluno) obj;
-        return Objects.equals(this.idAluno, other.idAluno);
+        return Objects.equals(this.id, other.id);
     }
 
     @Override

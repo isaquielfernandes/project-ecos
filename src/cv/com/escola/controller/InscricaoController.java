@@ -325,7 +325,7 @@ public class InscricaoController extends AnchorPane implements Initializable {
 
         Aluno aluno = listViewAluno.getSelectionModel().getSelectedItem();
         if (aluno != null) {
-            aluno.setIdAluno(aluno.getIdAluno());
+            aluno.setId(aluno.getId());
         }
         LocalDate dataInsc = dataInscricao.getValue();
         Curso curso = cbCurso.getValue();

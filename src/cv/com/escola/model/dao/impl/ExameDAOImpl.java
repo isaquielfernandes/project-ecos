@@ -76,7 +76,7 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
         pstmt.setString(3, marcar.getHoraDeExame().toString());
         pstmt.setString(4, marcar.getDescricao());
         pstmt.setInt(5, marcar.getCategoria().getId());
-        pstmt.setInt(6, marcar.getAluno().getIdAluno());
+        pstmt.setInt(6, marcar.getAluno().getId());
         if (marcar.getIdExame() != 0) {
             pstmt.setLong(7, marcar.getIdExame());
         }
