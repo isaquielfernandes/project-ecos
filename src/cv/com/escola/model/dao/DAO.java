@@ -130,7 +130,7 @@ public abstract class DAO {
     protected int count(String sql) {
         try (Connection connection = HikariCPDataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);) {
-            statement.setQueryTimeout(1);
+            statement.setQueryTimeout(2);
             try (ResultSet resultSet = statement.executeQuery();) {
                 if (!resultSet.next()) {
                     throw new IllegalArgumentException("There was no row to be selected!");
