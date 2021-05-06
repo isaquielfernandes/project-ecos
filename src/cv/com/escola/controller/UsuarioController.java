@@ -148,7 +148,7 @@ public class UsuarioController extends UserCommunField implements Initializable 
             Usuario usuario = tbUsuario.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir usuário " + usuario.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().usuarioDAO().delete(usuario.getId());
+                DAOFactory.daoFactory().usuarioDAO().delete(usuario.getId().intValue());
                 sincronizarBase();
                 tabela();
             }

@@ -2,13 +2,9 @@ package cv.com.escola.model.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class Item implements Serializable {
+public class Item extends EntidadeAbstrata implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    
-    private Long idItem;
     private Artigo artigo;
     private Integer quantidade;
     private BigDecimal valorUnitario;
@@ -18,8 +14,8 @@ public class Item implements Serializable {
     public Item() {
     }
 
-    public Item(long idItem, Artigo artigo, int quantidade, BigDecimal valor, Venda venda) {
-        this.idItem = idItem;
+    public Item(long id, Artigo artigo, int quantidade, BigDecimal valor, Venda venda) {
+        this.id = id;
         this.artigo = artigo;
         this.quantidade = quantidade;
         this.valorUnitario = valor;
@@ -31,14 +27,6 @@ public class Item implements Serializable {
         this.quantidade = quantidade;
         this.valorUnitario = valor;
         this.venda = venda;
-    }
-
-    public Long getIdItem() {
-        return idItem;
-    }
-
-    public void setIdItem(Long idItem) {
-        this.idItem = idItem;
     }
 
     public Integer getQuantidade() {
@@ -81,25 +69,4 @@ public class Item implements Serializable {
         this.venda = venda;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 11 * hash + Objects.hashCode(this.idItem);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Item other = (Item) obj;
-        return Objects.equals(this.idItem, other.idItem);
-    }
 }

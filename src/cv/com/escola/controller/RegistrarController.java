@@ -38,11 +38,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * FXML Controller class
- *
- * @author Isaquiel Fernandes
- */
+
 @Slf4j
 public class RegistrarController extends UserCommunField implements Initializable{
 
@@ -181,7 +177,7 @@ public class RegistrarController extends UserCommunField implements Initializabl
             Usuario usuario = tbUsuario.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir usuário " + usuario.getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().usuarioDAO().delete(usuario.getId());
+                DAOFactory.daoFactory().usuarioDAO().delete(usuario.getId().intValue());
                 sincronizarBase();
                 tabela();
             }

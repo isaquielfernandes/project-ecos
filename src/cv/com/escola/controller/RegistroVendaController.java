@@ -104,7 +104,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private List<Cliente> listaCliente;
     private int idVenda;
     private int idItemVenda = 0;
-    private int idItem;
+    private int[] idsItem;
     private int quantity = 0;
     private int cod;
     private static final int QUANTIDADE_PAGINA = 45;
@@ -666,7 +666,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         tbItens.getSelectionModel().clearSelection();
         menu.selectToggle(menu.getToggles().get(grupoMenu));
 
-        this.idItem = 0;
         this.idVenda = 0;
     }
 
@@ -979,7 +978,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             lbTitulo.setText("Vendas Realizadas");
             menu.selectToggle(menu.getToggles().get(1));
 
-            idVenda = dadosVenda.getId();
+            idVenda = dadosVenda.getId().intValue();
 
         } catch (NullPointerException ex) {
             Nota.alerta("Selecione uma venda na tabela para edição!");
@@ -992,8 +991,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Excluir venda " + vendas.getNumFatura() + "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().itemDAO().delete(vendas.getId());
-                DAOFactory.daoFactory().orderDAO().delete(vendas.getId());
+                DAOFactory.daoFactory().orderDAO().delete(vendas.getId().intValue());
                 sincronizarBase();
                 tabela();
                 gerarNumRecibo();
@@ -1190,13 +1188,13 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private boolean validarDados() {
         String errorMessage = "";
         if (tbItens.getItems().isEmpty()) {
-            errorMessage += "Adicione Itens de Venda na tabela!\n";
+            errorMessage += "Adicione Itens de Venda na tabela!";
         }
 
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            Nota.erro("Campos inválidos, por favor, corrija... " + errorMessage);
+            Nota.alerta("Campos Obrigatorio! " + errorMessage);
             return false;
         }
     }
@@ -1445,8 +1443,8 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         return listaDeItem;
     }
 
-    public int getIdItem() {
-        return idItem;
+    public int[] getIdsItem() {
+        return idsItem;
     }
 
     public List<Venda> getListVendas() {

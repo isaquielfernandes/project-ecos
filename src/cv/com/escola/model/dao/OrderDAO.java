@@ -10,7 +10,7 @@ public interface OrderDAO extends CrudDAO<Venda, Integer>{
 
     Venda buscar(Venda venda);
     Venda buscarUltimaVenda();
-    void reportReciboFatura(int biFiltro);
+    void reportReciboFatura(Long biFiltro);
     BigDecimal totalAnual(String ano);
     int ultimoRegisto(int ano);
     int ultimoRegisto();

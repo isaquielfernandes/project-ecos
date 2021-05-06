@@ -19,7 +19,7 @@ import javafx.scene.layout.GridPane;
 public abstract class UserCommunField extends AnchorPane {
     
     protected List<Usuario> listaUsuario;
-    protected int idUsuario = 0;
+    protected long idUsuario = 0;
     @FXML
     protected Label lbTitulo;
     @FXML

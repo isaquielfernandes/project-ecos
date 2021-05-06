@@ -3,15 +3,13 @@ package cv.com.escola.model.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class Venda implements Serializable{
+public class Venda extends EntidadeAbstrata implements Serializable {
 
-    private Integer id;
     private String numFatura;
     private LocalDate data;
     private BigDecimal subTotal;
@@ -37,10 +35,10 @@ public class Venda implements Serializable{
         this.numFatura = numFatura;
     }
 
-    public Venda(int idVenda, LocalDate data, BigDecimal valor, boolean pago,
+    public Venda(long id, LocalDate data, BigDecimal valor, boolean pago,
             String meioDePagamento, BigDecimal desconto, String numFatura,
             Cliente cliente, Usuario usuario, BigDecimal valorTotal) {
-        this.id = idVenda;
+        this.id = id;
         this.data = data;
         this.subTotal = valor;
         this.pago = pago;
@@ -50,14 +48,6 @@ public class Venda implements Serializable{
         this.cliente = cliente;
         this.usuario = usuario;
         this.valorTotal = valorTotal;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public LocalDate getData() {
@@ -91,9 +81,8 @@ public class Venda implements Serializable{
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
-    
-    
-    public boolean isPago() {   
+
+    public boolean isPago() {
         return pago;
     }
 
@@ -140,31 +129,9 @@ public class Venda implements Serializable{
     public void setNumFatura(String numFatura) {
         this.numFatura = numFatura;
     }
-    
+
     public void addItem(Item itemVenda) {
         itens.add(itemVenda);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.id);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Venda other = (Venda) obj;
-        return Objects.equals(this.id, other.id);
     }
 
 }

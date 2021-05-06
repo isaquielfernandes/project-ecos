@@ -38,7 +38,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                 pstmt.setInt(1, item.getQuantidade());
                 pstmt.setBigDecimal(2, item.getValorUnitario());
                 pstmt.setLong(3, item.getArtigo().getId());
-                pstmt.setInt(4, item.getVenda().getId());
+                pstmt.setLong(4, item.getVenda().getId());
                 
                 pstmt.executeUpdate();
             } catch (SQLException e) {
@@ -76,7 +76,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
                     UPDATE_ITEM.toString()
             )) {
                 mapToSave(pstmt, item);
-                pstmt.setLong(5, item.getIdItem());
+                pstmt.setLong(5, item.getId());
                 pstmt.executeUpdate();
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
@@ -88,7 +88,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         pstmt.setInt(1, item.getQuantidade());
         pstmt.setBigDecimal(2, item.getValorUnitario());
         pstmt.setLong(3, item.getArtigo().getId());
-        pstmt.setInt(4, item.getVenda().getId());
+        pstmt.setLong(4, item.getVenda().getId());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
         List<Item> itens = new ArrayList<>();
         try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, idVenda.getId());
+            preparedStatement.setLong(1, idVenda.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     mapResultSet(itens, resultSet);
@@ -146,7 +146,7 @@ public class ItemDAOImpl extends DAO implements ItemDAO {
 
         Usuario usuario = new Usuario(set.getInt(23), set.getString(24));
 
-        Venda venda = new Venda(set.getInt(8), set.getDate(10).toLocalDate(),
+        Venda venda = new Venda(set.getLong(8), set.getDate(10).toLocalDate(),
                 set.getBigDecimal(13), set.getBoolean(11), set.getString(12),
                 set.getBigDecimal(14), set.getString(9), cliente, usuario, set.getBigDecimal(25));
 

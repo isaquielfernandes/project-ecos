@@ -49,7 +49,7 @@ import cv.com.escola.model.dao.impl.OrderDAOImpl;
  * Classe responsável por realizar o controle dos objetos DAO que contém os
  * CRUDs e diversas operações na base de dados, filtrando a criação desses
  * objetos.
- *g
+ * 
  * @autor Isaquiel Fernandes
  */
 public class DAOFactory {

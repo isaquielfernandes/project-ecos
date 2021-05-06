@@ -74,7 +74,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 orderStatement.setBigDecimal(++index, venda.getSubTotal());
                 orderStatement.setBoolean(++index, venda.isPago());
                 orderStatement.setInt(++index, venda.getCliente().getIdCliente());
-                orderStatement.setInt(++index, venda.getUsuario().getId());
+                orderStatement.setLong(++index, venda.getUsuario().getId());
                 orderStatement.setString(++index, venda.getMeioDePagamento());
                 orderStatement.setBigDecimal(++index, venda.getDesconto());
                 orderStatement.setString(++index, venda.getNumFatura());
@@ -128,14 +128,14 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         pstmt.setBigDecimal(++index, venda.getSubTotal());
         pstmt.setBoolean(++index, venda.isPago());
         pstmt.setInt(++index, venda.getCliente().getIdCliente());
-        pstmt.setInt(++index, venda.getUsuario().getId());
+        pstmt.setLong(++index, venda.getUsuario().getId());
         pstmt.setString(++index, venda.getMeioDePagamento());
         pstmt.setBigDecimal(++index, venda.getDesconto());
         pstmt.setString(++index, venda.getNumFatura());
         pstmt.setBigDecimal(++index, venda.getValorTotal());
 
         if (venda.getId() != 0) {
-            pstmt.setInt(++index, venda.getId());
+            pstmt.setLong(++index, venda.getId());
         }
         pstmt.executeUpdate();
     }
@@ -252,7 +252,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    retorno.setId(resultSet.getInt("last_id"));
+                    retorno.setId(resultSet.getLong("last_id"));
                 }
             }
             preparedStatement.closeOnCompletion();
@@ -270,7 +270,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         Venda retorno = null;
         try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
-            preparedStatement.setInt(1, venda.getId());
+            preparedStatement.setLong(1, venda.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Cliente cliente = new Cliente(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10),
@@ -425,7 +425,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     }
 
     @Override
-    public void reportReciboFatura(int biFiltro) {
+    public void reportReciboFatura(Long biFiltro) {
         try (Connection conector = HikariCPDataSource.getConnection()) {
             Map<String, Object> filtro = new HashMap<>();
             filtro.put("id_venda", biFiltro);

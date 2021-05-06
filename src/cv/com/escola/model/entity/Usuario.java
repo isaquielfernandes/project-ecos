@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 
-public class Usuario implements Serializable {
-    
-    private int id;
+public class Usuario extends EntidadeAbstrata implements Serializable {
+
     private String nome;
     private String login;
     private String senha;
@@ -19,12 +18,12 @@ public class Usuario implements Serializable {
     public Usuario() {
     }
 
-    public Usuario(int id, String nome) {
+    public Usuario(long id, String nome) {
         this.id = id;
         this.nome = nome;
     }
 
-    public Usuario(int id, String nome, String login, String senha, String email, boolean status, LocalDate dataCriacao, String descricao, TipoUsuario tipoUsuario) {
+    public Usuario(long id, String nome, String login, String senha, String email, boolean status, LocalDate dataCriacao, String descricao, TipoUsuario tipoUsuario) {
         this.id = id;
         this.nome = nome;
         this.login = login;
@@ -34,14 +33,6 @@ public class Usuario implements Serializable {
         this.descricao = descricao;
         this.tipoUsuario = tipoUsuario;
         this.status = status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
