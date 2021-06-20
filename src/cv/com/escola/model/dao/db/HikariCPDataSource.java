@@ -37,7 +37,6 @@ public class HikariCPDataSource {
         CONFIG.setUsername(USER);
         CONFIG.setPassword(PWD);
         CONFIG.addDataSourceProperty("cachePrepStmts", "true");
-        CONFIG.setAutoCommit(false);
         CONFIG.setMaximumPoolSize(cpuCores * 4);
         CONFIG.addDataSourceProperty("cachePrepStmts" , "true" );
         CONFIG.addDataSourceProperty("prepStmtCacheSize", "150");
@@ -54,7 +53,6 @@ public class HikariCPDataSource {
             Logger.getLogger(HikariCPDataSource.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-
     }
 
     public static HikariDataSource dataSource() {

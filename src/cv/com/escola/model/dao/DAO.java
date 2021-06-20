@@ -1,5 +1,6 @@
 package cv.com.escola.model.dao;
 
+import com.zaxxer.hikari.HikariDataSource;
 import cv.com.escola.model.dao.db.DBProperties;
 import cv.com.escola.model.dao.db.HikariCPDataSource;
 import cv.com.escola.model.dao.exception.DataAccessException;
@@ -30,7 +31,11 @@ public abstract class DAO {
     
     protected DAO() {
         super();
-        jdbcTemplate = new JdbcTemplate(HikariCPDataSource.dataSource());
+        jdbcTemplate = new JdbcTemplate(dataSource());
+    }
+
+    private static HikariDataSource dataSource() {
+        return HikariCPDataSource.dataSource();
     }
     
     protected void transact(Consumer<Connection> callback) {
@@ -40,18 +45,23 @@ public abstract class DAO {
     protected void transact(Consumer<Connection> callback, Consumer<Connection> before) {
         Connection connection = null;
         try {
-            connection = HikariCPDataSource.getConnection();
+            connection = getConnection();
             if(before != null) 
                 before.accept(connection);
             connection.setAutoCommit(false);
             callback.accept(connection);
             connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             rollBack(connection);
             throw new DataAccessException(e);
         } finally {
             close(connection);
         }
+    }
+
+    private static Connection getConnection() {
+        return HikariCPDataSource.getConnection();
     }
     
     private void rollBack(Connection connection) throws DataAccessException {
@@ -74,17 +84,33 @@ public abstract class DAO {
         }
     }
     
-    protected int update(Connection connection, String sql, Object[] params) {
+    protected void update(String sql, Object[] params) {
+        transact((Connection connection) -> {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    sql
+            )) {
+                pstmt.setQueryTimeout(1);
+                for (int i = 0; i < params.length; i++) {
+                    pstmt.setObject(i + 1, params[i]);
+                }
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        });
+    }
+    
+    protected int update(Connection connection, String sql, Object[] params){
         try {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setQueryTimeout(1);
-                for (int i = 0; i < params.length; i++) {
-                    statement.setObject(i + 1, params[i]);
+                for(int idx = 0; idx < params.length; idx++) {
+                    statement.setObject(idx + 1, params[idx]);
                 }
                 return statement.executeUpdate();
             }
-        } catch (SQLException ex) {
-            throw new IllegalStateException(ex);
+        } catch (SQLException e) {
+            throw new IllegalStateException();
         }
     }
     
@@ -106,20 +132,21 @@ public abstract class DAO {
             )) {
                 pstmt.setQueryTimeout(1);
                 pstmt.setObject(1, id);
+                log.debug(MessageFormat.format("SQL: {0}.", query));
                 pstmt.execute();
-                log.info(MessageFormat.format("SQL: {0}.", query));
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
             }
         });
     }
     
-    protected void find(Consumer<Connection> callback) {
+    protected void read(Consumer<Connection> callback) {
         Connection connection = null;
         try {
-            connection = HikariCPDataSource.getConnection();
-            callback.accept(connection);
+            connection = getConnection();
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            callback.accept(connection);
+            connection.setTransactionIsolation(0);
         } catch (SQLException e) {
             throw new DataAccessException(e);
         } finally {
@@ -128,9 +155,9 @@ public abstract class DAO {
     }
     
     protected int count(String sql) {
-        try (Connection connection = HikariCPDataSource.getConnection();
+        try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);) {
-            statement.setQueryTimeout(2);
+            statement.setQueryTimeout(1);
             try (ResultSet resultSet = statement.executeQuery();) {
                 if (!resultSet.next()) {
                     throw new IllegalArgumentException("There was no row to be selected!");

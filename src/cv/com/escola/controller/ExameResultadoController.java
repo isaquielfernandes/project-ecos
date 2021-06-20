@@ -238,7 +238,7 @@ public class ExameResultadoController extends AnchorPane implements Initializabl
             ExameResultado aluno = tbExameResultado.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Ficha Aula Pratica para:: " + aluno.getExame().getAluno().getNome() + " ?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().exameResultadoDAO().reportFichaAulaPratica(aluno.getExame().getAluno().getId(), aluno.getExame().getAluno().getNome());
+                DAOFactory.daoFactory().exameResultadoDAO().gerarFichaDeAulaPratica(aluno.getExame().getAluno().getId(), aluno.getExame().getAluno().getNome());
             }
             tbExameResultado.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {

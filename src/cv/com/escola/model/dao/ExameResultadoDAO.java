@@ -4,6 +4,6 @@ import cv.com.escola.model.entity.ExameResultado;
 
 public interface ExameResultadoDAO extends CrudDAO<ExameResultado, Long>{
 
-    void reportFichaAulaPratica(Integer id, String nome);
+    public void gerarFichaDeAulaPratica(Integer id, String nome);
     
 }

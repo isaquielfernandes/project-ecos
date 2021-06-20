@@ -82,7 +82,7 @@
 
 .table-row-cell:even:selected {
     -fx-background: -fx-control-inner-background;
-    -fx-background-color: #2cce53;
+    -fx-background-color: #96c440;
     -fx-background-insets: 0px, 1px 0px 1px 0px;
 }
 
@@ -104,7 +104,7 @@
 
 .table-row-cell:odd:selected {
     -fx-background: -fx-control-inner-background;
-    -fx-background-color: #2cce53;
+    -fx-background-color: #96c440;
     -fx-background-insets: 0px, 1px 0px 1px 0px;
     -fx-text-fill: black;
 }

@@ -42,14 +42,9 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
 
     @Override
     public void create(Aluno aluno) {
-        INSERT_QUERY.append("INSERT INTO ").append(db).append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,");
-        INSERT_QUERY.append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ");
-        INSERT_QUERY.append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ");
-        INSERT_QUERY.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)");
-
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    INSERT_QUERY.toString()
+                     insertAlunoSql()
             )) {
                 mapToSave(aluno, pstmt);
                 pstmt.executeUpdate();
@@ -57,6 +52,14 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
                 throw new DataAccessException(ex);
             }
         });
+    }
+
+    private String insertAlunoSql() {
+        return INSERT_QUERY.append("INSERT INTO ").append(db)
+                .append(".tb_aluno ( nome, dataNascimento, numBI, dataEmisao, resedencia, conselho,")
+                .append("naturalidade, email, contato, habilitacaoLit, nacionalidade, ")
+                .append("foto, fotocopiaBI, descricao, data_cadastro, nomeDaMae, nomeDoPai, professao, estadoCivil, localDeEmisao, freguesia) ")
+                .append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(),?,?,?,?,?,?)").toString();
     }
 
     @Override

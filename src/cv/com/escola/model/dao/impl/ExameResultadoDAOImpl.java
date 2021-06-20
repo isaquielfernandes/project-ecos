@@ -13,6 +13,7 @@ import cv.com.escola.model.util.Tempo;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,8 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public void create(ExameResultado resultado) {
         StringBuilder insert = new StringBuilder();
-        insert.append("INSERT INTO ").append(db).append(".`tb_exame_resultado` (`fk_exame`, `resultado`) VALUES (?, ?);");
+        insert.append("INSERT INTO ").append(db)
+                .append(".tb_exame_resultado (fk_exame, resultado) VALUES (?,?);");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
@@ -51,9 +53,11 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public void update(ExameResultado resultado) {
         StringBuilder update = new StringBuilder();
-        update.append("UPDATE ").append(db).append(".`tb_exame_resultado` SET ");
-        update.append("resultado = ?");
-        update.append(" WHERE id_exame_resultado = ? ");
+        update.append("UPDATE ")
+                .append(db)
+                .append(".`tb_exame_resultado` SET ")
+                .append(" resultado = ?")
+                .append(" WHERE id_exame_resultado = ? ");
         
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
@@ -78,29 +82,30 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     @Override
     public void delete(Long idExameResultado) {
         final StringBuilder query = new StringBuilder();
-        query.append("DELETE FROM ").append(db).append(".`tb_exame_resultado` WHERE id_exame_resultado =?");
+        query.append("DELETE FROM ").append(db)
+                .append(".`tb_exame_resultado` WHERE id_exame_resultado =?");
         remove(query.toString(), idExameResultado);
     }
 
     @Override
     public List<ExameResultado> findAll() {
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM ").append(db).append(".resultado_de_exame_view order by Dia desc ");
+            
         List<ExameResultado> dadosExame = new ArrayList<>();
-        try (Connection connection = HikariCPDataSource.getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM ").append(db).append(".resultado_de_exame_view order by Dia desc ");
-            preparedStatement = connection.prepareStatement(query.toString());
-            rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                Exame marcado = new Exame(rs.getInt(2), rs.getString(3),
-                        Tempo.toDate(rs.getTimestamp(4)), rs.getTime(5).toLocalTime(),
-                        rs.getString(6), new Categoria(rs.getInt(7), rs.getString(8)),
-                        new Aluno(rs.getInt(9), rs.getString(10)));
-                ExameResultado resultado = new ExameResultado(rs.getLong(1), marcado, rs.getString(11));
-                dadosExame.add(resultado);
+        try (Connection connection = HikariCPDataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query.toString());
+        ) { 
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Exame marcado = new Exame(resultSet.getInt(2), resultSet.getString(3),
+                            Tempo.toDate(resultSet.getTimestamp(4)), resultSet.getTime(5).toLocalTime(),
+                            resultSet.getString(6), new Categoria(resultSet.getInt(7), resultSet.getString(8)),
+                            new Aluno(resultSet.getInt(9), resultSet.getString(10)));
+                    ExameResultado resultado = new ExameResultado(resultSet.getLong(1), marcado, resultSet.getString(11));
+                    dadosExame.add(resultado);
+                }
             }
-            preparedStatement.close();
-            rs.close();
-
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
@@ -108,7 +113,7 @@ public class ExameResultadoDAOImpl extends DAO implements ExameResultadoDAO {
     }
 
     @Override
-    public void reportFichaAulaPratica(Integer id, String nome) {
+    public void gerarFichaDeAulaPratica(Integer id, String nome) {
         try (Connection connection = HikariCPDataSource.getConnection()) {
             Map<String, Object> filtro = new HashMap<>();
             filtro.put("id", id);

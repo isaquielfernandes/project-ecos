@@ -23,6 +23,7 @@ import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -55,20 +56,13 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     @Override
     public void create(Venda venda) {
-        INSERT_VENDA.append(INSERT_INTO).append(db).append(".tb_vendas (data, valor_total, ");
-        INSERT_VENDA.append("pago, cliente_fk, id_user, meioDePag, desconto, ");
-        INSERT_VENDA.append("num_fatura, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);");
-
-        INSERT_ITEM.append(INSERT_INTO).append(db)
-                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?);");
 
         transact(connection -> {
             try (PreparedStatement orderStatement = connection.prepareStatement(
-                        INSERT_VENDA.toString(), Statement.RETURN_GENERATED_KEYS);
-                    
-                PreparedStatement itemStatement = connection.prepareStatement(
-                        INSERT_ITEM.toString()
-            )) {
+                    insertVendaSql(), Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement itemStatement = connection.prepareStatement(
+                            insertItemSql())
+                ) {
                 int index = 0;
                 orderStatement.setTimestamp(++index, Tempo.toTimestamp(venda.getData()));
                 orderStatement.setBigDecimal(++index, venda.getSubTotal());
@@ -83,37 +77,39 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                 int rowAffected = orderStatement.executeUpdate();
                 ResultSet resultSet = orderStatement.getGeneratedKeys();
 
-                int getLastId = 0;
+                int vendaId = 0;
                 if (resultSet.next()) {
-                    getLastId = resultSet.getInt(1);
-                    log.info(MessageFormat.format("ID: {0}", getLastId));
+                    vendaId = resultSet.getInt(1);
+                    log.info(MessageFormat.format("ID: {0}", vendaId));
                 }
 
                 if (rowAffected == 1) {
-                    for (Item item : venda.getItens()) {
-                        itemStatement.setInt(1, item.getQuantidade());
-                        itemStatement.setBigDecimal(2, item.getValorUnitario());
-                        itemStatement.setLong(3, item.getArtigo().getId());
-                        itemStatement.setInt(4, getLastId);
-                        itemStatement.executeUpdate();
-                    }
-                } 
+                    saveAllItemVenda(venda.getItens(), itemStatement, vendaId);
+                }
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
             }
         });
     }
 
+    private void saveAllItemVenda(List<Item> items, final PreparedStatement itemStatement, int vendaId) throws SQLException {
+        int index = 0;
+        Iterator<Item> it = items.iterator();
+        while (it.hasNext()) {
+            Item item = it.next();
+            itemStatement.setInt(++index, item.getQuantidade());
+            itemStatement.setBigDecimal(++index, item.getValorUnitario());
+            itemStatement.setLong(++index, item.getArtigo().getId());
+            itemStatement.setInt(++index, vendaId);
+            itemStatement.executeUpdate();
+        }
+    }
+
     @Override
     public void update(Venda venda) {
-        StringBuilder updateQuery = new StringBuilder();
-        updateQuery.append("UPDATE ").append(db).append(".tb_vendas SET data = ?, valor_total = ?,");
-        updateQuery.append("pago = ?, cliente_fk = ?, id_user = ?, meioDePag = ?, ");
-        updateQuery.append("desconto = ?, num_fatura = ?, precoTotal = ? WHERE id_vendas = ?;");
-
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
-                    updateQuery.toString()
+                    updateVendaSql()
             )) {
                 mapToSave(pstmt, venda);
             } catch (SQLException ex) {
@@ -156,7 +152,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    mapResultSet(resultSet, vendas);
+                    vendas.add(mapResultSet(resultSet));
                 }
             }
             preparedStatement.closeOnCompletion();
@@ -177,7 +173,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             pstmt.setInt(2, offset);
             try (ResultSet resultSet = pstmt.executeQuery()) {
                 while (resultSet.next()) {
-                    mapResultSet(resultSet, vendas);
+                    vendas.add(mapResultSet(resultSet));
                 }
             }
         } catch (SQLException ex) {
@@ -186,7 +182,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         return FXCollections.observableArrayList(vendas);
     }
 
-    private void mapResultSet(ResultSet resultSet, List<Venda> vendas) throws SQLException {
+    private Venda mapResultSet(ResultSet resultSet) throws SQLException {
         Cliente cliente = new Cliente(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10),
                 resultSet.getString(11), resultSet.getString(12), resultSet.getString(13), resultSet.getString(14),
                 resultSet.getString(15), resultSet.getString(16));
@@ -200,14 +196,14 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             itemDeVenda = DAOFactory.daoFactory().itemDAO().listarItensPorVenda(venda);
         }
         venda.setItens(FXCollections.observableArrayList(itemDeVenda));
-        vendas.add(venda);
+        return venda;
     }
 
     @Override
     public int count() {
+        final StringBuilder query = new StringBuilder();
+        query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_vendas");
         try (Connection conector = HikariCPDataSource.getConnection()) {
-            final StringBuilder query = new StringBuilder();
-            query.append("SELECT COUNT(*) FROM ").append(db).append(".tb_vendas");
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -223,11 +219,11 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     //buscar o ultimo id de venda realizada no ano
     @Override
-    public int ultimoRegisto(int ano) {
+    public int ultimoRegistro(int ano) {
         int j = 0;
         try (Connection conector = HikariCPDataSource.getConnection()) {
             final StringBuilder query = new StringBuilder();
-            query.append("select ifNull(count(id_vendas), 0) as max_id from ").append(db).append(".tb_vendas where extract(year from data)=").append(ano).append(";");
+            query.append("SELECT IFNULL(count(id_vendas), 0) as max_id from ").append(db).append(".tb_vendas where extract(year from data)=").append(ano).append(";");
             preparedStatement = conector.prepareStatement(query.toString());
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
@@ -246,20 +242,19 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     public Venda buscarUltimaVenda() {
         final StringBuilder query = new StringBuilder();
         query.append("SELECT max(id_vendas) as last_id FROM ").append(db).append(".tb_vendas;");
-        Venda retorno = new Venda();
-
+        Venda venda = new Venda();
         try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    retorno.setId(resultSet.getLong("last_id"));
+                    venda.setId(resultSet.getLong("last_id"));
                 }
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
-        return retorno;
+        return venda;
     }
 
     @SuppressWarnings("UnusedAssignment")
@@ -282,8 +277,6 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
                     retorno = new Venda(resultSet.getInt(1), resultSet.getDate(2).toLocalDate(),
                             resultSet.getBigDecimal(3), resultSet.getBoolean(4), resultSet.getString(5),
                             resultSet.getBigDecimal(6), resultSet.getString(7), cliente, usuario, resultSet.getBigDecimal(19));
-
-                    retorno = venda;
                 }
             }
             preparedStatement.closeOnCompletion();
@@ -294,7 +287,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     }
 
     @Override
-    public int ultimoRegisto() {
+    public int ultimoRegistro() {
         int j = 0;
         final StringBuilder query = new StringBuilder();
         query.append("select max(id_vendas) from ").append(db).append(".tb_vendas");
@@ -307,7 +300,7 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
             }
             preparedStatement.closeOnCompletion();
         } catch (SQLException ex) {
-            throw new DataAccessException(Level.ERROR.toString(), ex);
+            throw new DataAccessException(ex);
         }
         return j;
     }
@@ -406,9 +399,9 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
 
     // total de vendas por ano
     @Override
-    public BigDecimal totalAnual(String ano) {
+    public BigDecimal valorTotalDeVendaPorAno(String ano) {
         final StringBuilder query = new StringBuilder();
-        query.append("select sum(precoTotal) as sum from ").append(db).append(".tb_vendas where extract(year from data) = ").append(ano).append(";");
+        query.append("SELECT SUM(precoTotal) FROM ").append(db).append(".tb_vendas where extract(year from data) = ").append(ano).append(";");
 
         try (Connection conector = HikariCPDataSource.getConnection()) {
             preparedStatement = conector.prepareStatement(query.toString());
@@ -425,10 +418,10 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
     }
 
     @Override
-    public void reportReciboFatura(Long biFiltro) {
+    public void gerarReciboFatura(Long id) {
+        Map<String, Object> filtro = new HashMap<>();
+        filtro.put("id_venda", id.intValue());
         try (Connection conector = HikariCPDataSource.getConnection()) {
-            Map<String, Object> filtro = new HashMap<>();
-            filtro.put("id_venda", biFiltro);
 
             URL url = getClass().getResource("/cv/com/escola/reports/reciboFatura.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(url);
@@ -457,4 +450,24 @@ public class OrderDAOImpl extends DAO implements OrderDAO {
         }
     }
 
+    private String insertItemSql() {
+        return INSERT_ITEM.append(INSERT_INTO).append(db)
+                .append(".tb_item_venda(quantidade, valor, id_artigo, id_venda) VALUES (?,?,?,?);").toString();
+    }
+
+    private String insertVendaSql() {
+        INSERT_VENDA.append(INSERT_INTO).append(db).append(".tb_vendas (data, valor_total, ");
+        INSERT_VENDA.append("pago, cliente_fk, id_user, meioDePag, desconto, ");
+        INSERT_VENDA.append("num_fatura, precoTotal) VALUES (?,?,?,?,?,?,?,?,?);");
+        return INSERT_VENDA.toString();
+    }
+
+    private String updateVendaSql() {
+        StringBuilder updateVenda = new StringBuilder();
+        updateVenda.append("UPDATE ").append(db).append(".tb_vendas SET data = ?, valor_total = ?,");
+        updateVenda.append("pago = ?, cliente_fk = ?, id_user = ?, meioDePag = ?, ");
+        updateVenda.append("desconto = ?, num_fatura = ?, precoTotal = ? WHERE id_vendas = ?;");
+        return updateVenda.toString();
+    }
+    
 }

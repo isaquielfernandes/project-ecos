@@ -96,7 +96,7 @@ import org.controlsfx.control.table.TableRowExpanderColumn;
 @Slf4j
 public class RegistroVendaController extends AnchorPane implements Initializable, Itens {
 
-    private static final String NOT_SUPPORTED_YET = "Not supported yet.";
+    private static final String NOT_SUPPORTED_YET = "Not supported yet";
     private List<Venda> listVendas;
     private List<Item> listaDeItem;
     private List<Artigo> listaProduto;
@@ -107,7 +107,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
     private int[] idsItem;
     private int quantity = 0;
     private int cod;
-    private static final int QUANTIDADE_PAGINA = 45;
+    private static final int QUANTIDADE_PAGINA = 25;
 
     @FXML
     private AnchorPane anchorPane;
@@ -533,11 +533,10 @@ public class RegistroVendaController extends AnchorPane implements Initializable
 
     //paginação da tabela venda
     private void atualizarGrade(int pagina) {
-        int totalDeVendas;
-        totalDeVendas = DAOFactory.daoFactory().orderDAO().count();
+        int totalDeVendas = DAOFactory.daoFactory().orderDAO().count();
         pagination.setPageCount(totalDeVendas / QUANTIDADE_PAGINA);
-        ObservableList observableListDeVenda = DAOFactory.daoFactory().orderDAO().listar(QUANTIDADE_PAGINA, pagina);
-        tbVendas.setItems(observableListDeVenda);
+        ObservableList<Venda> vendas = DAOFactory.daoFactory().orderDAO().listar(QUANTIDADE_PAGINA, pagina);
+        tbVendas.setItems(vendas);
     }
 
     //Grafico de Bara (BarChart)
@@ -609,7 +608,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             }
             return pieChartObser;
         }).forEachOrdered(pieChartObser -> pieChart.setData(pieChartObser));
-        double value = DAOFactory.daoFactory().orderDAO().totalAnual(ano).doubleValue();
+        double value = DAOFactory.daoFactory().orderDAO().valorTotalDeVendaPorAno(ano).doubleValue();
         GraficoPie.info(pieChart, value);
     }
 
@@ -733,7 +732,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         listaDeItem = DAOFactory.daoFactory().itemDAO().findAll();
         listaCliente = DAOFactory.daoFactory().clienteDAO().findAll();
         listaProduto = DAOFactory.daoFactory().artigoDAO().findAll();
-        cod = DAOFactory.daoFactory().orderDAO().ultimoRegisto(LocalDate.now().getYear());
+        cod = DAOFactory.daoFactory().orderDAO().ultimoRegistro(LocalDate.now().getYear());
     }
 
     // Função para inserir item na tabela quando click em enter
@@ -820,7 +819,6 @@ public class RegistroVendaController extends AnchorPane implements Initializable
         colSubTotalV.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getSubTotal()));
         colValorTotal.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getValorTotal()));
         colDesconto.setCellValueFactory((CellDataFeatures<Venda, BigDecimal> p) -> new ReadOnlyObjectWrapper(p.getValue().getDesconto()));
-
     }
 
     /**
@@ -893,7 +891,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
             Venda vendas = tbVendas.getSelectionModel().getSelectedItem();
             Dialogo.Resposta response = Mensagem.confirmar("Imprimir Recibo/Fatura n°:: " + vendas.getNumFatura() + "?");
             if (response == Dialogo.Resposta.YES) {
-                DAOFactory.daoFactory().orderDAO().reportReciboFatura(vendas.getId());
+                DAOFactory.daoFactory().orderDAO().gerarReciboFatura(vendas.getId());
             }
             tbVendas.getSelectionModel().clearSelection();
         } catch (NullPointerException ex) {
@@ -1036,7 +1034,7 @@ public class RegistroVendaController extends AnchorPane implements Initializable
                     telaCadastro(null);
                     sincronizarBase();
                     gerarNumRecibo();
-                    DAOFactory.daoFactory().orderDAO().reportReciboFatura(DAOFactory.daoFactory().orderDAO().buscarUltimaVenda().getId());
+                    DAOFactory.daoFactory().orderDAO().gerarReciboFatura(DAOFactory.daoFactory().orderDAO().buscarUltimaVenda().getId());
                 }
             }
         } catch (NumberFormatException ex) {
