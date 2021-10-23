@@ -271,11 +271,15 @@ public class AlunoController extends HeroActions implements Initializable {
     private void setFileInputStream() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imgView.getImage(), null);
-            ImageIO.write(bufferedImage, "jpg", outputStream);
-            byte[] stream = outputStream.toByteArray();
-            fileInput = new ByteArrayInputStream(stream);
-            fileInput.close();
+            if(imgView.getImage() != null) {
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imgView.getImage(), null);
+                if(bufferedImage != null) {
+                      ImageIO.write(bufferedImage, "jpg", outputStream);
+                      byte[] stream = outputStream.toByteArray();
+                      fileInput = new ByteArrayInputStream(stream);
+                      fileInput.close();
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(AlunoController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -464,7 +468,6 @@ public class AlunoController extends HeroActions implements Initializable {
 
         mapTableAluno();
         telaVisualizacao(null);
-        Tempo.blockDataPosterior(LocalDate.now().plusYears(100), dtNascimento);
 
         scrollPaneConfig();
 

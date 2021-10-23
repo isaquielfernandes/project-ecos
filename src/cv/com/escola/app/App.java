@@ -28,7 +28,7 @@ public class App extends Application {
             Scene scene = new Scene(page);
 
             stage.initStyle(StageStyle.DECORATED);
-            stage.setTitle("ESCOLA DE CONDUÇÂO O SINAL");
+            stage.setTitle("ESCOLA CONDUÇÂO O SINAL");
             stage.setMaximized(false);
             stage.setX(windows.getMinX());
             stage.setY(windows.getMinY());

@@ -31,12 +31,7 @@ public class Login extends Application {
             Scene cena = new Scene(page);
 
             stage.initStyle(StageStyle.UNDECORATED);
-
-            stage.setX(windows.getMinX());
-            stage.setY(windows.getMinY());
-            stage.setWidth(windows.getWidth());
-            stage.setHeight(windows.getHeight());
-            stage.setMaximized(true);
+            stage.setMaximized(false);
 
             stage.getIcons().addAll(new Image(Login.class.getResourceAsStream("/cv/com/escola/view/img/servidor.png")));
 

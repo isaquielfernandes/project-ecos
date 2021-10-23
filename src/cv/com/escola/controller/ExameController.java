@@ -12,7 +12,6 @@ import cv.com.escola.model.util.Filtro;
 import cv.com.escola.model.util.Mensagem;
 import cv.com.escola.model.util.Modulo;
 import cv.com.escola.model.util.Nota;
-import static cv.com.escola.model.util.ValidationFields.checkEmptyFields;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -267,16 +266,19 @@ public class ExameController extends AnchorPane implements Initializable {
 
     @FXML
     private void salvar(ActionEvent event) {
-        boolean vazio = checkEmptyFields(txtIdAluno, cbTipo, cbCategoria, dtExame, cbAluno);
-
+        
+        boolean textIsEmpty = Campo.noEmpty(txtIdAluno);
+        boolean comboIsEmpty = Campo.noEmpty(cbTipo, cbCategoria, cbAluno);
+        boolean dtIsEmpty = Campo.noEmpty(dtExame);  
+       
         Aluno aluno = cbAluno.getValue();
         String tipoDeExame = cbTipo.getValue();
         Categoria cat = cbCategoria.getValue();
         LocalDate dia = dtExame.getValue();
         LocalTime hora = tpHora.getValue();
         String descricao = txtDescricao.getText();
-
-        if (vazio) {
+        
+        if (!(textIsEmpty && comboIsEmpty && dtIsEmpty && hora != null)) {
             Exame exame = new Exame(idMarcar, tipoDeExame, dia, hora, descricao, cat, aluno);
             exame.setRegistroCriminal(copyRegistroCriminal());
             exame.setAtestadoMedico(copyAtestadoMedico());
@@ -288,9 +290,13 @@ public class ExameController extends AnchorPane implements Initializable {
                 DAOFactory.daoFactory().exameDAO().update(exame);
                 Mensagem.info("Exame atualizada com sucesso!");
             }
-            telaCadastro(null);
-            sincronizarBase();
+            
+        } else {
+             Nota.alerta("Preencher campos vazios!");
         }
+        
+        telaCadastro(null);
+        sincronizarBase();
     }
 
     @FXML

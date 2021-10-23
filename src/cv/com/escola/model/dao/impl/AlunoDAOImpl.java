@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -227,7 +228,11 @@ public class AlunoDAOImpl extends DAO implements AlunoDAO {
         ps.setString(9, aluno.getContato());
         ps.setString(10, aluno.getHabilitacaoLit());
         ps.setString(11, aluno.getNacionalidade());
-        ps.setBlob(12, aluno.getFoto());
+        if(aluno.getFoto() != null) {
+            ps.setBlob(12, aluno.getFoto());
+        }else {
+            ps.setNull(12, Types.BLOB);
+        }
         ps.setBlob(13, aluno.getFotocopiaBI());
         ps.setString(14, aluno.getDescricao());
         ps.setString(15, aluno.getNomeDaMae());

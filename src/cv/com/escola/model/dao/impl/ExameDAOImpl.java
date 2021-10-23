@@ -57,7 +57,8 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
     @Override
     public void update(Exame marcar) {
         StringBuilder updateQuery = new StringBuilder();
-        updateQuery.append("UPDATE ").append(db).append(".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,fk_categoria=?, fk_aluno=? WHERE id_exame=?");
+        updateQuery.append("UPDATE ").append(db)
+                .append(".tb_exame SET tipo_exame=?, dia=?, hora=?, descricao=?,fk_categoria=?, fk_aluno=?, registroCriminal =?, atestadoMedico=? WHERE id_exame=?");
 
         transact((Connection connection) -> {
             try (PreparedStatement pstmt = connection.prepareStatement(
@@ -77,8 +78,10 @@ public class ExameDAOImpl extends DAO implements ExameDAO {
         pstmt.setString(4, marcar.getDescricao());
         pstmt.setInt(5, marcar.getCategoria().getId());
         pstmt.setInt(6, marcar.getAluno().getId());
+        pstmt.setString(7, marcar.getRegistroCriminal());
+        pstmt.setString(8, marcar.getAtestadoMedico());
         if (marcar.getIdExame() != 0) {
-            pstmt.setLong(7, marcar.getIdExame());
+            pstmt.setLong(9, marcar.getIdExame());
         }
         pstmt.executeUpdate();
     }
